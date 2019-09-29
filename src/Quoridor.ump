@@ -1,0 +1,55 @@
+namespace ca.mcgill.ecse223.quoridor.model;
+
+class QuoridorSystem
+{
+}
+
+class Game
+{
+  Boolean isBlackTurn = true;
+  enum Result {InProgress, BlackWin, WhiteWin, Draw}
+  Result result = Result.InProgress;
+  Boolean isFinished = false;
+  1 <@>- 20 Wall;
+  1 <@>- 2 Pawn;
+  1 <@>- * Move;
+  1 <@>- * Tile;
+}
+
+class Wall
+{
+  String row;
+  Integer column;
+  Boolean isHorizontal;
+  Boolean isPlaced = false;
+}
+
+class Pawn
+{
+  String currentRow;
+  Integer currentColumn;
+  unique Boolean isBlack;
+  Time timeElapsed;
+  1 -- 10 Wall;
+  1 -- 1 Player;
+}
+
+class Move
+{
+  unique Integer id;
+  String movePosition;
+  * -- 1 Pawn;
+  * -- 1 Tile;
+}
+
+class Tile
+{
+  String row;
+  Integer column;
+  Boolean isOccupied;
+}
+
+class Player
+{
+  unique String userName;
+}
