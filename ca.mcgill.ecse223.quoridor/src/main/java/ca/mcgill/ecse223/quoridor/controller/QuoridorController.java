@@ -78,8 +78,42 @@ public class QuoridorController {
 	
 	//5. Rotate wall -- Raja
 	//6. Grab wall -- Raja
-	//7. Move wall -- Grace
-	//8. Drop wall -- Grace
+	
+	//7. Move wall -- Grace (Xinyue)
+	
+	/**
+	 * This method enables player to move around a wall on the board.
+	 * @param Player that is going to move the wall
+	 * @param Wall that the player intends to move
+	 * @param WallMove that player clicked on the arrow keys.
+	 * @throws InvalidInputException
+	 * @author Xinyue Chen, 260830761
+	 */
+	public static void moveWall(Player player, Wall wall, WallMove move) throws UnsupportedOperationException {
+		
+		
+		throw new java.lang.UnsupportedOperationException("You can't move the wall further.");
+		
+	}
+	
+	
+	//8. Drop wall -- Grace (Xinyue)
+	
+	/**
+	 * This method enables player to drop a wall if there is no wall under it.
+	 * @param Player that is going to drop the wall
+	 * @param Wall that the player intends to drop
+	 * @param WallMove that the wall is going to be placed
+	 * @throws InvalidInputException
+	 * @author Xinyue Chen, 260830761
+	 */
+	public static void dropWall(Player player, Wall wall) throws UnsupportedOperationException{
+
+		
+		throw new java.lang.UnsupportedOperationException("You can't drop the wall here, there is already a wall.");
+		
+		
+	}
 	//9. Save position -- Shayne
 	//10. Load position -- Shayne
 	//11. Validate position --Sami
