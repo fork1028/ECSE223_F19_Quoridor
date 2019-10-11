@@ -90,7 +90,7 @@ public class QuoridorController {
 		}
 	}
 		catch (RuntimeException e) {
-			throw new InvalidInputException(e.getMessage());
+			throw new InvalidInputEion(e.getMessage());
 		}*/
 		}
 
