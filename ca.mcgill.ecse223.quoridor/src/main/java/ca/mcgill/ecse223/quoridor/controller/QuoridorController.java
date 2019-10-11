@@ -77,7 +77,7 @@ public class QuoridorController {
 	}
 	
 	//rajaa 
-		public static void rotateWall(Wall wall, WallMove move, Direction wallDirection) throws UnsupportedOperationException 
+		public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException 
 	{
 			/*		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		//prompted when user wants to rotate wall by clicking wtvr
@@ -92,7 +92,7 @@ public class QuoridorController {
 		catch (RuntimeException e) {
 			throw new InvalidInputEion(e.getMessage());
 		}*/
-		}
+			throw new UnsupportedOperationException("The wall cannot be rotated");}
 
 
 		public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException 
@@ -119,7 +119,7 @@ public class QuoridorController {
 		catch (RuntimeException e) {
 			throw new InvalidInputException(e.getMessage());
 		} */
-			throw new java.lang.UnsupportedOperationException("There are no more walls");
+			throw new UnsupportedOperationException("There are no more walls");
 	}
 
 

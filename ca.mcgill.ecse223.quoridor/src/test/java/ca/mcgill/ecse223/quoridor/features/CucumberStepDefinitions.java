@@ -121,6 +121,89 @@ public class CucumberStepDefinitions {
 	 * are implemented
 	 * 
 	 */
+	
+	//RAJAA 
+	//GRAB WALL
+
+	
+	
+    @Given  ("I have more walls on stock")
+    public void thereAreWallsOnStock(Wall wall, Player player) {
+    	assert(player.hasWalls()==true);
+    	
+    }
+	@When("I try to grab a wall from my stock")
+    public void userTriesGrabWall1(Wall wall) {
+		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+ 	   QuoridorController.grabWall(player, move, wall);
+ 	   }
+	@Then ("A wall move candidate shall be created at initial position")
+	public void wallMoveCandidateShallBeCreatedAtInitialPosition(Wall candidate) {
+	assertEquals(candidate,	QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate());
+	}
+	
+	@And ("I shall have a wall in my hand over the board")
+	public void iShallHaveAWallInMyHandOverTheBoard() {
+		//GUI
+	}
+	@And ("The wall in my hand shall disappear from my stock")
+	public void theWallInMyHandShouldDisappearFromMyStock(Wall wall){
+		//GUI
+	}
+	
+    
+	
+   @ Given  ("I have no more walls on stock")
+   public void iHaveNoMoreWallsOnStock(Wall wall, Player player) {
+	   assert(player.hasWalls()==false);
+   }
+	@When("I try to grab a wall from my stock 2")
+   public void userTriesGrabWall2(Wall wall)  {
+		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+    try {
+    	QuoridorController.grabWall(player,move,wall); 
+    	fail();
+    } 
+    catch (RuntimeException e) {
+      
+    }}
+	@Then ("I shall be notified that I have no more walls")
+	public void iShouldBeNotifiedThatIHaveNoMoreWalls(){
+		//GUI
+	}
+	@And ("I shall have no walls in my hand ")
+	public void iShallHaveNoWallsInMyHand () {
+     //GUI
+	}
+	
+	//
+	//
+   //ROTATE WALL
+
+
+	
+	@Given("A wall move candidate exists with <dir> at position (<row>, <col>)")
+ 	public void aWallMoveCandidateExistsWithDirectionAtPosition(int row, int col){
+ 		assert(QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
+ 		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+	}
+    @When ("I try to flip a wall")
+    public void userTriesRotateWall(Wall wall) {
+    	Direction direction = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection();
+    	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+    	QuoridorController.rotateWall(wall, move, direction);
+    }
+    @Then ("The wall shall be rotated over the board to <newdir>")
+    public void theWallShallBeRotatedOverTheBoardToNewDIrection(Wall wall, WallMove move, Direction direction) {
+    	assertEquals(direction, QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection());
+    }
+    
+   @ And ("A wall move candidate shall exist with <newdir> at position (<row>, <col>)")
+   public void aWallMoveCandidateShallExistwithDirectionAtPosition(Direction direction, Wall candidate) {
+	   //GUI
+   }
 
 	// ***********************************************
 	// Clean up
@@ -229,105 +312,7 @@ public class CucumberStepDefinitions {
 		game.setCurrentPosition(gamePosition);
 	}
 	
-	//RAJAA 
-	//GRAB WALL
 
-	@And ("I do not have a wall in my hand")
-	public void iDoNotHaveAWallInMyHand(Wall wall) {
-		//GUI
-	}
-	
-	
-    @Given  ("I have more walls on stock")
-    public void thereAreWallsOnStock(Wall wall, Player player) {
-    	assert(player.hasWalls()==true);
-    	
-    }
-	@When("I try to grab a wall from my stock")
-    public void userTriesGrabWall1(Wall wall) {
-		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
- 	   QuoridorController.grabWall(player, move, wall);
- 	   }
-	@Then ("I have a wall in my hand over the board")
-	public void iHaveAWalInMyHandOverTheBoard(){
-		assert(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().hasWalls());
-	}
-	@And ("A wall move candidate shall be created at initial position")
-	public void wallMoveCandidateShallBeCreatedAtInitialPosition(){
-		//GUI
-	}
-	@Then ("A wall move candidate shall be created at initial position")
-	public void wallMoveCandidateShallBeCreatedAtInitialPosition(Wall candidate) {
-		
-	}
-	@And ("I shall have a wall in my hand over the board")
-	public void iShallHaveAWallInMyHandOverTheBoard() {
-		//GUI
-	}
-	@And ("The wall in my hand should disappear from my stock")
-	public void theWallInMyHandShouldDisappearFromMyStock(Wall wall){
-		//GUI
-	}
-	
-    
-	
-   @ Given  ("I have no more walls on stock")
-   public void iHaveNoMoreWallsOnStock(Wall wall, Player player) {
-	   assert(player.hasWalls()==false);
-   }
-	@When("I try to grab a wall from my stock")
-   public void userTriesGrabWall(Wall wall)  {
-		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-    try {
-    	QuoridorController.grabWall(player,move,wall); 
-    	fail();
-    } 
-    catch (RuntimeException e) {
-      
-    }}
-	@Then ("I should be notified that I have no more walls")
-	public void iShouldBeNotifiedThatIHaveNoMoreWalls(){
-		throw new java.lang.UnsupportedOperationException("There are no more walls");
-	}
-	
-	@Then ("I shall be notified that I have no more walls")
-	public void iShallBeNotifiiedThatIHaveNoMoreWalls() {
-		
-	}
-	@And ("I shall have no walls in my hand ")
-	public void iShallHaveNoWallsInMyHand () {
-     //GUI
-	}
-	
-	//
-	//
-   //ROTATE WALL
-
-
-	
-	@Given("A wall move candidate exists with <dir> at position (<row>, <col>)")
- 	public void aWallMoveCandidateExistsWithDirectionAtPosition(int row, int col){
- 		assert(QuoridorApplication.getQuoridor().getCurrentGame().hasWallMoveCandidate());
- 		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-	}
-    @When ("I try to flip a wall")
-    public void userTriesRotateWall(Wall wall) {
-    	Direction wallDirection = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection();
-    	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-    	QuoridorController.rotateWall(wall, move, wallDirection);
-    }
-    @Then ("The wall shall be rotated over the board to <newdir>")
-    public void theWallShallBeRotatedOverTheBoardToNewDIrection() {
-    	Direction direction;
-    	
-    }
-    
-   @ And ("A wall move candidate shall exist with <newdir> at position (<row>, <col>)")
-   public void aWallMoveCandidateShallExistwithDirectionAtPosition(Direction direction, Wall candidate) {
-	   //GUI
-   }
     
 
 }
