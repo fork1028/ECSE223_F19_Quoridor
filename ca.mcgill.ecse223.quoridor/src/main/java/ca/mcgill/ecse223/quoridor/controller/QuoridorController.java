@@ -10,15 +10,15 @@ import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
  * You need to individually specify all operations for your assigned features in the Controller interface (which interface needs to be placed in the ca.mcgill.ecse223.quoridor.controller package). The interface consists of the full method declaration (incl. parameters, return type, etc.) relevant for your assigned features. In addition to all modifier methods, do not forget to include all query methods required for the features. The same query method may be used for several features. As a team, ensure the consistent use of query methods across features.
 Each controller method needs to be briefly documented using JavaDoc (see public tutorials, e.g.: ), but you are not required to generate standalone HTML files. The JavaDoc specification should clearly state the name of the corresponding Gherkin feature and the name of the team member who is responsible for it.
 Moreover, you need to create a default implementation of the operations present in the Control interface where the method body consists of throwing an java.lang.UnsupportedOperationException (i.e. the method body is almost empty).
-*/
+ */
 
 public class QuoridorController {
 	//feature list of 12 features to be implemented:
-	
+
 	//1. Start a new game -- Matteo
 	//2. Provide or select user name -- Matteo
-	
-	
+
+
 	//3. Set total thinking time -- Helen
 	/**
 	 * This method sets the total thinking time (i.e. remaining time) that a white or black player has for a game.
@@ -29,7 +29,7 @@ public class QuoridorController {
 	 */
 	public static void setTotalThinkingTime(Time time, boolean setForBlackPlayer) throws InvalidInputException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		
+
 		try {
 			if (setForBlackPlayer) {
 				Player player = quoridor.getCurrentGame().getBlackPlayer();
@@ -44,9 +44,9 @@ public class QuoridorController {
 		catch (RuntimeException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
-		
+
 	}
-	
+
 	//4. Initialize board -- Helen
 	/**
 	 * This method initializes a new board.
@@ -55,11 +55,11 @@ public class QuoridorController {
 	 */
 	public static void initializeBoard() throws InvalidInputException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		
+
 		try {
 			if (!quoridor.hasBoard()) {
 				Board newBoard = new Board(quoridor); //creates new board and adds it to current quoridor
-				
+
 				// Creating tiles by rows, i.e., the column index changes with every tile creation
 				for (int i = 1; i <= 9; i++) { // rows
 					for (int j = 1; j <= 9; j++) { // columns
@@ -73,17 +73,48 @@ public class QuoridorController {
 		catch (RuntimeException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
-		
+
 	}
-	
+
 	//5. Rotate wall -- Raja
 	//6. Grab wall -- Raja
 	//7. Move wall -- Grace
 	//8. Drop wall -- Grace
 	//9. Save position -- Shayne
 	//10. Load position -- Shayne
-	//11. Validate position --Sami
-	//12. Switch player (aka. Update board) --Sami
 
-		
+
+	//11. Validate position -- Sami
+	/**
+	 * This method validates a potential pawn move position.
+	 * @param row         row of the move position
+	 * @param col         col of the move position
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for pawn...");
+	}
+	
+	/**
+	 * This method validates wall position.
+	 * @param row         row of the center of the wall
+	 * @param col         col of the center of the wall
+	 * @param direction   direction of the wall
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validateWallPosition(int row, int col, Direction direction) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
+
+	//12. Switch player (aka. Update board) -- Sami
+	/**
+	 * This method switches the current player.
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static void switchCurrentPlayer() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Can't switch player...");
+	}
 }
