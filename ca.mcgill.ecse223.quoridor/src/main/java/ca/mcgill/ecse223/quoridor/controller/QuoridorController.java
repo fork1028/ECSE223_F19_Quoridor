@@ -76,8 +76,53 @@ public class QuoridorController {
 		
 	}
 	
-	//5. Rotate wall -- Raja
-	//6. Grab wall -- Raja
+	//rajaa 
+		public static void rotateWall(Wall wall, WallMove move, Direction wallDirection) throws UnsupportedOperationException 
+	{
+			/*		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		//prompted when user wants to rotate wall by clicking wtvr
+	try {
+		if( move.getChangeWallDirection()??) {
+			 wall.setWallDirection(direction) ()
+		}
+
+		else{throw new InvalidInputException("The wall is already in position");
+		}
+	}
+		catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		}*/
+		}
+
+
+		public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException 
+		{
+			/*Quoridor quoridor = QuoridorApplication.getQuoridor();
+		try{
+		
+			if (player.haswhiteWallsInStock()  ) {
+			 quoridor.getRemainingWall(wall);
+		}
+		else {
+			throw new InvalidInputException("The white  player does not have any walls left");
+		}
+		
+
+			if (player.hasblackWallsInStock()) {
+				quoridor.getRemainingWall(wall);
+		}
+		else {
+			throw new InvalidInputException("The black player does not have any walls left");
+		}
+		 }
+		
+		catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		} */
+			throw new java.lang.UnsupportedOperationException("There are no more walls");
+	}
+
+
 	//7. Move wall -- Grace
 	//8. Drop wall -- Grace
 	//9. Save position -- Shayne
