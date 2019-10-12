@@ -30,7 +30,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Matteo Barbieri 260805184
 	 */
-	public static boolean ProvideSelectUser() throws UnsupportedOperationException {
+	public static boolean provideSelectUser(String username) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Unable to set Username");
 	}
 
