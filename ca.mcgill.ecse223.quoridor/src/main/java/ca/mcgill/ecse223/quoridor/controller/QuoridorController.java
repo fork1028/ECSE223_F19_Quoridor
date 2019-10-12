@@ -1,6 +1,7 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.File;
 import java.sql.Time;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
@@ -172,7 +173,47 @@ public class QuoridorController {
 	}
 
 	//9. Save position -- Shayne
+	/**
+	 * This method saves the current game as a text file.
+	 * @param newFileName String representing the name to be given to the text file being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static void saveCurrentGame(String newFileName) throws UnsupportedOperationException{
+		//call helper function fileAlreadyExists first!!!
+		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+	}
+	
+	/**
+	 * This is a helper method that checks if a file already exists.
+	 * @param newFileName String representing the name of the file that is being searched for.
+	 * @throws UnsupportedOperationException
+	 * @return Boolean returns whether or not there already exists a file with that name in the filesystem.
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static Boolean fileAlreadyExists(String fileName) {
+		File tempFile = new File(fileName);
+		if (tempFile.exists()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	//10. Load position -- Shayne
+	/**
+	 * This method loads a game from a text file, checking to see that it is a valid position
+	 * @param fileName String representing the name of the file taht you wish to import.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	//Idea is to first create a new game (with the users, and time), then go in and set time for each player.
+	//Next, go move by move through the game, checking at each step if a move is alright.
+	public static void loadSavedGame(String fileName) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+	}
+	
+	
 	//11. Validate position --Sami
 	//12. Switch player (aka. Update board) --Sami
 		//11. Validate position -- Sami
