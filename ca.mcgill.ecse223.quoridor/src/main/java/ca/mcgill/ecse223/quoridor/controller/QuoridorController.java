@@ -1,5 +1,7 @@
+
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.File;
 import java.sql.Time;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
@@ -15,8 +17,32 @@ Moreover, you need to create a default implementation of the operations present 
 public class QuoridorController {
 	//feature list of 12 features to be implemented:
 	
-	//1. Start a new game -- Matteo
+		/**
+	 * This method starts the game 
+	 * @param blackPlayer  the user assigned to the black pawn
+	 * @param whitePlayer  the user assigned to the black pawn
+	 * @param time  total thinking time, in seconds
+	 * @throws InvalidInputException
+	 * @author Matteo Barbieri 260805184
+	 */
+	public static Game startGame(User blackPlayer, User whitePlayer,Time time) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Unable to start Game");
+		
+	}
+	
+	
+
 	//2. Provide or select user name -- Matteo
+	/**
+	 * This method Provides or Selects a User to be used in a game
+	 * @param username desired to create new User
+	 * @throws InvalidInputException
+	 * @author Matteo Barbieri 260805184
+	 */
+	public static boolean ProvideSelectUser() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Unable to set Username");
+	}
+
 	
 	
 	/**
@@ -76,8 +102,39 @@ public class QuoridorController {
 		
 	}
 	
-	//5. Rotate wall -- Raja
-	//6. Grab wall -- Raja
+
+	//5. Rotate wall -- rajaa 
+	/**
+	 * This method rotates a wall.
+   * @param player that is going to rotate the wall
+	 * @param move that is going to rotate the wall
+   * @param wall that is on the stack
+   * @param direction that is the orientation of the wall
+	 * @throws InvalidInputException
+	 * @author Rajaa Boukhelif, 260870030
+	 */
+		public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException 
+	{
+		
+			throw new UnsupportedOperationException("The wall cannot be rotated");}
+
+		//6. Grab wall -- rajaa 
+		/**
+		 * This method allows a user to grab a wall.
+     * @param player that is going to grab the wall
+	 * @param move that is going to grab the wall
+   * @param wall that is on the stack
+		 * @throws InvalidInputException
+		 * @author Rajaa Boukhelif, 260870030
+		 */
+		public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException 
+		{
+			
+			throw new UnsupportedOperationException("There are no more walls");
+	}
+
+		
+
 	
 	//7. Move wall -- Grace (Xinyue)
 	
@@ -114,11 +171,97 @@ public class QuoridorController {
 		
 		
 	}
+
 	//9. Save position -- Shayne
+	/**
+	 * This method saves the current game as a text file.
+	 * @param newFileName String representing the name to be given to the text file being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static void saveCurrentGame(String newFileName) throws UnsupportedOperationException{
+		//call helper function fileAlreadyExists first!!!
+		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+	}
+	
+	/**
+	 * This is a helper method that checks if a file already exists.
+	 * @param newFileName String representing the name of the file that is being searched for.
+	 * @throws UnsupportedOperationException
+	 * @return Boolean returns whether or not there already exists a file with that name in the filesystem.
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static Boolean fileAlreadyExists(String fileName) {
+		File tempFile = new File(fileName);
+		if (tempFile.exists()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	//10. Load position -- Shayne
+	/**
+	 * This method loads a game from a text file, checking to see that it is a valid position
+	 * @param fileName String representing the name of the file taht you wish to import.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	//Idea is to first create a new game (with the users, and time), then go in and set time for each player.
+	//Next, go move by move through the game, checking at each step if a move is alright.
+	public static void loadSavedGame(String fileName) throws UnsupportedOperationException{
+		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+	}
+	
+	
 	//11. Validate position --Sami
 	//12. Switch player (aka. Update board) --Sami
+		//11. Validate position -- Sami
+	/**
+	 * This method validates a potential pawn move position.
+	 * @param row         row of the move position
+	 * @param col         col of the move position
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validatePosition(int row, int col, Direction direction) throws UnsupportedOperationException{
+		if (direction == null) {
+			return validatePawnPosition(row,col);
+		}
+		else {
+			return validateWallPosition(row, col, direction);
+		}
+	}
 	
+	public static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for pawn...");
+	}
+
+	/**
+	 * This method validates wall position.
+	 * @param row         row of the center of the wall
+	 * @param col         col of the center of the wall
+	 * @param direction   direction of the wall
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validateWallPosition(int row, int col, Direction direction) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
+	
+	public static boolean validateWallPosition(Wall wall) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
+
+	//12. Switch player (aka. Update board) -- Sami
+	/**
+	 * This method switches the current player.
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean switchCurrentPlayer() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Can't switch player...");
+  }
 	
 	//helper methods
 	
@@ -150,3 +293,4 @@ public class QuoridorController {
 	
 		
 }
+
