@@ -76,8 +76,39 @@ public class QuoridorController {
 		
 	}
 	
-	//5. Rotate wall -- Raja
-	//6. Grab wall -- Raja
+
+	//5. Rotate wall -- rajaa 
+	/**
+	 * This method rotates a wall.
+   * @param player that is going to rotate the wall
+	 * @param move that is going to rotate the wall
+   * @param wall that is on the stack
+   * @param direction that is the orientation of the wall
+	 * @throws InvalidInputException
+	 * @author Rajaa Boukhelif, 260870030
+	 */
+		public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException 
+	{
+		
+			throw new UnsupportedOperationException("The wall cannot be rotated");}
+
+		//6. Grab wall -- rajaa 
+		/**
+		 * This method allows a user to grab a wall.
+     * @param player that is going to grab the wall
+	 * @param move that is going to grab the wall
+   * @param wall that is on the stack
+		 * @throws InvalidInputException
+		 * @author Rajaa Boukhelif, 260870030
+		 */
+		public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException 
+		{
+			
+			throw new UnsupportedOperationException("There are no more walls");
+	}
+
+		
+
 	
 	//7. Move wall -- Grace (Xinyue)
 	
@@ -114,6 +145,7 @@ public class QuoridorController {
 		
 		
 	}
+
 	//9. Save position -- Shayne
 	//10. Load position -- Shayne
 	//11. Validate position --Sami
