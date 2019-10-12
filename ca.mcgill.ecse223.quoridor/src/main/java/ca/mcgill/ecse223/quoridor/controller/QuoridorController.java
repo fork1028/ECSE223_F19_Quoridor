@@ -15,10 +15,31 @@ Moreover, you need to create a default implementation of the operations present 
 public class QuoridorController {
 	//feature list of 12 features to be implemented:
 	
-	//1. Start a new game -- Matteo
+	/**
+	 * This method starts the game 
+	 * @param blackPlayer  the user assigned to the black pawn
+	 * @param whitePlayer  the user assigned to the black pawn
+	 * @param time  total thinking time, in seconds
+	 * @throws InvalidInputException
+	 * @author Matteo Barbieri 260805184
+	 */
+	public static Game startGame(User blackPlayer, User whitePlayer,Time time) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Unable to start Game");
+		
+	}
+	
+	
 	//2. Provide or select user name -- Matteo
-	
-	
+	/**
+	 * This method Provides or Selects a User to be used in a game
+	 * @param username desired to create new User
+	 * @throws InvalidInputException
+	 * @author Matteo Barbieri 260805184
+	 */
+	public static boolean ProvideSelectUser() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Unable to set Username");
+	}
+
 	//3. Set total thinking time -- Helen
 	/**
 	 * This method sets the total thinking time (i.e. remaining time) that a white or black player has for a game.
@@ -27,22 +48,22 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Helen Lin, 260715521
 	 */
-	public static void setTotalThinkingTime(Time time, boolean setForBlackPlayer) throws InvalidInputException {
+	public static void setTotalThinkingTime(Time time, boolean setForBlackPlayer) throws UnsupportedOperationException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		
 		try {
 			if (setForBlackPlayer) {
 				Player player = quoridor.getCurrentGame().getBlackPlayer();
 				if (!player.setRemainingTime(time))
-					throw new InvalidInputException("Unable to set thinking time for BLACK player.");
+					throw new UnsupportedOperationException("Unable to set thinking time for BLACK player.");
 			} else if (!setForBlackPlayer) {
 				Player player = quoridor.getCurrentGame().getWhitePlayer();
 				if (!player.setRemainingTime(time))
-					throw new InvalidInputException("Unable to set thinking time for WHITE player.");
+					throw new UnsupportedOperationException("Unable to set thinking time for WHITE player.");
 			}
 		}
 		catch (RuntimeException e) {
-			throw new InvalidInputException(e.getMessage());
+			throw new UnsupportedOperationException(e.getMessage());
 		}
 		
 	}
@@ -53,7 +74,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Helen Lin, 260715521
 	 */
-	public static void initializeBoard() throws InvalidInputException {
+	public static void initializeBoard() throws UnsupportedOperationException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 		
 		try {
@@ -68,10 +89,10 @@ public class QuoridorController {
 				}
 			} else
 				//quoridor board is already initialized
-				throw new InvalidInputException("Quordior already has an initialized board.");
+				throw new UnsupportedOperationException("Quordior already has an initialized board.");
 		}
 		catch (RuntimeException e) {
-			throw new InvalidInputException(e.getMessage());
+			throw new UnsupportedOperationException(e.getMessage());
 		}
 		
 	}
