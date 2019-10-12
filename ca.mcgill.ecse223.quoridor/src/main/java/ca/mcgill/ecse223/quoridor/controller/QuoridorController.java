@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse223.quoridor.controller;
 
 import java.sql.Time;
@@ -15,7 +16,7 @@ Moreover, you need to create a default implementation of the operations present 
 public class QuoridorController {
 	//feature list of 12 features to be implemented:
 	
-	/**
+		/**
 	 * This method starts the game 
 	 * @param blackPlayer  the user assigned to the black pawn
 	 * @param whitePlayer  the user assigned to the black pawn
@@ -41,8 +42,8 @@ public class QuoridorController {
 		throw new UnsupportedOperationException("Unable to set Username");
 	}
 
-	//3. Set total thinking time -- Helen
-
+	
+	
 	/**
 	 * This method sets the total thinking time for both players while a new game is initalizing.
 	 * @param min	number of minutes
@@ -50,8 +51,6 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Helen Lin
 	 */
-
-
 	public static void setTotalThinkingTime(int min, int sec) throws InvalidInputException {
 		
 		throw new UnsupportedOperationException("Default implementation of setTotalThinkingTime");
@@ -73,7 +72,6 @@ public class QuoridorController {
 		 * } catch (RuntimeException e) { throw new
 		 * InvalidInputException(e.getMessage()); }
 		 */
-
 		
 	}
 	
@@ -82,7 +80,6 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Helen Lin, 260715521
 	 */
-
 	public static void initializeBoard() throws InvalidInputException {
 		
 		throw new UnsupportedOperationException("Default implementation of setTotalThinkingTime");
@@ -101,12 +98,42 @@ public class QuoridorController {
 		 * InvalidInputException("Quordior already has an initialized board."); } catch
 		 * (RuntimeException e) { throw new InvalidInputException(e.getMessage()); }
 		 */
-
 		
 	}
 	
-	//5. Rotate wall -- Raja
-	//6. Grab wall -- Raja
+
+	//5. Rotate wall -- rajaa 
+	/**
+	 * This method rotates a wall.
+   * @param player that is going to rotate the wall
+	 * @param move that is going to rotate the wall
+   * @param wall that is on the stack
+   * @param direction that is the orientation of the wall
+	 * @throws InvalidInputException
+	 * @author Rajaa Boukhelif, 260870030
+	 */
+		public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException 
+	{
+		
+			throw new UnsupportedOperationException("The wall cannot be rotated");}
+
+		//6. Grab wall -- rajaa 
+		/**
+		 * This method allows a user to grab a wall.
+     * @param player that is going to grab the wall
+	 * @param move that is going to grab the wall
+   * @param wall that is on the stack
+		 * @throws InvalidInputException
+		 * @author Rajaa Boukhelif, 260870030
+		 */
+		public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException 
+		{
+			
+			throw new UnsupportedOperationException("There are no more walls");
+	}
+
+		
+
 	
 	//7. Move wall -- Grace (Xinyue)
 	
@@ -143,11 +170,57 @@ public class QuoridorController {
 		
 		
 	}
+
 	//9. Save position -- Shayne
 	//10. Load position -- Shayne
 	//11. Validate position --Sami
 	//12. Switch player (aka. Update board) --Sami
+		//11. Validate position -- Sami
+	/**
+	 * This method validates a potential pawn move position.
+	 * @param row         row of the move position
+	 * @param col         col of the move position
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validatePosition(int row, int col, Direction direction) throws UnsupportedOperationException{
+		if (direction == null) {
+			return validatePawnPosition(row,col);
+		}
+		else {
+			return validateWallPosition(row, col, direction);
+		}
+	}
 	
+	public static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for pawn...");
+	}
+
+	/**
+	 * This method validates wall position.
+	 * @param row         row of the center of the wall
+	 * @param col         col of the center of the wall
+	 * @param direction   direction of the wall
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validateWallPosition(int row, int col, Direction direction) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
+	
+	public static boolean validateWallPosition(Wall wall) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
+
+	//12. Switch player (aka. Update board) -- Sami
+	/**
+	 * This method switches the current player.
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean switchCurrentPlayer() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Can't switch player...");
+  }
 	
 	//helper methods
 	
@@ -179,3 +252,4 @@ public class QuoridorController {
 	
 		
 }
+
