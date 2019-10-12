@@ -8,16 +8,9 @@ import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 
 
-/*Instructions from Iteration 2 part 3:
- * You need to individually specify all operations for your assigned features in the Controller interface (which interface needs to be placed in the ca.mcgill.ecse223.quoridor.controller package). The interface consists of the full method declaration (incl. parameters, return type, etc.) relevant for your assigned features. In addition to all modifier methods, do not forget to include all query methods required for the features. The same query method may be used for several features. As a team, ensure the consistent use of query methods across features.
-Each controller method needs to be briefly documented using JavaDoc (see public tutorials, e.g.: ), but you are not required to generate standalone HTML files. The JavaDoc specification should clearly state the name of the corresponding Gherkin feature and the name of the team member who is responsible for it.
-Moreover, you need to create a default implementation of the operations present in the Control interface where the method body consists of throwing an java.lang.UnsupportedOperationException (i.e. the method body is almost empty).
-*/
-
 public class QuoridorController {
-	//feature list of 12 features to be implemented:
 	
-		/**
+	/**
 	 * This method starts the game 
 	 * @param blackPlayer  the user assigned to the black pawn
 	 * @param whitePlayer  the user assigned to the black pawn
@@ -31,8 +24,6 @@ public class QuoridorController {
 	}
 	
 	
-
-	//2. Provide or select user name -- Matteo
 	/**
 	 * This method Provides or Selects a User to be used in a game
 	 * @param username desired to create new User
@@ -44,13 +35,12 @@ public class QuoridorController {
 	}
 
 	
-	
 	/**
 	 * This method sets the total thinking time for both players while a new game is initalizing.
 	 * @param min	number of minutes
 	 * @param sec	number of seconds
 	 * @throws InvalidInputException
-	 * @author Helen Lin
+	 * @author Helen Lin, 260715521
 	 */
 	public static void setTotalThinkingTime(int min, int sec) throws InvalidInputException {
 		
@@ -103,41 +93,34 @@ public class QuoridorController {
 	}
 	
 
-	//5. Rotate wall -- rajaa 
 	/**
 	 * This method rotates a wall.
-   * @param player that is going to rotate the wall
+	 * @param player that is going to rotate the wall
 	 * @param move that is going to rotate the wall
-   * @param wall that is on the stack
-   * @param direction that is the orientation of the wall
+	 * @param wall that is on the stack
+	 * @param direction that is the orientation of the wall
 	 * @throws InvalidInputException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
-		public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException 
-	{
+	public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException {
 		
-			throw new UnsupportedOperationException("The wall cannot be rotated");}
-
-		//6. Grab wall -- rajaa 
-		/**
-		 * This method allows a user to grab a wall.
-     * @param player that is going to grab the wall
-	 * @param move that is going to grab the wall
-   * @param wall that is on the stack
-		 * @throws InvalidInputException
-		 * @author Rajaa Boukhelif, 260870030
-		 */
-		public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException 
-		{
-			
-			throw new UnsupportedOperationException("There are no more walls");
+		throw new UnsupportedOperationException("The wall cannot be rotated");
 	}
 
-		
+	/**
+	 * This method allows a user to grab a wall.
+     * @param player that is going to grab the wall
+	 * @param move that is going to grab the wall
+	 * @param wall that is on the stack
+	 * @throws InvalidInputException
+	 * @author Rajaa Boukhelif, 260870030
+	 */
+	public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException {
+			
+		throw new UnsupportedOperationException("There are no more walls");
+	}
 
-	
-	//7. Move wall -- Grace (Xinyue)
-	
+
 	/**
 	 * This method enables player to move around a wall on the board.
 	 * @param Player that is going to move the wall
@@ -147,14 +130,10 @@ public class QuoridorController {
 	 * @author Xinyue Chen, 260830761
 	 */
 	public static void moveWall(Player player, Wall wall, WallMove move) throws UnsupportedOperationException {
-		
-		
+
 		throw new java.lang.UnsupportedOperationException("You can't move the wall further.");
 		
 	}
-	
-	
-	//8. Drop wall -- Grace (Xinyue)
 	
 	/**
 	 * This method enables player to drop a wall if there is no wall under it.
@@ -166,13 +145,11 @@ public class QuoridorController {
 	 */
 	public static void dropWall(Player player, Wall wall) throws UnsupportedOperationException{
 
-		
 		throw new java.lang.UnsupportedOperationException("You can't drop the wall here, there is already a wall.");
-		
-		
+
 	}
 
-	//9. Save position -- Shayne
+
 	/**
 	 * This method saves the current game as a text file.
 	 * @param newFileName String representing the name to be given to the text file being saved.
@@ -200,7 +177,6 @@ public class QuoridorController {
 		}
 	}
 
-	//10. Load position -- Shayne
 	/**
 	 * This method loads a game from a text file, checking to see that it is a valid position
 	 * @param fileName String representing the name of the file taht you wish to import.
@@ -214,9 +190,6 @@ public class QuoridorController {
 	}
 	
 	
-	//11. Validate position --Sami
-	//12. Switch player (aka. Update board) --Sami
-		//11. Validate position -- Sami
 	/**
 	 * This method validates a potential pawn move position.
 	 * @param row         row of the move position
@@ -263,6 +236,8 @@ public class QuoridorController {
 		throw new UnsupportedOperationException(" * Can't switch player...");
   }
 	
+	
+	
 	//helper methods
 	
 
@@ -270,7 +245,7 @@ public class QuoridorController {
 	 * Helper method to convert time provided in seconds to Time.
 	 * @param sec number of seconds
 	 * @return Time time
-	 * @author Helen Lin
+	 * @author Helen Lin 260715521
 	 */
 	public static Time getSecondsToTime(int sec) {
 		int ms = sec*1000;
@@ -283,13 +258,12 @@ public class QuoridorController {
 	 * 
 	 * @param Time time
 	 * @return sec Number of seconds
-	 * @author Helen Lin
+	 * @author Helen Lin, 260715521
 	 */
 	public static int getTimeToSeconds(Time time) {
 		int ms = (int) time.getTime() ;
 		return ms/1000;
 	}
-	
 	
 		
 }

@@ -1,7 +1,6 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
-
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -11,7 +10,6 @@ import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
-
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
@@ -119,8 +117,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	/**
-	 * Precondition for SetTotalThinkingTime.feature
-	 * @author Helen Lin
+	 * @author Helen Lin, 260715521
 	 */
 	@Given("A new game is initializing")
 	public void aNewGameIsInitializing() {
@@ -143,6 +140,8 @@ public class CucumberStepDefinitions {
 	 * 
 	 */
 	
+	
+		
 	//Shayne's Step Definitions: Controller methods 9 and 10
 	
 	//Step Defs for Save Game:
@@ -810,6 +809,9 @@ public class CucumberStepDefinitions {
 		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn(), col);
 		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow(), row);
 	}
+	
+	
+	/******START of SET TOTAL THINKING TIME*********************/
 
 	/**
 	 * Action of SetTotalThinkingTime.feature to call controller
@@ -846,7 +848,88 @@ public class CucumberStepDefinitions {
 		}
 			
 	}
+	/******END of SET TOTAL THINKING TIME*********************/
 
+	/******START of INITIALIZE BOARD*****************************/
+	
+	/**
+	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
+	 */
+    @When("The board is initialized") 
+    public void TheBoardIsInitialized() throws InvalidInputException {
+    	QuoridorController.initializeBoard();
+    }
+    
+    /**
+     * @author Helen Lin, 260715521
+     */
+    @Then("It is white player to move")
+    public void itIsWhitePlayerToMove () {
+    	Player white = quoridor.getCurrentGame().getWhitePlayer();
+    	Player turn = quoridor.getCurrentGame().getCurrentPosition().getPlayerToMove();
+    	assertEquals(white, turn); 
+    }
+	
+    /**
+     * @author Helen Lin, 260715521
+     */
+    @And("White's pawn is in its initial position")
+    public void whitePawnInItsInitialPosition () {
+    	GamePosition currentPosition = quoridor.getCurrentGame().getCurrentPosition();
+    	// check row = 9
+    	if (currentPosition.getWhitePosition().getTile().getRow() == 9) {
+    		//check column = e
+    		assertTrue(currentPosition.getBlackPosition().getTile().getColumn() == 5);
+    	}   	
+    }
+	
+    /**
+     * @author Helen Lin, 260715521
+     */
+    @And("Black's pawn is in its initial position")
+    public void blackPawnInItsInitialPosition () {
+    	GamePosition currentPosition = quoridor.getCurrentGame().getCurrentPosition();
+    	// check row = 1
+		if (currentPosition.getBlackPosition().getTile().getRow() == 1) {
+		//check column = e
+			assertTrue(currentPosition.getBlackPosition().getTile().getColumn() == 5);
+		}	
+    }
+    
+    /**
+     * @author Helen Lin, 260715521
+     */
+    @And("All of White's walls are in stock")
+    public void allOfWhitesWallsAreinStock() {
+    	//TODO
+    }
+		
+    /**
+     * @author Helen Lin, 260715521
+     */
+    @And("All of Black's walls are in stock")
+    public void allOfBlacksWallsAreinStock() {
+    	//TODO
+    }
+   
+    /**
+     * @author Helen Lin, 260715521
+     */
+    @And("White's clock is counting down")
+    public void whitesClockIsCountingDown() {
+    	//quoridor.getCurrentGame().getWhitePlayer().getRemainingTime()
+    	
+    }
+	
+    /**
+     * @author Helen Lin, 260715521
+     */
+    @And("It is shown that this is White's turn")
+    public void itIsShownThatItIsWhitesTurn() {
+    	//TODO GUI for later
+    }
+	/******END of INITIALIZE BOARD******************/
 
 	/**
 	 * @author Xinyue Chen, 260830761
