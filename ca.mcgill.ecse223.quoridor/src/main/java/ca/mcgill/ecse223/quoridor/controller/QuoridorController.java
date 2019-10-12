@@ -3,6 +3,7 @@ package ca.mcgill.ecse223.quoridor.controller;
 import java.sql.Time;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
+import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 
 
@@ -92,10 +93,19 @@ public class QuoridorController {
 	 * @throws UnsupportedOperationException
 	 * @author Sami Junior Kahil, 260834568
 	 */
+	public static boolean validatePosition(int row, int col, Direction direction) throws UnsupportedOperationException{
+		if (direction == null) {
+			return validatePawnPosition(row,col);
+		}
+		else {
+			return validateWallPosition(row, col, direction);
+		}
+	}
+	
 	public static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException(" * Invalid position for pawn...");
 	}
-	
+
 	/**
 	 * This method validates wall position.
 	 * @param row         row of the center of the wall
@@ -107,6 +117,10 @@ public class QuoridorController {
 	public static boolean validateWallPosition(int row, int col, Direction direction) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException(" * Invalid position for wall...");
 	}
+	
+	public static boolean validateWallPosition(Wall wall) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
 
 	//12. Switch player (aka. Update board) -- Sami
 	/**
@@ -114,7 +128,7 @@ public class QuoridorController {
 	 * @throws UnsupportedOperationException
 	 * @author Sami Junior Kahil, 260834568
 	 */
-	public static void switchCurrentPlayer() throws UnsupportedOperationException {
+	public static boolean switchCurrentPlayer() throws UnsupportedOperationException {
 		throw new UnsupportedOperationException(" * Can't switch player...");
 	}
 }
