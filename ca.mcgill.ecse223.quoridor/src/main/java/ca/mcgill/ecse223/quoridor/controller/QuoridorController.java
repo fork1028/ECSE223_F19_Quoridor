@@ -150,7 +150,52 @@ public class QuoridorController {
 	//10. Load position -- Shayne
 	//11. Validate position --Sami
 	//12. Switch player (aka. Update board) --Sami
+		//11. Validate position -- Sami
+	/**
+	 * This method validates a potential pawn move position.
+	 * @param row         row of the move position
+	 * @param col         col of the move position
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validatePosition(int row, int col, Direction direction) throws UnsupportedOperationException{
+		if (direction == null) {
+			return validatePawnPosition(row,col);
+		}
+		else {
+			return validateWallPosition(row, col, direction);
+		}
+	}
 	
+	public static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for pawn...");
+	}
+
+	/**
+	 * This method validates wall position.
+	 * @param row         row of the center of the wall
+	 * @param col         col of the center of the wall
+	 * @param direction   direction of the wall
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validateWallPosition(int row, int col, Direction direction) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
+	
+	public static boolean validateWallPosition(Wall wall) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Invalid position for wall...");
+	}
+
+	//12. Switch player (aka. Update board) -- Sami
+	/**
+	 * This method switches the current player.
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean switchCurrentPlayer() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Can't switch player...");
+  }
 	
 	//helper methods
 	
