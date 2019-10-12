@@ -1,3 +1,4 @@
+
 package ca.mcgill.ecse223.quoridor.controller;
 
 import java.sql.Time;
@@ -15,8 +16,32 @@ Moreover, you need to create a default implementation of the operations present 
 public class QuoridorController {
 	//feature list of 12 features to be implemented:
 	
-	//1. Start a new game -- Matteo
+		/**
+	 * This method starts the game 
+	 * @param blackPlayer  the user assigned to the black pawn
+	 * @param whitePlayer  the user assigned to the black pawn
+	 * @param time  total thinking time, in seconds
+	 * @throws InvalidInputException
+	 * @author Matteo Barbieri 260805184
+	 */
+	public static Game startGame(User blackPlayer, User whitePlayer,Time time) throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Unable to start Game");
+		
+	}
+	
+	
+
 	//2. Provide or select user name -- Matteo
+	/**
+	 * This method Provides or Selects a User to be used in a game
+	 * @param username desired to create new User
+	 * @throws InvalidInputException
+	 * @author Matteo Barbieri 260805184
+	 */
+	public static boolean ProvideSelectUser() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException("Unable to set Username");
+	}
+
 	
 	
 	/**
@@ -227,3 +252,4 @@ public class QuoridorController {
 	
 		
 }
+
