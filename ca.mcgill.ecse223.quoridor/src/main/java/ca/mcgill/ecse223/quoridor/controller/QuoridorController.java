@@ -3,7 +3,6 @@ package ca.mcgill.ecse223.quoridor.controller;
 import java.sql.Time;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
-import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 
 
@@ -11,16 +10,15 @@ import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
  * You need to individually specify all operations for your assigned features in the Controller interface (which interface needs to be placed in the ca.mcgill.ecse223.quoridor.controller package). The interface consists of the full method declaration (incl. parameters, return type, etc.) relevant for your assigned features. In addition to all modifier methods, do not forget to include all query methods required for the features. The same query method may be used for several features. As a team, ensure the consistent use of query methods across features.
 Each controller method needs to be briefly documented using JavaDoc (see public tutorials, e.g.: ), but you are not required to generate standalone HTML files. The JavaDoc specification should clearly state the name of the corresponding Gherkin feature and the name of the team member who is responsible for it.
 Moreover, you need to create a default implementation of the operations present in the Control interface where the method body consists of throwing an java.lang.UnsupportedOperationException (i.e. the method body is almost empty).
- */
+*/
 
 public class QuoridorController {
 	//feature list of 12 features to be implemented:
-
+	
 	//1. Start a new game -- Matteo
 	//2. Provide or select user name -- Matteo
-
-	//3. Set total thinking time -- Helen
-
+	
+	
 	/**
 	 * This method sets the total thinking time for both players while a new game is initalizing.
 	 * @param min	number of minutes
@@ -28,7 +26,6 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Helen Lin
 	 */
-
 	public static void setTotalThinkingTime(int min, int sec) throws InvalidInputException {
 		
 		throw new UnsupportedOperationException("Default implementation of setTotalThinkingTime");
@@ -53,7 +50,6 @@ public class QuoridorController {
 		
 	}
 	
-
 	/**
 	 * This method initializes a new board.
 	 * @throws InvalidInputException
@@ -79,9 +75,40 @@ public class QuoridorController {
 		 */
 		
 	}
+	
 
-	//5. Rotate wall -- Raja
-	//6. Grab wall -- Raja
+	//5. Rotate wall -- rajaa 
+	/**
+	 * This method rotates a wall.
+   * @param player that is going to rotate the wall
+	 * @param move that is going to rotate the wall
+   * @param wall that is on the stack
+   * @param direction that is the orientation of the wall
+	 * @throws InvalidInputException
+	 * @author Rajaa Boukhelif, 260870030
+	 */
+		public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException 
+	{
+		
+			throw new UnsupportedOperationException("The wall cannot be rotated");}
+
+		//6. Grab wall -- rajaa 
+		/**
+		 * This method allows a user to grab a wall.
+     * @param player that is going to grab the wall
+	 * @param move that is going to grab the wall
+   * @param wall that is on the stack
+		 * @throws InvalidInputException
+		 * @author Rajaa Boukhelif, 260870030
+		 */
+		public static void grabWall(Player player,WallMove move, Wall wall) throws UnsupportedOperationException 
+		{
+			
+			throw new UnsupportedOperationException("There are no more walls");
+	}
+
+		
+
 	
 	//7. Move wall -- Grace (Xinyue)
 	
@@ -118,12 +145,12 @@ public class QuoridorController {
 		
 		
 	}
+
 	//9. Save position -- Shayne
 	//10. Load position -- Shayne
-
-
-
-	//11. Validate position -- Sami
+	//11. Validate position --Sami
+	//12. Switch player (aka. Update board) --Sami
+		//11. Validate position -- Sami
 	/**
 	 * This method validates a potential pawn move position.
 	 * @param row         row of the move position
@@ -199,5 +226,4 @@ public class QuoridorController {
 	
 	
 		
-
 }
