@@ -116,6 +116,9 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("A new game is initializing")
 	public void aNewGameIsInitializing() {
+		if (!quoridor.hasCurrentGame()) {
+			theGameIsRunning();
+		}
 		quoridor.getCurrentGame().setGameStatus(GameStatus.Initializing);
 	}
 	
@@ -208,30 +211,32 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * Action of SetTotalThinkingTime.feature to call controller
-	 * @param min
-	 * @param sec
+	 * @param min number of minutes
+	 * @param sec number of seconds
 	 * @throws InvalidInputException
-	 * @author Owner
+	 * @author Helen Lin, 260715521
 	 */
-	@When("<min>:<sec> is set as the thinking time")
+	@When("{int}:{int} is set as the thinking time")
 	public void MinSecIsSetAsTheThinkingTime(int min, int sec) throws InvalidInputException {
 		QuoridorController.setTotalThinkingTime(min, sec);
 	}
-	
+  
 	/**
-	 * Postcondition of SetTotalThinkingTime feature
+	 * Post condition of SetTotalThinkingTime.feature.
+	 * @param min number of minutes
+	 * @param sec number of seconds
 	 */
-	@Then("Both players shall have <min>:<sec> remaining time left")
+	@Then("Both players shall have {int}:{int} remaining time left")
 	public void bothPlayersShallHaveMinSecRemainingTimeLeft(int min, int sec) {
 		int seconds = min*60 + sec;
 		
 		//check black player's time
-		Time t = player1.getRemainingTime();
+		Time t = quoridor.getCurrentGame().getBlackPlayer().getRemainingTime();
 		int tSec = (int) (t.getTime()/1000);
 
 		if (tSec == seconds) { //black player's time is correct
 			//check white player
-			t = player2.getRemainingTime();
+			t = quoridor.getCurrentGame().getWhitePlayer().getRemainingTime();
 			tSec = (int) (t.getTime()/1000);
 			assertTrue(tSec == seconds);
 		} else {
