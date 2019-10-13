@@ -785,12 +785,12 @@ public class CucumberStepDefinitions {
 	}
 
 	/** @author Shayne Leitman, 260688512 */
-	@Then("It shall be \"<player>\"'s turn")
-	public void itIsPlayersTurn(Player player) {
+	@Then("It shall be \"<players>\"'s turn")
+	public void itIsPlayersTurn(Player players) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
-		assertEquals(player, loadedGamePosition.getPlayerToMove());
+		assertEquals(players, loadedGamePosition.getPlayerToMove());
 	}
 
 	/** @author Shayne Leitman, 260688512 */
