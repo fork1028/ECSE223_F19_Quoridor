@@ -492,18 +492,18 @@ public class CucumberStepDefinitions {
 
 	// ****** START of ROTATEWALL ******************
 
-	//ignore
-	@Given("A wall move candidate exists with {string} at position ({int}, {int})")
-	public void aWallMoveCandidateExistsWithDirectionAtPosition1(String direction, int row, int col) {
-		//supposed to create a wall move candidate with the given direction, row and col in the model as precondition
-		Direction setDir;
-		
-		if (direction.equals("horizontal")) {
-			setDir = Direction.Horizontal;
-		} else if (direction.equals("horizontal"))
-			setDir = Direction.Horizontal;
-				
-	}
+//	//ignore
+//	@Given("A wall move candidate exists with {string} at position ({int}, {int})")
+//	public void aWallMoveCandidateExistsWithDirectionAtPosition1(String direction, int row, int col) {
+//		//supposed to create a wall move candidate with the given direction, row and col in the model as precondition
+//		Direction setDir;
+//		
+//		if (direction.equals("horizontal")) {
+//			setDir = Direction.Horizontal;
+//		} else if (direction.equals("horizontal"))
+//			setDir = Direction.Horizontal;
+//				
+//	}
 	
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Given("A wall move candidate exists with <dir> at position (<row>, <col>})")
@@ -588,8 +588,8 @@ public class CucumberStepDefinitions {
 	 * @author Xinyue Chen, 260830761
 	 */
 	@And("A wall move candidate shall exist with {string} at position (<nrow>, <ncol>)")
-	public void aWallMoveCandidateShallExistWithDirectionAtPosition(String direction, int row, int col) {
-		aWallMoveCandidateExistsWithDirectionAtPosition1(direction, row, col);
+	public void aWallMoveCandidateShallExistWithDirectionAtPosition(Direction direction, int row, int col) {
+		aWallMoveCandidateExistsWithDirectionAtPosition(direction);
 	}
 
 		// MoveWall Scenario Outline 2
