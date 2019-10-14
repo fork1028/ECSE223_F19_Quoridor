@@ -185,6 +185,26 @@ public class QuoridorController {
 			return false;
 		}
 	}
+	
+	/**
+	 * This is a helper method that gives the difference in milliseconds between when a file was last modified, and the current time
+	 * 
+	 * @param newFileName String representing the name of the file
+	 * @throws UnsupportedOperationException
+	 * @return Long returns a long value of milliseconds
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static Long lastModifiedToCurrentTime(String fileName) throws UnsupportedOperationException {
+		File tempFile = new File(fileName);
+		if (tempFile.exists()) {
+			Long curTime = System.currentTimeMillis();
+			Long lastModifiedTime = tempFile.lastModified();
+			Long difference = curTime - lastModifiedTime;
+			return difference;
+		} else {
+			throw new UnsupportedOperationException("No file with this name exists!");
+		}
+	}
 
 	/**
 	 * This method loads a game from a text file, checking to see that it is a valid

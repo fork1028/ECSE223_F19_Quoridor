@@ -751,6 +751,12 @@ public class CucumberStepDefinitions {
 	public void fileIsUpdated(String fileName) {
 		Boolean fileAlreadyExistsWithThatName = true;
 		assertEquals(fileAlreadyExistsWithThatName, QuoridorController.fileAlreadyExists(fileName));
+		Boolean tempBool = false;
+		if (QuoridorController.lastModifiedToCurrentTime(fileName) < 10000) {
+			tempBool = true;
+		}
+		
+		assertEquals(true, tempBool);
 	}
 
 	/** @author Shayne Leitman, 260688512 */
@@ -764,6 +770,12 @@ public class CucumberStepDefinitions {
 	public void fileIsNotChanged(String fileName) {
 		Boolean fileAlreadyExistsWithThatName = true;
 		assertEquals(fileAlreadyExistsWithThatName, QuoridorController.fileAlreadyExists(fileName));
+		Boolean tempBool = false;
+		if (QuoridorController.lastModifiedToCurrentTime(fileName) < 10000) {
+			tempBool = true;
+		}
+		
+		assertEquals(false, tempBool);
 	}
 	// ****** END of SAVEPOSITION ******************
 
