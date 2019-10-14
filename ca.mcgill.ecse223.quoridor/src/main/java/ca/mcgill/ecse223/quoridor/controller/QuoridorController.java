@@ -5,6 +5,8 @@ import java.io.File;
 import java.sql.Time;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
+import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
+import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 
 public class QuoridorController {
@@ -45,26 +47,30 @@ public class QuoridorController {
 	 */
 	public static void setTotalThinkingTime(int min, int sec) throws InvalidInputException {
 
-		throw new UnsupportedOperationException("Default implementation of setTotalThinkingTime");
+		//started implementation
+		//throw new UnsupportedOperationException("Default implementation of setTotalThinkingTime");
+		
+		//validator to check min and sec are appropriate for total thinking
+		if (min > 60 || min <0 || sec >60 || sec<0) {
+			throw new InvalidInputException("Invalid request for total thinking time.");
+		}
 
-		/*
-		 * //started implementation for next project iteration Quoridor quoridor =
-		 * QuoridorApplication.getQuoridor(); Time time = getIntToTime(min, sec);
-		 * 
-		 * //todo: validator to check min and sec are appropriate for total thinking
-		 * time
-		 * 
-		 * try { Player blackPlayer = quoridor.getCurrentGame().getBlackPlayer(); Player
-		 * whitePlayer = quoridor.getCurrentGame().getWhitePlayer(); if
-		 * (!blackPlayer.setRemainingTime(time)) throw new
-		 * InvalidInputException("Unable to set thinking time for BLACK player."); if
-		 * (!whitePlayer.setRemainingTime(time)) throw new
-		 * InvalidInputException("Unable to set thinking time for BLACK player.");
-		 * 
-		 * } catch (RuntimeException e) { throw new
-		 * InvalidInputException(e.getMessage()); }
-		 */
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Time time = getIntToTime(min, sec);
+		
+		try { 
+			Player blackPlayer = quoridor.getCurrentGame().getBlackPlayer(); 
+			Player whitePlayer = quoridor.getCurrentGame().getWhitePlayer();
 
+			if (!blackPlayer.setRemainingTime(time)) {
+				throw new InvalidInputException("Unable to set thinking time for BLACK player.");
+			}
+			if (!whitePlayer.setRemainingTime(time)) 
+				throw new InvalidInputException("Unable to set thinking time for  WHITE player.");
+		} catch (RuntimeException e) {
+			 throw new InvalidInputException(e.getMessage());
+		}
+			
 	}
 
 	/**
@@ -74,25 +80,48 @@ public class QuoridorController {
 	 * @author Helen Lin, 260715521
 	 */
 	public static void initializeBoard() throws InvalidInputException {
-
-		throw new UnsupportedOperationException("Default implementation of setTotalThinkingTime");
-
-		/*
-		 * //started implementation for next iteration
-		 * 
-		 * Quoridor quoridor = QuoridorApplication.getQuoridor();
-		 * 
-		 * try { if (!quoridor.hasBoard()) { Board newBoard = new Board(quoridor);
-		 * //creates new board and adds it to current quoridor
-		 * 
-		 * // Creating tiles by rows, i.e., the column index changes with every tile
-		 * creation for (int i = 1; i <= 9; i++) { // rows for (int j = 1; j <= 9; j++)
-		 * { // columns newBoard.addTile(i, j); } } } else //quoridor board is already
-		 * initialized throw new
-		 * InvalidInputException("Quordior already has an initialized board."); } catch
-		 * (RuntimeException e) { throw new InvalidInputException(e.getMessage()); }
-		 */
-
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		
+		//started implementation
+		
+		//It shall be white player to move
+		try { 
+			GamePosition position = new GamePosition(0, null, null, null, null);
+			Player white = quoridor.getCurrentGame().getWhitePlayer();
+			
+			//note from TA code: there are total 36 tiles in the first four rows and 
+			//indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting pos
+			
+			//white initial position
+			Tile whiteStart = quoridor.getBoard().getTile(36);
+			PlayerPosition whitePos = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), whiteStart);
+			
+			
+			//black initial position
+			Tile blackStart = quoridor.getBoard().getTile(44);
+			PlayerPosition blackPos = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), blackStart);
+			
+			
+			GamePosition gamePosition = new GamePosition(0, whitePos, blackPos, white, quoridor.getCurrentGame());
+		
+		} catch (RuntimeException e) {
+			throw new UnsupportedOperationException("Default implementation of initializeBoard");
+		}
+		
+		//10 walls in stock for each player
+		try { 
+			for (int j = 0; j < 10; j++) {
+				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsInStock(Wall.getWithId(j));
+				quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(Wall.getWithId(j+10));
+			}
+		} catch (RuntimeException e) {
+			 throw new InvalidInputException("Unable to add initial stock for players.");
+		}
+	
+		//TODO: White clock counting down
+		//GUI TODO: clock countdown gui
+		//GUI TODO: show that this is white turn
+		
 	}
 
 	/**
@@ -255,14 +284,14 @@ public class QuoridorController {
 	// helper methods
 
 	/**
-	 * Helper method to convert time provided in seconds to Time.
-	 * 
+	 * Helper method to convert time provided by user to Time.
+	 * @param min number of min
 	 * @param sec number of seconds
 	 * @return Time time
 	 * @author Helen Lin 260715521
 	 */
-	public static Time getSecondsToTime(int sec) {
-		int ms = sec * 1000;
+	public static Time getIntToTime(int min, int sec) {
+		int ms = (min*60 + sec)*1000;
 		Time time = new Time(ms);
 		return time;
 	}
