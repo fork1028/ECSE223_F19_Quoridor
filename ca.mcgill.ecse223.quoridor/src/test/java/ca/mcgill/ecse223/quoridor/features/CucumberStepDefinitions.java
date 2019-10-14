@@ -357,9 +357,10 @@ public class CucumberStepDefinitions {
 	 * @author Helen Lin, 260715521
 	 * @throws InvalidInputException
 	 */
-	@When("The initialization of the board is initiated ")
+	@When("The initialization of the board is initiated")
 	public void TheBoardIsInitialized() throws InvalidInputException {
 		QuoridorController.initializeBoard();
+		
 	}
 
 	/**
@@ -405,7 +406,9 @@ public class CucumberStepDefinitions {
 	 */
 	@And("All of White's walls shall be in stock")
 	public void allOfWhitesWallsAreinStock() {
-		// TODO
+		GamePosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int whiteStock = position.numberOfWhiteWallsInStock();	
+		assertEquals(10,  whiteStock);
 	}
 
 	/**
@@ -413,7 +416,9 @@ public class CucumberStepDefinitions {
 	 */
 	@And("All of Black's walls shall be in stock")
 	public void allOfBlacksWallsAreinStock() {
-		// TODO
+		GamePosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		int blackStock = position.numberOfBlackWallsInStock();
+		assertEquals(10, blackStock);
 	}
 
 	/**
@@ -421,8 +426,13 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White's clock shall be counting down")
 	public void whitesClockIsCountingDown() {
-		// quoridor.getCurrentGame().getWhitePlayer().getRemainingTime()
-
+		Time white = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+		long whitems = white.getTime();
+		Time black = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
+		long blackms = black.getTime();
+		assertTrue(whitems < blackms);
+		
+		//GUI TODO: check countdown gui
 	}
 
 	/**
@@ -432,6 +442,8 @@ public class CucumberStepDefinitions {
 	public void itIsShownThatItIsWhitesTurn() {
 		// TODO GUI for later
 	}
+	
+	
 	// ****** END of INITIALIZEBOARD ******************
 
 	// ****** START of GRABWALL ******************
