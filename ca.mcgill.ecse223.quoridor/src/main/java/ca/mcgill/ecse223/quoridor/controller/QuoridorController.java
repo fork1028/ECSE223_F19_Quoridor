@@ -289,36 +289,18 @@ public class QuoridorController {
 		return validateWallBoundaryPosition(row, col, direction) && validateOverlapPosition(row, col, direction);
 	}
 
-
-	// 12. Switch player (aka. Update board) -- Sami
-	/**
-	 * This method switches the current player.
-	 * 
-	 * @throws UnsupportedOperationException
-	 * @author Sami Junior Kahil, 260834568
-	 */
-	public static boolean switchCurrentPlayer() throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(" * Can't switch player...");
-	}
-
-
-	//-----------------------------------------------------------------------------------//
-	
 	public boolean validateWallBoundaryPosition (int row, int col, Direction direction) {
-		if (direction == Direction.Vertical) {
-			if (row <= 0 || row >= 9 || col <= 0 || col >= 9) {
-				return false;
-			}
-		}
-		else {
-			if (row <= 0 || row >= 9 || col <= 0 || col >= 9) {
-				return false;
-			}
-		}
-		return true;
+		if (row == 9 || col == 9) 
+			return false;
+		else 
+			return true;
 	}
 
 	public boolean validateWallOverlapPosition(int row, int col, Direction direction) {
+		int index = (row - 1) * 9 + col - 1;
+		QuoridorApplication.
+		
+		
 		Quoridor game = QuoridorApplication.getQuoridor();
 		Wall wallPlaced = game.getCurrentGame().getWallMoveCandidate().getWallPlaced();
 		Direction wallDir = game.getCurrentGame().getWallMoveCandidate().getWallDirection();
@@ -353,6 +335,19 @@ public class QuoridorController {
 		}
 		return true;
 	}
+	// 12. Switch player (aka. Update board) -- Sami
+	/**
+	 * This method switches the current player.
+	 * 
+	 * @throws UnsupportedOperationException
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean switchCurrentPlayer() throws UnsupportedOperationException {
+		throw new UnsupportedOperationException(" * Can't switch player...");
+	}
+
+
+	//-----------------------------------------------------------------------------------//
 
 	public static void switchCurrentPlayer() throws UnsupportedOperationException {
 		Quoridor game = QuoridorApplication.getQuoridor();
