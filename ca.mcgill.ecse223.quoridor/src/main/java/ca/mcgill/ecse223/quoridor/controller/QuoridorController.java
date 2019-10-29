@@ -3,6 +3,8 @@ package ca.mcgill.ecse223.quoridor.controller;
 
 import java.io.File;
 import java.sql.Time;
+import java.util.List;
+
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
@@ -191,10 +193,127 @@ public class QuoridorController {
 	 * @throws UnsupportedOperationException
 	 * @author Shayne Leitman, 260688512
 	 */
-	public static void saveCurrentGame(String newFileName) throws UnsupportedOperationException {
+	public static void saveCurrentPosition(String newFileName) throws UnsupportedOperationException {
 		// call helper function fileAlreadyExists first!!!
-		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+		//throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+		
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		GamePosition curGamePos = curGame.getCurrentPosition();
+		//new Bool to keep track of which player's turn it is, for text file.
+		Boolean whitePlayersTurn = false;
+		Player whitePlayer = curGame.getWhitePlayer();
+		if (curGamePos.getPlayerToMove() == curGame.getWhitePlayer()) {
+			whitePlayersTurn = true;
+		}
+		
+		String temp = "";
+		PlayerPosition whitePlayerPos = curGamePos.getWhitePosition();
+		PlayerPosition blackPlayerPos = curGamePos.getBlackPosition();
+		Tile whiteTile = whitePlayerPos.getTile();
+		Tile blackTile = blackPlayerPos.getTile();
+		
+		int whiteCol = whiteTile.getColumn();
+		int blackCol = blackTile.getColumn();
+		char whiteChar = (char)(whiteCol + 96);
+		char blackChar = (char)(blackCol + 96);
+		String whiteTileStr = Character.toString(whiteChar) + whiteTile.getRow();
+		String blackTileStr = Character.toString(blackChar) + blackTile.getRow();
+
+		String whiteString = "W: " + whiteTileStr;
+		String blackString = "B: " + blackTileStr;
+		
+		List<Wall> whiteWalls = curGamePos.getWhiteWallsOnBoard();
+		List<Wall> blackWalls = curGamePos.getBlackWallsOnBoard();
+		
+		WallMove curWallMove = null;
+		String moveString = "";
+		Tile tempTile = null;
+		int tempCol = 1;
+		int tempRow = 1;
+		char tempChar = 'a';
+		String tempDir = null;
+		
+		//Loop through white walls first
+		for (Wall curWall : whiteWalls) {
+			curWallMove = curWall.getMove();
+			tempTile = curWallMove.getTargetTile();
+			tempCol = tempTile.getColumn();
+			tempRow = tempTile.getRow();
+			tempChar = (char)(tempCol + 96);
+			moveString = Character.toString(tempChar) + tempRow;
+			if (curWallMove.getWallDirection() == Direction.Horizontal) {
+				moveString = moveString + "h";
+			} else {
+				moveString = moveString + "v";
+			}
+		}
+		
+		//Loop through black walls second
+		for (Wall curWall : blackWalls) {
+			curWallMove = curWall.getMove();
+			tempTile = curWallMove.getTargetTile();
+			tempCol = tempTile.getColumn();
+			tempRow = tempTile.getRow();
+			tempChar = (char)(tempCol + 96);
+			moveString = Character.toString(tempChar) + tempRow;
+			if (curWallMove.getWallDirection() == Direction.Horizontal) {
+				moveString = moveString + "h";
+			} else {
+				moveString = moveString + "v";
+			}
+		}
+
+		
+		
 	}
+	
+	/*  This code will be re-used for Save GAME!
+	 	Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		GamePosition curGamePos = curGame.getCurrentPosition();
+		//new Bool to keep track of which player's turn it is, for text file.
+		Boolean whitePlayersTurn = false;
+		Player whitePlayer = curGame.getWhitePlayer();
+		if (curGamePos.getPlayerToMove() == curGame.getWhitePlayer()) {
+			whitePlayersTurn = true;
+		}
+		Tile tempTile = null;
+		Direction tempDir = null;
+		String temp = "";
+		//String wallTemp = "";
+		int tempCol = 0;
+		char tempChar;
+		String whiteString = "W: ";
+		String blackString = "B: ";
+		//The following assumes the moves are added in order!
+		List<Move> allMoves = curGame.getMoves();
+		for (Move curMove : allMoves) {
+			
+			tempTile = curMove.getTargetTile();
+			tempCol = tempTile.getColumn();
+			tempChar = (char)(tempCol + 96);
+			temp = ", " + Character.toString(tempChar) + tempTile.getRow();
+			
+			if (curMove instanceof WallMove) {
+				tempDir = ((WallMove)curMove).getWallDirection();
+				if (tempDir == Direction.Horizontal) {
+					temp = temp + "h";
+				} else {
+					temp = temp + "v";
+				}
+			}
+			
+			if (curMove.getPlayer() == whitePlayer) {
+				whiteString = whiteString + ", " + temp;
+			} else {
+				blackString = blackString + ", " + temp;
+			}
+			temp = "";
+		}
+	 
+	 
+	 */
 
 	/**
 	 * This is a helper method that checks if a file already exists.
@@ -248,7 +367,7 @@ public class QuoridorController {
 	// set time for each player.
 	// Next, go move by move through the game, checking at each step if a move is
 	// alright.
-	public static void loadSavedGame(String fileName) throws UnsupportedOperationException {
+	public static void loadSavedPosition(String fileName) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
 	}
 
