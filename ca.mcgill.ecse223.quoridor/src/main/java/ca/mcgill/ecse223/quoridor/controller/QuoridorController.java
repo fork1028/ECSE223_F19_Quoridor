@@ -1,8 +1,14 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -195,77 +201,104 @@ public class QuoridorController {
 	 */
 	public static void saveCurrentPosition(String newFileName) throws UnsupportedOperationException {
 		// call helper function fileAlreadyExists first!!!
-		//throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+		//throw new UnsupportedOperationException("Controller feature not fully implemented yet!");\
+		Boolean fileExists = fileAlreadyExists(newFileName);
 		
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		Game curGame = quoridor.getCurrentGame();
-		GamePosition curGamePos = curGame.getCurrentPosition();
-		//new Bool to keep track of which player's turn it is, for text file.
-		Boolean whitePlayersTurn = false;
-		Player whitePlayer = curGame.getWhitePlayer();
-		if (curGamePos.getPlayerToMove() == curGame.getWhitePlayer()) {
-			whitePlayersTurn = true;
+		if (fileExists) {
+			//ASK USER WHETHER TO OVERWRITE OR NOT! If yes, wipe old file
 		}
 		
-		String temp = "";
-		PlayerPosition whitePlayerPos = curGamePos.getWhitePosition();
-		PlayerPosition blackPlayerPos = curGamePos.getBlackPosition();
-		Tile whiteTile = whitePlayerPos.getTile();
-		Tile blackTile = blackPlayerPos.getTile();
-		
-		int whiteCol = whiteTile.getColumn();
-		int blackCol = blackTile.getColumn();
-		char whiteChar = (char)(whiteCol + 96);
-		char blackChar = (char)(blackCol + 96);
-		String whiteTileStr = Character.toString(whiteChar) + whiteTile.getRow();
-		String blackTileStr = Character.toString(blackChar) + blackTile.getRow();
-
-		String whiteString = "W: " + whiteTileStr;
-		String blackString = "B: " + blackTileStr;
-		
-		List<Wall> whiteWalls = curGamePos.getWhiteWallsOnBoard();
-		List<Wall> blackWalls = curGamePos.getBlackWallsOnBoard();
-		
-		WallMove curWallMove = null;
-		String moveString = "";
-		Tile tempTile = null;
-		int tempCol = 1;
-		int tempRow = 1;
-		char tempChar = 'a';
-		String tempDir = null;
-		
-		//Loop through white walls first
-		for (Wall curWall : whiteWalls) {
-			curWallMove = curWall.getMove();
-			tempTile = curWallMove.getTargetTile();
-			tempCol = tempTile.getColumn();
-			tempRow = tempTile.getRow();
-			tempChar = (char)(tempCol + 96);
-			moveString = Character.toString(tempChar) + tempRow;
-			if (curWallMove.getWallDirection() == Direction.Horizontal) {
-				moveString = moveString + "h";
-			} else {
-				moveString = moveString + "v";
+		try {
+			
+			FileWriter write = new FileWriter(newFileName, false);
+			PrintWriter printW = new PrintWriter(write);
+			
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			Game curGame = quoridor.getCurrentGame();
+			GamePosition curGamePos = curGame.getCurrentPosition();
+			//new Bool to keep track of which player's turn it is, for text file.
+			Boolean whitePlayersTurn = false;
+			Player whitePlayer = curGame.getWhitePlayer();
+			if (curGamePos.getPlayerToMove() == curGame.getWhitePlayer()) {
+				whitePlayersTurn = true;
 			}
-		}
-		
-		//Loop through black walls second
-		for (Wall curWall : blackWalls) {
-			curWallMove = curWall.getMove();
-			tempTile = curWallMove.getTargetTile();
-			tempCol = tempTile.getColumn();
-			tempRow = tempTile.getRow();
-			tempChar = (char)(tempCol + 96);
-			moveString = Character.toString(tempChar) + tempRow;
-			if (curWallMove.getWallDirection() == Direction.Horizontal) {
-				moveString = moveString + "h";
-			} else {
-				moveString = moveString + "v";
-			}
-		}
+			
+			String temp = "";
+			PlayerPosition whitePlayerPos = curGamePos.getWhitePosition();
+			PlayerPosition blackPlayerPos = curGamePos.getBlackPosition();
+			Tile whiteTile = whitePlayerPos.getTile();
+			Tile blackTile = blackPlayerPos.getTile();
+			
+			int whiteCol = whiteTile.getColumn();
+			int blackCol = blackTile.getColumn();
+			char whiteChar = (char)(whiteCol + 96);
+			char blackChar = (char)(blackCol + 96);
+			String whiteTileStr = Character.toString(whiteChar) + whiteTile.getRow();
+			String blackTileStr = Character.toString(blackChar) + blackTile.getRow();
 
-		
-		
+			String whiteString = "W: " + whiteTileStr;
+			String blackString = "B: " + blackTileStr;
+			
+			List<Wall> whiteWalls = curGamePos.getWhiteWallsOnBoard();
+			List<Wall> blackWalls = curGamePos.getBlackWallsOnBoard();
+			
+			WallMove curWallMove = null;
+			String moveString = "";
+			Tile tempTile = null;
+			int tempCol = 1;
+			int tempRow = 1;
+			char tempChar = 'a';
+			
+			//Loop through white walls first
+			for (Wall curWall : whiteWalls) {
+				whiteString = whiteString + ", ";
+				moveString = "";
+				curWallMove = curWall.getMove();
+				tempTile = curWallMove.getTargetTile();
+				tempCol = tempTile.getColumn();
+				tempRow = tempTile.getRow();
+				tempChar = (char)(tempCol + 96);
+				moveString = Character.toString(tempChar) + tempRow;
+				if (curWallMove.getWallDirection() == Direction.Horizontal) {
+					moveString = moveString + "h";
+				} else {
+					moveString = moveString + "v";
+				}
+				whiteString = whiteString + moveString;
+			}
+			
+			//Loop through black walls second
+			for (Wall curWall : blackWalls) {
+				blackString = blackString + ", ";
+				moveString = "";
+				curWallMove = curWall.getMove();
+				tempTile = curWallMove.getTargetTile();
+				tempCol = tempTile.getColumn();
+				tempRow = tempTile.getRow();
+				tempChar = (char)(tempCol + 96);
+				moveString = Character.toString(tempChar) + tempRow;
+				if (curWallMove.getWallDirection() == Direction.Horizontal) {
+					moveString = moveString + "h";
+				} else {
+					moveString = moveString + "v";
+				}
+				blackString = blackString + moveString;
+			}
+
+			//At this point, both lines for the text file should exist.
+			
+			if (whitePlayersTurn) {
+				printW.println(whiteString);
+				printW.print(blackString);
+			} else {
+				printW.println(blackString);
+				printW.print(whiteString);
+			}
+			
+			
+		} catch (IOException e) {
+			
+		}	
 	}
 	
 	/*  This code will be re-used for Save GAME!
@@ -358,17 +391,55 @@ public class QuoridorController {
 	 * This method loads a game from a text file, checking to see that it is a valid
 	 * position
 	 * 
-	 * @param fileName String representing the name of the file taht you wish to
+	 * @param fileName String representing the name of the file that you wish to
 	 *                 import.
 	 * @throws UnsupportedOperationException
 	 * @author Shayne Leitman, 260688512
 	 */
-	// Idea is to first create a new game (with the users, and time), then go in and
-	// set time for each player.
-	// Next, go move by move through the game, checking at each step if a move is
-	// alright.
+	
 	public static void loadSavedPosition(String fileName) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+
+		BufferedReader reader;
+		try {
+			
+			reader = new BufferedReader(new FileReader(fileName));
+			String fileLine = reader.readLine();
+			Boolean whitePlayersTurn = false;
+			String whitePlayerStr = "";
+			String blackPlayerStr = "";
+			//First, check if first line is white or black
+			if (fileLine.substring(0, 1) == "W") {
+				whitePlayersTurn = true;
+				whitePlayerStr = fileLine;
+				fileLine = reader.readLine();
+				blackPlayerStr = fileLine;
+			} else {
+				blackPlayerStr = fileLine;
+				fileLine = reader.readLine();
+				whitePlayerStr = fileLine;
+			}			
+			
+			whitePlayerStr = whitePlayerStr.substring(3);
+			blackPlayerStr = blackPlayerStr.substring(3);
+			
+			String whitePlayerTile = whitePlayerStr.substring(0, 2);
+			String blackPlayerTile = blackPlayerStr.substring(0, 2);
+			
+			//First, we should check the pawn positions are ok!
+			
+			
+			//Next, we check that the wall positions are ok!
+			
+			String[] whiteWalls = whitePlayerStr.substring(4).replace(" ", "").split(",");
+			String[] blackWalls = blackPlayerStr.substring(4).replace(" ", "").split(",");
+			
+			
+			
+			
+		} catch (IOException e) {
+			
+		}
+		
 	}
 
 	/**
