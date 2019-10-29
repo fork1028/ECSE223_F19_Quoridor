@@ -170,7 +170,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Xinyue Chen, 260830761
 	 */
-	public static void moveWall(Player player, Wall wall, WallMove move) throws UnsupportedOperationException {
+	public static void moveWall(Direction direction) throws UnsupportedOperationException {
 
 		throw new java.lang.UnsupportedOperationException("You can't move the wall further.");
 
@@ -185,7 +185,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Xinyue Chen, 260830761
 	 */
-	public static void dropWall(Player player, Wall wall) throws UnsupportedOperationException {
+	public static void dropWall() throws UnsupportedOperationException {
 
 		throw new java.lang.UnsupportedOperationException("You can't drop the wall here, there is already a wall.");
 

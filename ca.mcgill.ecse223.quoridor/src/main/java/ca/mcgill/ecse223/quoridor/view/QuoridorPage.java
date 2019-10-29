@@ -1,17 +1,39 @@
 package ca.mcgill.ecse223.quoridor.view;
 
 import java.awt.Color;
+
 import java.util.HashMap;
+
+import java.awt.Component;
+import java.awt.Dimension;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Properties;
+
 
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
+
+
+
 public class QuoridorPage extends JFrame{
+
 
 	// UI elements
 	private JLabel errorMsg;
@@ -32,6 +54,7 @@ public class QuoridorPage extends JFrame{
 	private JComboBox<String> secondList;
 	private JLabel setMinuteLabel;
 	private JLabel setSecondLabel;
+
 	
 	// data elements
 	private String error = null;
@@ -113,6 +136,11 @@ public class QuoridorPage extends JFrame{
 				//);
 		
 		
+
+		
+		
+		// add listeners;
+
 	}
 	
 	private void refreshData() {
