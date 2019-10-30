@@ -199,13 +199,14 @@ public class QuoridorController {
 	 * @throws UnsupportedOperationException
 	 * @author Shayne Leitman, 260688512
 	 */
-	public static void saveCurrentPosition(String newFileName) throws UnsupportedOperationException {
+	public static Boolean saveCurrentPosition(String newFileName, Boolean overWriteIfExists) throws UnsupportedOperationException {
 		// call helper function fileAlreadyExists first!!!
 		//throw new UnsupportedOperationException("Controller feature not fully implemented yet!");\
 		Boolean fileExists = fileAlreadyExists(newFileName);
 		
-		if (fileExists) {
+		if (fileExists && !overWriteIfExists) {
 			//ASK USER WHETHER TO OVERWRITE OR NOT! If yes, wipe old file
+			return false;
 		}
 		
 		try {
@@ -295,9 +296,11 @@ public class QuoridorController {
 				printW.print(whiteString);
 			}
 			
-			
+			write.close();
+			printW.close();
+			return true;
 		} catch (IOException e) {
-			
+			return false;//CHANGE LATER!
 		}	
 	}
 	
@@ -417,7 +420,7 @@ public class QuoridorController {
 				blackPlayerStr = fileLine;
 				fileLine = reader.readLine();
 				whitePlayerStr = fileLine;
-			}			
+			}
 			
 			whitePlayerStr = whitePlayerStr.substring(3);
 			blackPlayerStr = blackPlayerStr.substring(3);
@@ -434,7 +437,7 @@ public class QuoridorController {
 			String[] blackWalls = blackPlayerStr.substring(4).replace(" ", "").split(",");
 			
 			
-			
+			reader.close();
 			
 		} catch (IOException e) {
 			
