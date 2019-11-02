@@ -477,6 +477,7 @@ public class CucumberStepDefinitions {
 		
 		WallMove candidate=new WallMove(1,5,player,tile,game,direction,wall);
 		candidate.setTargetTile(tile);
+
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -555,6 +556,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The wall candidate is not at the {string} edge of the board")
 	public void theWallCandidateIsNotAtTheEdgeOfTheBoard(String direction) {
+
 //		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 //		int row = candidate.getTargetTile().getRow();
 //		int col = candidate.getTargetTile().getColumn();
@@ -570,7 +572,7 @@ public class CucumberStepDefinitions {
 //		if (direction.equals("down")) {
 //			assert(row!=9);
 //		}
-		
+
 	}
 
 	/**
@@ -583,6 +585,8 @@ public class CucumberStepDefinitions {
 	public void iTryToMoveTheWall(String direction) throws UnsupportedOperationException, InvalidInputException {
 
 		QuoridorController.moveWall(direction);
+
+	
 	}
 
 	/**
@@ -592,11 +596,12 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The wall shall be moved over the board to position \\({int}, {int})")
 	public void theWallShallBeMovedOverTheBoardToPosition(int nrow, int ncol) {
-//		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-//		Wall wall=candidate.getWallPlaced();
-//		int col=wall.getMove().getTargetTile().getColumn();
-//		int row=wall.getMove().getTargetTile().getRow();
-//		assert(col==ncol&&row==nrow);
+
+		WallMove wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		int row=wall.getTargetTile().getRow();
+		int col=wall.getTargetTile().getColumn();
+		assert(row==nrow&&col==ncol);
+
 	}
 
 	/**
@@ -614,6 +619,8 @@ public class CucumberStepDefinitions {
 		
 	}
 	
+	
+	
 	/**
 	 * @author Xinyue Chen
 	 * @param direction
@@ -621,13 +628,13 @@ public class CucumberStepDefinitions {
 	 * @param col
 	 */
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
-	public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction, int nrow, int ncol) {
-//		
-//		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-//		int row=candidate.getTargetTile().getRow();
-//		int col=candidate.getTargetTile().getColumn();
-//		assert(col==ncol&&row==nrow);
+	public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction, int row, int col) {
 		
+		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+	//	col = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
+	//	row = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
+		//assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection() .equals(direction));
+
 	}
 
 	
@@ -662,6 +669,7 @@ public class CucumberStepDefinitions {
 //		if (direction.equals("down")) {
 //			assert(row==9);
 //		}
+
 	}
 	
 
@@ -680,6 +688,7 @@ public class CucumberStepDefinitions {
 	 * @param col
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
+
 	public void theWallMoveCandidateWithDirectionAtPositionIsValid(String direction, int nrow, int ncol) {
 		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		int row=candidate.getTargetTile().getRow();
@@ -687,6 +696,7 @@ public class CucumberStepDefinitions {
 		
 		assert(candidate!=null);
 		
+
 		
 	}
 
@@ -700,6 +710,7 @@ public class CucumberStepDefinitions {
 		Player playerToMove = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
 		QuoridorController.dropWall(playerToMove,wall);
+
 	}
 
 	/**
@@ -739,6 +750,7 @@ public class CucumberStepDefinitions {
 	public void itShallNotBeMyTurnToMove() {
 		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		
+
 	}
 
 		// DropWall Scenario Outline 2
@@ -756,6 +768,7 @@ public class CucumberStepDefinitions {
 		int c=candidate.getTargetTile().getColumn();
 		String dir=candidate.getWallDirection().toString().toLowerCase();
 		assert(r!=row||c!=col);
+
 	}
 
 	/**

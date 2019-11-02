@@ -174,6 +174,7 @@ public class QuoridorController {
 	 */
 	public static void moveWall(String moveDirection) throws UnsupportedOperationException, InvalidInputException {
 
+
 		Board board=QuoridorApplication.getQuoridor().getBoard();
 		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 //		Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
@@ -221,6 +222,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException 
 	 */
 	public static void dropWall(Player playerToMove, Wall wall) throws UnsupportedOperationException, InvalidInputException {
+
 
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();

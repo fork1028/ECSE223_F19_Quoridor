@@ -63,6 +63,7 @@ public class QuoridorPage extends JFrame{
 	private JButton grabWall;
 	private JButton rotateWall;
 
+
 	
 	// data elements
 	private String error = null;
@@ -171,6 +172,9 @@ public class QuoridorPage extends JFrame{
 		
 		
 
+		
+		
+		
 		
 		
 		// add listeners;
