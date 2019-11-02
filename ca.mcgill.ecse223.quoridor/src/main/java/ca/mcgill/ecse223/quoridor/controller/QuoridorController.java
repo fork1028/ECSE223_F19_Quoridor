@@ -3,6 +3,8 @@ package ca.mcgill.ecse223.quoridor.controller;
 
 import java.io.File;
 import java.sql.Time;
+import java.util.List;
+
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
@@ -124,20 +126,7 @@ public class QuoridorController {
 		
 	}
 
-	/**
-	 * This method rotates a wall.
-	 * 
-	 * @param player    that is going to rotate the wall
-	 * @param move      that is going to rotate the wall
-	 * @param wall      that is on the stack
-	 * @param direction that is the orientation of the wall
-	 * @throws InvalidInputException
-	 * @author Rajaa Boukhelif, 260870030
-	 */
-	public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException {
 
-		throw new UnsupportedOperationException("The wall cannot be rotated");
-	}
 
 	/**
 	 * This method allows a user to grab a wall.
@@ -150,9 +139,50 @@ public class QuoridorController {
 	 */
 	public static void grabWall(Player player, WallMove move, Wall wall) throws UnsupportedOperationException {
 
-		throw new UnsupportedOperationException("There are no more walls");
+		 List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getWalls();
+		 List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getWalls();
+		 Direction startDir = Direction.Horizontal;
+	
+		 
+		 if (whiteWalls.isEmpty()) {
+				throw new UnsupportedOperationException("There are no more white walls");
+		 }
+		 if (!whiteWalls.isEmpty()) {
+			 
+			 whiteWalls.remove(wall); 
+		 }
+		 if (blackWalls.isEmpty()) {
+				throw new UnsupportedOperationException("There are no more black walls");
+		 }
+		 if (!blackWalls.isEmpty()) {
+			blackWalls.remove(wall); 
+		 }
+	
 	}
 
+	/**
+	 * This method rotates a wall.
+	 * 
+	 * @param player    that is going to rotate the wall
+	 * @param move      that is going to rotate the wall
+	 * @param wall      that is on the stack
+	 * @param direction that is the orientation of the wall
+	 * @throws InvalidInputException
+	 * @author Rajaa Boukhelif, 260870030
+	 */
+	public static void rotateWall(Wall wall, WallMove move, Direction dir) throws UnsupportedOperationException {
+
+	if(dir == Direction.Horizontal) {
+		 Direction newDir = Direction.Vertical;
+		 dir = newDir;
+	}
+	if(dir == Direction.Vertical) {
+		 Direction newDir = Direction.Horizontal;
+		 dir = newDir;
+	}
+	else throw new UnsupportedOperationException("The wall cannot be rotated");
+	}
+	
 	/**
 	 * This method enables player to move around a wall on the board.
 	 * 
