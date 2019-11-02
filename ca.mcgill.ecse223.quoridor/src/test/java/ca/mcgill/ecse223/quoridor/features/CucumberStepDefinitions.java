@@ -879,7 +879,8 @@ public class CucumberStepDefinitions {
 	/** @author Shayne Leitman, 260688512 */
 	@When("I initiate to load a saved game {string}")
 	public void initiateLoadGame(String fileName) {
-		//QuoridorController.loadSavedGame(fileName);
+		Boolean temp = QuoridorController.loadSavedPosition(fileName);
+		assertEquals(true, temp);
 	}
 
 	/** @author Shayne Leitman, 260688512 */

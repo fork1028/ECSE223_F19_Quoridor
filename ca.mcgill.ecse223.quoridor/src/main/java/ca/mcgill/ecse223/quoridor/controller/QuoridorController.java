@@ -468,7 +468,7 @@ public class QuoridorController {
 	 * @author Shayne Leitman, 260688512
 	 */
 
-	public static void loadSavedPosition(String fileName) throws UnsupportedOperationException {
+	public static boolean loadSavedPosition(String fileName) throws UnsupportedOperationException {
 
 		BufferedReader reader;
 		try {
@@ -649,9 +649,12 @@ public class QuoridorController {
 
 			reader.close();
 
+			return (positionValidated && overlapPositionValidated);
+			
 		} catch (IOException e) {
 
 		}
+		return false;
 
 	}
 
