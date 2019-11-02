@@ -472,7 +472,12 @@ public class QuoridorController {
 			PlayerPosition player1Position = new PlayerPosition(player1, player1StartPos);
 			PlayerPosition player2Position = new PlayerPosition(player2, player2StartPos);
 
-			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, player1, game);
+			Player startingMovePlayer = player1;
+			if (!whitePlayersTurn) {
+				startingMovePlayer = player2;
+			}
+			
+			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, startingMovePlayer, game);
 			
 			//Wall stock and placement on board.
 			//First, get 2 lists for all walls.
@@ -492,26 +497,85 @@ public class QuoridorController {
 			}
 			//Create move number counter
 			int moveCounter = 1;
+			int roundNumCounter = 1;
+			Direction tempDir;
+			String tempStr = "";
+			String tmpRow = "";
+			String dirStr = "";
+			int col = 1;
+			int row = 1;
+			Tile tempTile = null;
+			Boolean positionValidated = true;
+			Boolean overlapPositionValidated = true;
 			
-			for (int j = 10 - whiteWallsPlaced; j < 10; j++) {
-				Wall wall = Wall.getWithId(j);
-				//WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
-				gamePosition.addWhiteWallsInStock(wall);
+			//Maybe change value inside getWalls(), so we grab from end of pile??
+			for (int j = 0; j < whiteWallsPlaced; j++) {
+				Wall wall = Wall.getWithId(9 - j);
+				tempStr = whiteWalls[j];
+				tmpRow = tempStr.substring(1, 2);
+				dirStr = tempStr.substring(2, 3);
+				col = ((int) tempStr.charAt(0)) - 96;
+				row = Integer.parseInt(tmpRow);
+				if (dirStr == "h") {
+					tempDir = Direction.Horizontal;
+				} else {
+					tempDir = Direction.Vertical;
+				}
+				
+				positionValidated = validatePosition(row, col, tempDir);
+				overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+				
+				for (Tile curTile : tempTileList) {
+					if (curTile.getColumn() == col && curTile.getRow() == row) {
+						tempTile = curTile;
+					}
+				}
+				
+				game.addMove(new WallMove(moveCounter, roundNumCounter, player1, tempTile, game, tempDir, wall));
+				gamePosition.addWhiteWallsOnBoard(wall);
+				moveCounter = moveCounter + 2;
+				roundNumCounter++;
 			}
-			for (int j = 10 - blackWallsPlaced; j < 10; j++) {
-				Wall wall = Wall.getWithId(j + 10);
-				//WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
-				gamePosition.addBlackWallsInStock(wall);
-			}
+			
+			//Reset this stuff for black player
+			moveCounter = 2;
+			roundNumCounter = 1;
+			for (int j = 0; j < blackWallsPlaced; j++) {
+				Wall wall = Wall.getWithId(19 - j);
+				tempStr = whiteWalls[j];
+				tmpRow = tempStr.substring(1, 2);
+				dirStr = tempStr.substring(2, 3);
+				col = ((int) tempStr.charAt(0)) - 96;
+				row = Integer.parseInt(tmpRow);
+				if (dirStr == "h") {
+					tempDir = Direction.Horizontal;
+				} else {
+					tempDir = Direction.Vertical;
+				}
+				
+				positionValidated = validatePosition(row, col, tempDir);
+				overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+				
+				for (Tile curTile : tempTileList) {
+					if (curTile.getColumn() == col && curTile.getRow() == row) {
+						tempTile = curTile;
+					}
+				}
+				game.addMove(new WallMove(moveCounter, roundNumCounter, player2, tempTile, game, tempDir, wall));
+				gamePosition.addBlackWallsOnBoard(wall);
+				moveCounter = moveCounter + 2;
+				roundNumCounter++;
+				}
+		
 			
 			game.setCurrentPosition(gamePosition);
 			
 			
-			
-			//First, we should check the pawn positions are ok!
-			
-			
-			//Next, we check that the wall positions are ok!
+			//Now check to see if the position is valid booleans are still true. If yes, go into REAL quoridor object and set currentGame. If not, return false?
+			if (positionValidated && overlapPositionValidated) {
+			 	Quoridor quoridor = QuoridorApplication.getQuoridor();
+				quoridor.setCurrentGame(game);
+			}
 			
 			
 			
