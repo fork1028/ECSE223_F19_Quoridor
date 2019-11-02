@@ -234,15 +234,14 @@ public static void rotateWall  (Wall wall, WallMove move, Direction dir) throws 
 	}
 	else throw new UnsupportedOperationException("The wall cannot be rotated");
 	}
+
 	
 	/**
-	 * This method enables player to move around a wall on the board.
+	 * This method enables player to move a wall on the board.
 	 * 
-	 * @param Player   that is going to move the wall
-	 * @param Wall     that the player intends to move
-	 * @param WallMove that player clicked on the arrow keys.
+	 * @param moveDirection that indicates the direction the user wants to move the wall
 	 * @throws UnsupportedOperationException
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen 260830761
 	 * @throws InvalidInputException 
 	 */
 	public static void moveWall(String moveDirection) throws UnsupportedOperationException, InvalidInputException {
@@ -285,11 +284,10 @@ public static void rotateWall  (Wall wall, WallMove move, Direction dir) throws 
 	}
 
 	/**
-	 * This method enables player to drop a wall if there is no wall under it.
+	 * This method enables player to drop a wall.
 	 * 
-	 * @param Player   that is going to drop the wall
-	 * @param Wall     that the player intends to drop
-	 * @param WallMove that the wall is going to be placed
+	 * @param Player playerToMove   that is going to drop the wall
+	 * @param Wall wall    that the player intends to drop
 	 * @throws UnsupportedOperationException
 	 * @author Xinyue Chen, 260830761
 	 * @throws InvalidInputException 
