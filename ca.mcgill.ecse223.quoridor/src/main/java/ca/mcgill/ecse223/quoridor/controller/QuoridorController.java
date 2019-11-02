@@ -173,7 +173,7 @@ public class QuoridorController {
 	 * @param Wall     that the player intends to move
 	 * @param WallMove that player clicked on the arrow keys.
 	 * @throws UnsupportedOperationException
-	 * @author Xinyue Chen, 260830761
+	 * @author 
 	 * @throws InvalidInputException 
 	 */
 	public static void moveWall(String moveDirection) throws UnsupportedOperationException, InvalidInputException {
