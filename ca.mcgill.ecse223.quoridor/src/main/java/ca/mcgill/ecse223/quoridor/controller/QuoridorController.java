@@ -178,7 +178,7 @@ public class QuoridorController {
 	}
 	if(dir == Direction.Vertical) {
 		 Direction newDir = Direction.Horizontal;
-		 dir = newDir;
+		 dir = newDir ;
 	}
 	else throw new UnsupportedOperationException("The wall cannot be rotated");
 	}

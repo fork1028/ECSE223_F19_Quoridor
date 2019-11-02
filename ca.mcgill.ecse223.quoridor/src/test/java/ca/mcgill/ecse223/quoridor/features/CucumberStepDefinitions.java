@@ -484,11 +484,10 @@ public class CucumberStepDefinitions {
 	 List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getWalls();
 	 
 	 if (!whiteWalls.isEmpty()) {
-		 
 		 whiteWalls.remove(wall); 
 	 }
-	 if (blackWalls.isEmpty()) {
-			throw new UnsupportedOperationException("There are no more black walls");
+	 if (!blackWalls.isEmpty()) {
+		 blackWalls.remove(wall);
 	 }
 
 	}
