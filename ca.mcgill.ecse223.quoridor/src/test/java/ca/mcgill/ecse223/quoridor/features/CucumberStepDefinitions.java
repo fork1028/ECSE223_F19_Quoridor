@@ -1058,7 +1058,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Player \"<player>\" completes his move")
 	public void playerCompletesMove() {
-		assertEquals(true, QuoridorController.switchCurrentPlayer());
+		//assertEquals(true, QuoridorController.switchCurrentPlayer());
 	}
 
 	/**

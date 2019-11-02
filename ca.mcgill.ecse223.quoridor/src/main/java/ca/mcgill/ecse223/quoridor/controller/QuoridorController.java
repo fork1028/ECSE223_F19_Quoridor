@@ -1,6 +1,8 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -10,6 +12,8 @@ import java.io.PrintWriter;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.Timer;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
@@ -619,52 +623,108 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method validates a potential pawn move position.
+	 * 11. Validate Position
+	 * 
+	 * This method (along with the methods it calls) validates a potential pawn or wall move position.
 	 * 
 	 * @param row row of the move position
 	 * @param col col of the move position
+	 * @param direction direction of the move position -- null if pawn, horizontal/vertical if wall
 	 * @throws UnsupportedOperationException
+	 * @return boolean -- true if valid position, false if invalid position
 	 * @author Sami Junior Kahil, 260834568
 	 */
 	public static boolean validatePosition(int row, int col, Direction direction) throws UnsupportedOperationException {
+		boolean position;
 		if (direction == null) {
-			return validatePawnPosition(row, col);
+			return position  = validatePawnPosition(row, col);
+			//return validatePawnPosition(row, col);
 		} else {
-			return validateWallPosition(row, col, direction);
+			return validateWallBoundaryPosition(row, col, direction) && validateWallOverlapPosition(row, col, direction);
 		}
 	}
 
-	public static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(" * Invalid position for pawn...");
+	private static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
+		if (row <= 0 || row >= 10 || col <= 0 || col >= 10) {
+			throw new UnsupportedOperationException(" * Invalid position for pawn...");
+		}
+		return true;
+	}
+
+	private static boolean validateWallBoundaryPosition (int row, int col, Direction direction) throws UnsupportedOperationException {
+		if (row == 9 || col == 9) 
+			throw new UnsupportedOperationException(" * Out of bounds position for wall...");
+		else 
+			return true;
+	}
+
+	private static boolean validateWallOverlapPosition(int row, int col, Direction direction) throws UnsupportedOperationException {
+		List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+		List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+
+		List<Wall> allWalls = new ArrayList<Wall>();
+		allWalls.addAll(blackWalls);
+		allWalls.addAll(whiteWalls);
+
+		for (int i = 0; i <= allWalls.size(); i++) {
+			int currRow = allWalls.get(i).getMove().getTargetTile().getRow();
+			int currCol = allWalls.get(i).getMove().getTargetTile().getColumn();
+			Direction currDir = allWalls.get(i).getMove().getWallDirection();
+
+			if (currRow == row && currCol == col) {
+				throw new UnsupportedOperationException(" * Wall already exists in this position...");
+			}
+
+			if (direction == Direction.Vertical) {
+				if ((currRow == row - 1 || currRow == row + 1) && currCol == col && currDir == Direction.Vertical) {
+					throw new UnsupportedOperationException(" * Wall overlaps with another wall...");
+				}
+			}
+
+			if (direction == Direction.Horizontal) {
+				if (currRow == row && (currCol == col - 1 || currCol == col + 1) && currDir == Direction.Horizontal) {
+					throw new UnsupportedOperationException(" * Wall overlaps with another wall...");
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
-	 * This method validates wall position.
+	 * 12. Switch Current Player
 	 * 
-	 * @param row       row of the center of the wall
-	 * @param col       col of the center of the wall
-	 * @param direction direction of the wall
-	 * @throws UnsupportedOperationException
-	 * @author Sami Junior Kahil, 260834568
-	 */
-	public static boolean validateWallPosition(int row, int col, Direction direction)
-			throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(" * Invalid position for wall...");
-	}
-
-	public static boolean validateWallPosition(Wall wall) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(" * Invalid position for wall...");
-	}
-
-	// 12. Switch player (aka. Update board) -- Sami
-	/**
-	 * This method switches the current player.
+	 * This method switches the current player and updates each player's timer.
 	 * 
 	 * @throws UnsupportedOperationException
+	 * @return true if successful, false otherwise
 	 * @author Sami Junior Kahil, 260834568
 	 */
-	public static boolean switchCurrentPlayer() throws UnsupportedOperationException {
-		throw new UnsupportedOperationException(" * Can't switch player...");
+	public static void switchCurrentPlayer() throws UnsupportedOperationException {
+		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player otherPlayer = player.getNextPlayer();
+
+		Timer playerTimer = new Timer(0, null);
+		Timer otherPlayerTimer = new Timer(0, null);
+
+		//		playerTimer.scheduleAtFixedRate(new TimerTask() {
+		//			@Override
+		//			public void run() {
+		//				// Your database code here
+		//			}
+		//		}, 2*60*1000, 2*60*1000);
+
+
+		int delay = 1000; //milliseconds
+		ActionListener taskPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				//...Perform a task...
+			}
+		};
+		new Timer(delay, taskPerformer).start();
+
+
+		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setPlayerToMove(otherPlayer);
 	}
 
 	// helper methods
