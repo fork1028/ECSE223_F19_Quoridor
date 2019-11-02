@@ -462,7 +462,7 @@ public class CucumberStepDefinitions {
 		Player currentplayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 				.getPlayerToMove();
 		WallMove move = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		QuoridorController.grabWall ( currentplayer, move);
+		QuoridorController.grabWall( currentplayer, move);
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -637,9 +637,11 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Xinyue Chen, 260830761
+	 * @throws InvalidInputException 
+	 * @throws UnsupportedOperationException 
 	 */
 	@When("I release the wall in my hand")
-	public void iReleaseTheWallInMyHand(Wall wall) {
+	public void iReleaseTheWallInMyHand(Wall wall) throws UnsupportedOperationException, InvalidInputException {
 		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		QuoridorController.dropWall(player, wall);
 	}
