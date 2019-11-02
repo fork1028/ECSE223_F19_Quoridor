@@ -427,14 +427,93 @@ public class QuoridorController {
 			
 			String whitePlayerTile = whitePlayerStr.substring(0, 2);
 			String blackPlayerTile = blackPlayerStr.substring(0, 2);
+			int whitePawnCol = ((int) whitePlayerTile.charAt(0)) - 96;
+			int whitePawnRow = Integer.parseInt(whitePlayerTile.substring(1, 2));
+			int blackPawnCol = ((int) blackPlayerTile.charAt(0)) - 96;
+			int blackPawnRow = Integer.parseInt(blackPlayerTile.substring(1, 2));
+			
+			//We need to create a new "fake" game, add walls one by one, and validate position each time.
+			//If the validation fails, then nothing really happens.
+			//If it IS valid, then replace the current game with the game we just created.
+			
+			Quoridor tempQ = new Quoridor();
+			Board board = new Board(tempQ);
+			// Creating tiles by rows, i.e., the column index changes with every tile
+			// creation
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
+			}
+			//Copied
+			Tile player1StartPos = tempQ.getBoard().getTile(36);
+			Tile player2StartPos = tempQ.getBoard().getTile(44);
+			
+			//We want to set the players at the actual tiles they are on:
+			List<Tile> tempTileList = board.getTiles();
+			for (Tile curTile : tempTileList) {
+				if (curTile.getColumn() == whitePawnCol && curTile.getRow() == whitePawnRow) {
+					player1StartPos = curTile;
+				}
+				if (curTile.getColumn() == blackPawnCol && curTile.getRow() == blackPawnRow) {
+					player2StartPos = curTile;
+				}
+			}
+			
+			User user1 = tempQ.addUser("tmpUser1");
+			User user2 = tempQ.addUser("tmpUser2");
+			Player player1 = new Player(new Time(180), user1, 9, Direction.Horizontal);
+			Player player2 = new Player(new Time(180), user2, 1, Direction.Horizontal);
+			
+			Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, tempQ);
+			game.setWhitePlayer(player1);
+			game.setBlackPlayer(player2);
+			
+			PlayerPosition player1Position = new PlayerPosition(player1, player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(player2, player2StartPos);
+
+			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, player1, game);
+			
+			//Wall stock and placement on board.
+			//First, get 2 lists for all walls.
+			String[] whiteWalls = whitePlayerStr.substring(4).replace(" ", "").split(",");
+			String[] blackWalls = blackPlayerStr.substring(4).replace(" ", "").split(",");
+			//Next, get size, so we know how many walls to place for each player.
+			int whiteWallsPlaced = whiteWalls.length;
+			int blackWallsPlaced = blackWalls.length;
+			// Add the walls as in stock for the players
+			for (int j = 0; j < 10 - whiteWallsPlaced; j++) {
+				Wall wall = Wall.getWithId(j);
+				gamePosition.addWhiteWallsInStock(wall);
+			}
+			for (int j = 0; j < 10 - blackWallsPlaced; j++) {
+				Wall wall = Wall.getWithId(j + 10);
+				gamePosition.addBlackWallsInStock(wall);
+			}
+			//Create move number counter
+			int moveCounter = 1;
+			
+			for (int j = 10 - whiteWallsPlaced; j < 10; j++) {
+				Wall wall = Wall.getWithId(j);
+				WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
+				gamePosition.addWhiteWallsInStock(wall);
+			}
+			for (int j = 10 - blackWallsPlaced; j < 10; j++) {
+				Wall wall = Wall.getWithId(j + 10);
+				WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
+				gamePosition.addBlackWallsInStock(wall);
+			}
+			
+			game.setCurrentPosition(gamePosition);
+			
+			
 			
 			//First, we should check the pawn positions are ok!
 			
 			
 			//Next, we check that the wall positions are ok!
 			
-			String[] whiteWalls = whitePlayerStr.substring(4).replace(" ", "").split(",");
-			String[] blackWalls = blackPlayerStr.substring(4).replace(" ", "").split(",");
+			
 			
 			
 			reader.close();

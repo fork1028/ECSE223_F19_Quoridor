@@ -1197,7 +1197,10 @@ public class CucumberStepDefinitions {
 				player2StartPos);
 
 		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
-
+		//Now, we need to add all 20 walls to the game position, first by creating them.
+		//We need to add some walls to each player's stock.
+		//The rest need to be used to create new wall moves!
+		
 		// Add the walls as in stock for the players
 		for (int j = 0; j < 10; j++) {
 			Wall wall = Wall.getWithId(j);

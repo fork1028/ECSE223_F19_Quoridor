@@ -3,6 +3,7 @@ package ca.mcgill.ecse223.quoridor.view;
 import java.awt.Color;
 import java.util.HashMap;
 
+import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -83,14 +84,35 @@ public class QuoridorPage extends JFrame{
 		setTitle("Quoridor Application Group 13");
 		
 		// listeners for Game
-				addDriverButton.addActionListener(new java.awt.event.ActionListener() {
-					public void actionPerformed(java.awt.event.ActionEvent evt) {
-						addDriverButtonActionPerformed(evt);
-					}
-				});
+		createNewGameButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+				
+		loadGameButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		//listeners for User
+		readyButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});
+		
+		//Layout
+		GroupLayout layout = new GroupLayout(getContentPane());
+		getContentPane().setLayout(layout);
+		layout.setAutoCreateGaps(true);
+		layout.setAutoCreateContainerGaps(true);
+		//layout.setHorizontalGroup(
+				
+				//);
 		
 		
-		// add listeners;
 	}
 	
 	private void refreshData() {
