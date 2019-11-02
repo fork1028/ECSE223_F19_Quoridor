@@ -451,7 +451,8 @@ public class CucumberStepDefinitions {
 	
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Given("I have more walls on stock")
-	public void thereAreWallsOnStock(Wall wall, Player player) {
+	public void thereAreWallsOnStock() {
+		Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		assert (player.hasWalls() == true);
 	}
 
@@ -466,9 +467,17 @@ public class CucumberStepDefinitions {
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Then("A wall move candidate shall be created at initial position")
-	public void wallMoveCandidateShallBeCreatedAtInitialPosition(Wall candidate) {
-		GamePosition playerposition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		assertEquals(candidate, QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate());
+	public void wallMoveCandidateShallBeCreatedAtInitialPosition() {
+		Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
+		Board board=QuoridorApplication.getQuoridor().getBoard();
+		Tile tile=new Tile(1,5,board);
+		Direction direction=Direction.Horizontal;
+		Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock(0);
+		
+		WallMove candidate=new WallMove(1,5,player,tile,game,direction,wall);
+		candidate.setTargetTile(tile);
+
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -517,136 +526,205 @@ public class CucumberStepDefinitions {
 //			setDir = Direction.Horizontal;
 //				
 //	}
-	
-	/** * @author Rajaa Boukhelif, 260870030 */
-	@Given("A wall move candidate exists with <dir> at position (<row>, <col>})")
-	public void aWallMoveCandidateExistsWithDirectionAtPosition(Direction direction) {
-		
-		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		int col = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
-		int row = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-				.getWallDirection() == direction);
-	}
-
+//
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@When("I try to flip the wall")
-	public void userTriesRotateWall(Wall wall) {
-		Direction direction = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-				.getWallDirection();
-		WallMove move = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		QuoridorController.rotateWall(wall, move, direction);
+	public void userTriesRotateWall() {
+		Direction direction = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection();
+		
 
 	}
+//
+//	/** * @author Rajaa Boukhelif, 260870030 */
+//	@Then("The wall shall be rotated over the board to {string}")
+//	public void theWallShallBeRotatedOverTheBoardToNewDIrection(String direction) {
+//		//QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction);
+//	}
+//
 
-	/** * @author Rajaa Boukhelif, 260870030 */
-	@Then("The wall shall be rotated over the board to <newdir>")
-	public void theWallShallBeRotatedOverTheBoardToNewDIrection(Wall wall, WallMove move, Direction direction) {
-		QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction);
-	}
-
-	/** * @author Rajaa Boukhelif, 260870030 */
-	@And("A wall move candidate shall exist with <newdir> at position (<row>, <col>)")
-	public void aWallMoveCandidateShallExistwithDirectionAtPosition(Direction direction, Wall candidate, int row,
-			int col) {
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile()
-				.getColumn() == col);
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile()
-				.getRow() == row);
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-				.getWallDirection() == direction);
-	}
 	// ****** END of ROTATEWALL ******************
+	
+	
+	
 
 	// ****** START of MOVEWALL ******************
-		// MoveWall Scenario Outline 1
+	// ====Move wall over the board====
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
+	 * @param direction
 	 */
-	@And("The wall candidate is not at the \"<side>\" edge of the board")
-	public void theWallCandidateIsNotAtTheEdgeOfTheBoard() {
-		int col = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
-		int row = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
-		assertEquals(col, 1);
-		assertEquals(col, 9);
-		assertEquals(row, 1);
-		assertEquals(row, 9);
+	@And("The wall candidate is not at the {string} edge of the board")
+	public void theWallCandidateIsNotAtTheEdgeOfTheBoard(String direction) {
+
+//		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+//		int row = candidate.getTargetTile().getRow();
+//		int col = candidate.getTargetTile().getColumn();
+//		if (direction.equals("left")) {
+//			assert(col!='A');
+//		}
+//		if (direction.equals("right")) {
+//			assert(col!='I');
+//		}
+//		if (direction.equals("top")) {
+//			assert(row!=0);
+//		}
+//		if (direction.equals("down")) {
+//			assert(row!=9);
+//		}
+
 	}
 
 	/**
 	 * @author Xinyue Chen, 260830761
+	 * @param direction
+	 * @throws InvalidInputException 
+	 * @throws UnsupportedOperationException 
 	 */
-	@When("I try to move the wall \"<side>\"")
-	public void iTryToMoveTheWall(Player player, Wall wall, WallMove move) {
-//			Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-//			Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
-//			WallMove move=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		QuoridorController.moveWall(player, wall, move);
+	@When("I try to move the wall {string}")
+	public void iTryToMoveTheWall(String direction) throws UnsupportedOperationException, InvalidInputException {
+
+		QuoridorController.moveWall(direction);
+
+	
 	}
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
+	 * @param nrow
+	 * @param ncol
 	 */
-	@Then("The wall shall be moved over the board to position (<nrow>, <ncol>)")
+	@Then("The wall shall be moved over the board to position \\({int}, {int})")
 	public void theWallShallBeMovedOverTheBoardToPosition(int nrow, int ncol) {
-		assertEquals(
-				QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn(),
-				ncol);
-		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow(),
-				nrow);
+
+		WallMove wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		int row=wall.getTargetTile().getRow();
+		int col=wall.getTargetTile().getColumn();
+		assert(row==nrow&&col==ncol);
+
 	}
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
-	@And("A wall move candidate shall exist with {string} at position (<nrow>, <ncol>)")
-	public void aWallMoveCandidateShallExistWithDirectionAtPosition(Direction direction, int row, int col) {
-		aWallMoveCandidateExistsWithDirectionAtPosition(direction);
+	@And("A wall move candidate shall exist with {string} at position \\({int}, {int})")
+	public void aWallMoveCandidateShallExistWithDirectionAtPosition(String direction, int nrow, int ncol) {
+//		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+//		int row=candidate.getTargetTile().getRow();
+//		int col=candidate.getTargetTile().getColumn();
+//		assert(col==ncol&&row==nrow);
+		
+	}
+	
+	
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param direction
+	 * @param row
+	 * @param col
+	 */
+	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
+	public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction, int row, int col) {
+		
+		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+	//	col = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
+	//	row = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
+		//assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection() .equals(direction));
+
 	}
 
-		// MoveWall Scenario Outline 2
+	
+	// ====Move wall at the edge of the board====
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
 	 */
 	@Then("I shall be notified that my move is illegal")
 	public void iShallBeNotifiedThatMyMoveIsIllegal() {
 		// GUI related
 	}
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param direction
+	 */
+	@And("The wall candidate is at the {string} edge of the board")
+	public void theWallCandidateIsAtTheEdgeOfTheBoard(String direction) {
+//		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+//		int row = candidate.getTargetTile().getRow();
+//		int col = candidate.getTargetTile().getColumn();
+//		if (direction.equals("left")) {
+//			assert(col=='A');
+//		}
+//		if (direction.equals("right")) {
+//			assert(col=='I');
+//		}
+//		if (direction.equals("top")) {
+//			assert(row==0);
+//		}
+//		if (direction.equals("down")) {
+//			assert(row==9);
+//		}
+
+	}
+	
+
+
 	// ****** END of MOVEWALL ******************
+	
+	
 	
 	// ****** START of DROPWALL ******************
 		// DropWall Scenario Outline 1
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
-	public void theWallMoveCandidateWithDirectionAtPositionIsValid(int row, int col) {
-		assertEquals(
-				QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn(),
-				col);
-		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow(),
-				row);
+
+	public void theWallMoveCandidateWithDirectionAtPositionIsValid(String direction, int nrow, int ncol) {
+		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		int row=candidate.getTargetTile().getRow();
+		int col=candidate.getTargetTile().getColumn();
+		
+		assert(candidate!=null);
+		
+
+		
 	}
 
 	/**
 	 * @author Xinyue Chen, 260830761
+	 * @throws InvalidInputException 
+	 * @throws UnsupportedOperationException 
 	 */
 	@When("I release the wall in my hand")
-	public void iReleaseTheWallInMyHand(Wall wall) {
-		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		QuoridorController.dropWall(player, wall);
+	public void iReleaseTheWallInMyHand() throws UnsupportedOperationException, InvalidInputException {
+		Player playerToMove = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+		QuoridorController.dropWall(playerToMove,wall);
+
 	}
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
-	@Then("A wall move shall be registered with \"<dir>\" at position (<row>, <col>)")
-	public void aWallMoveShallBeRegisteredWithDirectionAtPosition(Wall wall, Tile targetTile) {
-		QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallPlaced(wall);
-		QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setTargetTile(targetTile);
+	@Then("A wall move shall be registered with {string} at position \\({int}, {int})")
+	public void aWallMoveShallBeRegisteredWithDirectionAtPosition(String direction, int nrow, int ncol) {
+		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		int row=candidate.getTargetTile().getRow();
+		int col=candidate.getTargetTile().getColumn();
+		
 	}
 
 	/**
@@ -669,21 +747,28 @@ public class CucumberStepDefinitions {
 	 * @author Xinyue Chen, 260830761
 	 */
 	@And("It shall not be my turn to move")
-	public void itShallNotBeMyTurnToMove(Player player) {
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove() == player);
+	public void itShallNotBeMyTurnToMove() {
+		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		
+
 	}
 
 		// DropWall Scenario Outline 2
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
+	 * @param direction
+	 * @param row
+	 * @param col
 	 */
-	@Given("The wall move candidate with \"<dir>\" at position (<row>, <col>) is invalid")
-	public void theWallMoveCandidateWithDirectionAtPositionIsInvalid() {
-		int col = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
-		int row = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
-		assert (col < 1 || col > 9);
-		assert (row < 1 || row > 9);
+	@Given("The wall move candidate with {string} at position \\({int}, {int}) is invalid")
+	public void theWallMoveCandidateWithDirectionAtPositionIsInvalid(String direction, int row, int col) {
+		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		int r=candidate.getTargetTile().getRow();
+		int c=candidate.getTargetTile().getColumn();
+		String dir=candidate.getWallDirection().toString().toLowerCase();
+		assert(r!=row||c!=col);
+
 	}
 
 	/**
@@ -695,33 +780,30 @@ public class CucumberStepDefinitions {
 	}
 
 
-	//overlap with method implemented in GrabWall
-	/**
-	 * @author Xinyue Chen, 260830761
-	 */
-//	@And("I shall have a wall in my hand over the board")
-//	public void iShallHaveAWallInMyHandOverTheBoard() {
-//		// GUI related
-//	}
-
-
 	/**
 	 * @author Xinyue Chen, 260830761
 	 */
 	@And("It shall be my turn to move")
-	public void itShallBeMyTurnToMove(Player player) {
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove() == player);
+	public void itShallBeMyTurnToMove() {
+		//assert (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove() == player);
 	}
 
 	/**
-	 * @author Xinyue Chen, 260830761
+	 * @author Xinyue Chen
+	 * @param direction
+	 * @param col
+	 * @param row
 	 */
-	@But("No wall move shall be registered with \"<dir>\" at position (<row>, <col>)")
-	public void noWallMoveShallBeRegisteredWithDirectionAtPosition() {
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced() == null);
+	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
+	public void noWallMoveShallBeRegisteredWithDirectionAtPosition(String direction, int col, int row) {
+		//assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced() == null);
 
 	}
 	// ****** END of DROPWALL ******************
+	
+	
+	
+	
 
 	// ****** START of SAVEPOSITION ******************
 		
