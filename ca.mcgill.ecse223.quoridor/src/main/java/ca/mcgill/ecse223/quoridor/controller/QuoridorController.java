@@ -14,6 +14,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+
+import javax.swing.Timer;
+import java.util.List;
+
 import javax.swing.Timer;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -137,20 +141,7 @@ public class QuoridorController {
 
 	}
 
-	/**
-	 * This method rotates a wall.
-	 * 
-	 * @param player    that is going to rotate the wall
-	 * @param move      that is going to rotate the wall
-	 * @param wall      that is on the stack
-	 * @param direction that is the orientation of the wall
-	 * @throws InvalidInputException
-	 * @author Rajaa Boukhelif, 260870030
-	 */
-	public static void rotateWall(Wall wall, WallMove move, Direction direction) throws UnsupportedOperationException {
 
-		throw new UnsupportedOperationException("The wall cannot be rotated");
-	}
 
 	/**
 	 * This method allows a user to grab a wall.
@@ -161,9 +152,87 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
-	public static void grabWall(Player player, WallMove move, Wall wall) throws UnsupportedOperationException {
+	public static void grabWall(Player player, WallMove move) throws UnsupportedOperationException {
 
-		throw new UnsupportedOperationException("There are no more walls");
+		 
+		 /*ActionListener taskPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				  if(grabButton.getModel().isPressed())  
+				        
+			}};*/
+		 List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock();
+		 List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock();
+		 Direction startDir = Direction.Horizontal;
+		 
+		  Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		  Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		  int wallIdxForPlayer = 1;  
+	 
+		  if(player == whitePlayer) {
+			Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
+			
+			 Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock(wallIdxForPlayer);
+			 WallMove nextmove = new WallMove(0, 0, player, whiteStart, null, startDir, wall);
+			 QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
+			 if (!whiteWalls.isEmpty()) {
+				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
+			 }
+			
+			 }
+			
+		
+		if(player == blackPlayer) {
+			Tile blackStart = QuoridorApplication.getQuoridor().getBoard().getTile(44);
+			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock(wallIdxForPlayer);
+			 WallMove nextmove = new WallMove(0, 0, player, blackStart, null, startDir, wall);
+			 QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
+			
+
+			 if (!blackWalls.isEmpty()) {
+				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);;
+			 }
+		
+		}
+		
+		 
+	
+
+	
+	}
+
+
+	/**
+	 * This method rotates a wall.
+	 * 
+	 * @param player    that is going to rotate the wall
+	 * @param move      that is going to rotate the wall
+	 * @param wall      that is on the stack
+	 * @param direction that is the orientation of the wall
+	 * @throws InvalidInputException
+	 * @author Rajaa Boukhelif, 260870030
+	 */
+public static void rotateWall  (Wall wall, WallMove move, Direction dir) throws UnsupportedOperationException {
+		
+		
+		/*ActionListener taskPerformer = new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				  if(rotateButton.getModel().isPressed())  
+				        
+			}};*/
+			
+		if(dir == Direction.Horizontal) {
+		 Direction newDir = Direction.Vertical;
+		 QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir);
+		// dir = newDir;
+		 //g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
+		// g2d.rotate(Math.toRadians(90));
+	}
+	if(dir == Direction.Vertical) {
+		 Direction newDir = Direction.Horizontal;
+		// dir = newDir ;
+		 QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir);
+	}
+	else throw new UnsupportedOperationException("The wall cannot be rotated");
 	}
 
 	
@@ -466,7 +535,7 @@ public class QuoridorController {
 	 * @author Shayne Leitman, 260688512
 	 */
 
-	public static void loadSavedPosition(String fileName) throws UnsupportedOperationException {
+	public static boolean loadSavedPosition(String fileName) throws UnsupportedOperationException {
 
 		BufferedReader reader;
 		try {
@@ -647,9 +716,12 @@ public class QuoridorController {
 
 			reader.close();
 
+			return (positionValidated && overlapPositionValidated);
+			
 		} catch (IOException e) {
 
 		}
+		return false;
 
 	}
 

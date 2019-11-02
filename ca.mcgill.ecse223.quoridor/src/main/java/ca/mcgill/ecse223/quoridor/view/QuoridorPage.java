@@ -20,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -29,7 +30,6 @@ import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-
 
 
 public class QuoridorPage extends JFrame{
@@ -147,6 +147,7 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
+
 		//listeners for Wall buttons
 		moveWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -163,6 +164,7 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
+
 		
 		//Layout
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -172,7 +174,6 @@ public class QuoridorPage extends JFrame{
 		//layout.setHorizontalGroup(
 				
 				//);
-		
 		
 
 		
