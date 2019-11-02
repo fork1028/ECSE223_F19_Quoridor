@@ -1,8 +1,16 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
@@ -191,10 +199,157 @@ public class QuoridorController {
 	 * @throws UnsupportedOperationException
 	 * @author Shayne Leitman, 260688512
 	 */
-	public static void saveCurrentGame(String newFileName) throws UnsupportedOperationException {
+	public static Boolean saveCurrentPosition(String newFileName, Boolean overWriteIfExists) throws UnsupportedOperationException {
 		// call helper function fileAlreadyExists first!!!
-		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+		//throw new UnsupportedOperationException("Controller feature not fully implemented yet!");\
+		Boolean fileExists = fileAlreadyExists(newFileName);
+		
+		if (fileExists && !overWriteIfExists) {
+			//ASK USER WHETHER TO OVERWRITE OR NOT! If yes, wipe old file
+			return false;
+		}
+		
+		try {
+			
+			FileWriter write = new FileWriter(newFileName, false);
+			PrintWriter printW = new PrintWriter(write);
+			
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			Game curGame = quoridor.getCurrentGame();
+			GamePosition curGamePos = curGame.getCurrentPosition();
+			//new Bool to keep track of which player's turn it is, for text file.
+			Boolean whitePlayersTurn = false;
+			Player whitePlayer = curGame.getWhitePlayer();
+			if (curGamePos.getPlayerToMove() == curGame.getWhitePlayer()) {
+				whitePlayersTurn = true;
+			}
+			
+			String temp = "";
+			PlayerPosition whitePlayerPos = curGamePos.getWhitePosition();
+			PlayerPosition blackPlayerPos = curGamePos.getBlackPosition();
+			Tile whiteTile = whitePlayerPos.getTile();
+			Tile blackTile = blackPlayerPos.getTile();
+			
+			int whiteCol = whiteTile.getColumn();
+			int blackCol = blackTile.getColumn();
+			char whiteChar = (char)(whiteCol + 96);
+			char blackChar = (char)(blackCol + 96);
+			String whiteTileStr = Character.toString(whiteChar) + whiteTile.getRow();
+			String blackTileStr = Character.toString(blackChar) + blackTile.getRow();
+
+			String whiteString = "W: " + whiteTileStr;
+			String blackString = "B: " + blackTileStr;
+			
+			List<Wall> whiteWalls = curGamePos.getWhiteWallsOnBoard();
+			List<Wall> blackWalls = curGamePos.getBlackWallsOnBoard();
+			
+			WallMove curWallMove = null;
+			String moveString = "";
+			Tile tempTile = null;
+			int tempCol = 1;
+			int tempRow = 1;
+			char tempChar = 'a';
+			
+			//Loop through white walls first
+			for (Wall curWall : whiteWalls) {
+				whiteString = whiteString + ", ";
+				moveString = "";
+				curWallMove = curWall.getMove();
+				tempTile = curWallMove.getTargetTile();
+				tempCol = tempTile.getColumn();
+				tempRow = tempTile.getRow();
+				tempChar = (char)(tempCol + 96);
+				moveString = Character.toString(tempChar) + tempRow;
+				if (curWallMove.getWallDirection() == Direction.Horizontal) {
+					moveString = moveString + "h";
+				} else {
+					moveString = moveString + "v";
+				}
+				whiteString = whiteString + moveString;
+			}
+			
+			//Loop through black walls second
+			for (Wall curWall : blackWalls) {
+				blackString = blackString + ", ";
+				moveString = "";
+				curWallMove = curWall.getMove();
+				tempTile = curWallMove.getTargetTile();
+				tempCol = tempTile.getColumn();
+				tempRow = tempTile.getRow();
+				tempChar = (char)(tempCol + 96);
+				moveString = Character.toString(tempChar) + tempRow;
+				if (curWallMove.getWallDirection() == Direction.Horizontal) {
+					moveString = moveString + "h";
+				} else {
+					moveString = moveString + "v";
+				}
+				blackString = blackString + moveString;
+			}
+
+			//At this point, both lines for the text file should exist.
+			
+			if (whitePlayersTurn) {
+				printW.println(whiteString);
+				printW.print(blackString);
+			} else {
+				printW.println(blackString);
+				printW.print(whiteString);
+			}
+			
+			write.close();
+			printW.close();
+			return true;
+		} catch (IOException e) {
+			return false;//CHANGE LATER!
+		}	
 	}
+	
+	/*  This code will be re-used for Save GAME!
+	 	Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game curGame = quoridor.getCurrentGame();
+		GamePosition curGamePos = curGame.getCurrentPosition();
+		//new Bool to keep track of which player's turn it is, for text file.
+		Boolean whitePlayersTurn = false;
+		Player whitePlayer = curGame.getWhitePlayer();
+		if (curGamePos.getPlayerToMove() == curGame.getWhitePlayer()) {
+			whitePlayersTurn = true;
+		}
+		Tile tempTile = null;
+		Direction tempDir = null;
+		String temp = "";
+		//String wallTemp = "";
+		int tempCol = 0;
+		char tempChar;
+		String whiteString = "W: ";
+		String blackString = "B: ";
+		//The following assumes the moves are added in order!
+		List<Move> allMoves = curGame.getMoves();
+		for (Move curMove : allMoves) {
+			
+			tempTile = curMove.getTargetTile();
+			tempCol = tempTile.getColumn();
+			tempChar = (char)(tempCol + 96);
+			temp = ", " + Character.toString(tempChar) + tempTile.getRow();
+			
+			if (curMove instanceof WallMove) {
+				tempDir = ((WallMove)curMove).getWallDirection();
+				if (tempDir == Direction.Horizontal) {
+					temp = temp + "h";
+				} else {
+					temp = temp + "v";
+				}
+			}
+			
+			if (curMove.getPlayer() == whitePlayer) {
+				whiteString = whiteString + ", " + temp;
+			} else {
+				blackString = blackString + ", " + temp;
+			}
+			temp = "";
+		}
+	 
+	 
+	 */
 
 	/**
 	 * This is a helper method that checks if a file already exists.
@@ -239,17 +394,134 @@ public class QuoridorController {
 	 * This method loads a game from a text file, checking to see that it is a valid
 	 * position
 	 * 
-	 * @param fileName String representing the name of the file taht you wish to
+	 * @param fileName String representing the name of the file that you wish to
 	 *                 import.
 	 * @throws UnsupportedOperationException
 	 * @author Shayne Leitman, 260688512
 	 */
-	// Idea is to first create a new game (with the users, and time), then go in and
-	// set time for each player.
-	// Next, go move by move through the game, checking at each step if a move is
-	// alright.
-	public static void loadSavedGame(String fileName) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException("Controller feature not fully implemented yet!");
+	
+	public static void loadSavedPosition(String fileName) throws UnsupportedOperationException {
+
+		BufferedReader reader;
+		try {
+			
+			reader = new BufferedReader(new FileReader(fileName));
+			String fileLine = reader.readLine();
+			Boolean whitePlayersTurn = false;
+			String whitePlayerStr = "";
+			String blackPlayerStr = "";
+			//First, check if first line is white or black
+			if (fileLine.substring(0, 1) == "W") {
+				whitePlayersTurn = true;
+				whitePlayerStr = fileLine;
+				fileLine = reader.readLine();
+				blackPlayerStr = fileLine;
+			} else {
+				blackPlayerStr = fileLine;
+				fileLine = reader.readLine();
+				whitePlayerStr = fileLine;
+			}
+			
+			whitePlayerStr = whitePlayerStr.substring(3);
+			blackPlayerStr = blackPlayerStr.substring(3);
+			
+			String whitePlayerTile = whitePlayerStr.substring(0, 2);
+			String blackPlayerTile = blackPlayerStr.substring(0, 2);
+			int whitePawnCol = ((int) whitePlayerTile.charAt(0)) - 96;
+			int whitePawnRow = Integer.parseInt(whitePlayerTile.substring(1, 2));
+			int blackPawnCol = ((int) blackPlayerTile.charAt(0)) - 96;
+			int blackPawnRow = Integer.parseInt(blackPlayerTile.substring(1, 2));
+			
+			//We need to create a new "fake" game, add walls one by one, and validate position each time.
+			//If the validation fails, then nothing really happens.
+			//If it IS valid, then replace the current game with the game we just created.
+			
+			Quoridor tempQ = new Quoridor();
+			Board board = new Board(tempQ);
+			// Creating tiles by rows, i.e., the column index changes with every tile
+			// creation
+			for (int i = 1; i <= 9; i++) { // rows
+				for (int j = 1; j <= 9; j++) { // columns
+					board.addTile(i, j);
+				}
+			}
+			//Copied
+			Tile player1StartPos = tempQ.getBoard().getTile(36);
+			Tile player2StartPos = tempQ.getBoard().getTile(44);
+			
+			//We want to set the players at the actual tiles they are on:
+			List<Tile> tempTileList = board.getTiles();
+			for (Tile curTile : tempTileList) {
+				if (curTile.getColumn() == whitePawnCol && curTile.getRow() == whitePawnRow) {
+					player1StartPos = curTile;
+				}
+				if (curTile.getColumn() == blackPawnCol && curTile.getRow() == blackPawnRow) {
+					player2StartPos = curTile;
+				}
+			}
+			
+			User user1 = tempQ.addUser("tmpUser1");
+			User user2 = tempQ.addUser("tmpUser2");
+			Player player1 = new Player(new Time(180), user1, 9, Direction.Horizontal);
+			Player player2 = new Player(new Time(180), user2, 1, Direction.Horizontal);
+			
+			Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, tempQ);
+			game.setWhitePlayer(player1);
+			game.setBlackPlayer(player2);
+			
+			PlayerPosition player1Position = new PlayerPosition(player1, player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(player2, player2StartPos);
+
+			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, player1, game);
+			
+			//Wall stock and placement on board.
+			//First, get 2 lists for all walls.
+			String[] whiteWalls = whitePlayerStr.substring(4).replace(" ", "").split(",");
+			String[] blackWalls = blackPlayerStr.substring(4).replace(" ", "").split(",");
+			//Next, get size, so we know how many walls to place for each player.
+			int whiteWallsPlaced = whiteWalls.length;
+			int blackWallsPlaced = blackWalls.length;
+			// Add the walls as in stock for the players
+			for (int j = 0; j < 10 - whiteWallsPlaced; j++) {
+				Wall wall = Wall.getWithId(j);
+				gamePosition.addWhiteWallsInStock(wall);
+			}
+			for (int j = 0; j < 10 - blackWallsPlaced; j++) {
+				Wall wall = Wall.getWithId(j + 10);
+				gamePosition.addBlackWallsInStock(wall);
+			}
+			//Create move number counter
+			int moveCounter = 1;
+			
+			for (int j = 10 - whiteWallsPlaced; j < 10; j++) {
+				Wall wall = Wall.getWithId(j);
+				WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
+				gamePosition.addWhiteWallsInStock(wall);
+			}
+			for (int j = 10 - blackWallsPlaced; j < 10; j++) {
+				Wall wall = Wall.getWithId(j + 10);
+				WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
+				gamePosition.addBlackWallsInStock(wall);
+			}
+			
+			game.setCurrentPosition(gamePosition);
+			
+			
+			
+			//First, we should check the pawn positions are ok!
+			
+			
+			//Next, we check that the wall positions are ok!
+			
+			
+			
+			
+			reader.close();
+			
+		} catch (IOException e) {
+			
+		}
+		
 	}
 
 	/**
