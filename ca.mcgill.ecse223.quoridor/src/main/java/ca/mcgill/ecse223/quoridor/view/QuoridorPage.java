@@ -36,6 +36,9 @@ public class QuoridorPage extends JFrame{
 
 
 	// UI elements
+	//Global variables
+	private boolean moveIsClicked;
+	private boolean dropIsClicked;
 	private JLabel errorMsg;
 	//Game
 	private JButton createNewGameButton;
@@ -54,6 +57,11 @@ public class QuoridorPage extends JFrame{
 	private JComboBox<String> secondList;
 	private JLabel setMinuteLabel;
 	private JLabel setSecondLabel;
+	//Wall
+	private JButton moveWall;
+	private JButton dropWall;
+	private JButton grabWall;
+	private JButton rotateWall;
 
 	
 	// data elements
@@ -101,6 +109,15 @@ public class QuoridorPage extends JFrame{
 		setMinuteLabel.setText("Set Minutes:");
 		setSecondLabel = new JLabel();
 		setSecondLabel.setText("Set Seconds:");
+		//elements for Wall buttons
+		moveWall=new JButton();
+		moveWall.setText("MOVE");
+		moveWall.setActionCommand("move");
+		moveIsClicked=false;
+		dropWall=new JButton();
+		dropWall.setText("DROP");
+		dropWall.setActionCommand("drop");
+		dropIsClicked=false;
 		
 		// global settings
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -126,6 +143,23 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
+		//listeners for Wall buttons
+		moveWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				if(evt.getActionCommand().equals("move")) {
+					moveIsClicked=true;
+				}
+			}
+		});
+		dropWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				if(evt.getActionCommand().equals("drop")) {
+					dropIsClicked=true;
+				}
+			}
+		});
+		
+		
 		//Layout
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -144,8 +178,17 @@ public class QuoridorPage extends JFrame{
 	}
 	
 	private void refreshData() {
+		moveIsClicked=false;
+		dropIsClicked=false;
 		
-		
+	}
+	
+	private boolean getMoveIsClicked() {
+		return moveIsClicked;
+	}
+	
+	private boolean getDropIsClicked() {
+		return dropIsClicked;
 	}
 	
 }
