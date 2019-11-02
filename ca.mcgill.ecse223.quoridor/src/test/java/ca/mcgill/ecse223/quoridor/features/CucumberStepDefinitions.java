@@ -735,7 +735,7 @@ public class CucumberStepDefinitions {
 	/** @author Shayne Leitman, 260688512 */
 	@When("The user initiates to save the game with name {string}")
 	public void userInitiatesSaveGame(String fileName) {
-		QuoridorController.saveCurrentGame(fileName);
+		//QuoridorController.saveCurrentGame(fileName);
 		// CHANGE THIS IF THE METHOD CHANGES INPUTS/OUTPUTS!!!
 	}
 
@@ -797,7 +797,7 @@ public class CucumberStepDefinitions {
 	/** @author Shayne Leitman, 260688512 */
 	@When("I initiate to load a saved game {string}")
 	public void initiateLoadGame(String fileName) {
-		QuoridorController.loadSavedGame(fileName);
+		//QuoridorController.loadSavedGame(fileName);
 	}
 
 	/** @author Shayne Leitman, 260688512 */

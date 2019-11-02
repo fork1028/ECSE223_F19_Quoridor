@@ -495,12 +495,12 @@ public class QuoridorController {
 			
 			for (int j = 10 - whiteWallsPlaced; j < 10; j++) {
 				Wall wall = Wall.getWithId(j);
-				WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
+				//WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
 				gamePosition.addWhiteWallsInStock(wall);
 			}
 			for (int j = 10 - blackWallsPlaced; j < 10; j++) {
 				Wall wall = Wall.getWithId(j + 10);
-				WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
+				//WallMove(int aMoveNumber, int aRoundNumber, Player aPlayer, Tile aTargetTile, Game aGame, Direction aWallDirection, Wall aWallPlaced)
 				gamePosition.addBlackWallsInStock(wall);
 			}
 			
