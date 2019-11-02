@@ -166,14 +166,13 @@ public class QuoridorController {
 		throw new UnsupportedOperationException("There are no more walls");
 	}
 
+	
 	/**
-	 * This method enables player to move around a wall on the board.
+	 * This method enables player to move a wall on the board.
 	 * 
-	 * @param Player   that is going to move the wall
-	 * @param Wall     that the player intends to move
-	 * @param WallMove that player clicked on the arrow keys.
+	 * @param moveDirection that indicates the direction the user wants to move the wall
 	 * @throws UnsupportedOperationException
-	 * @author 
+	 * @author Xinyue Chen 260830761
 	 * @throws InvalidInputException 
 	 */
 	public static void moveWall(String moveDirection) throws UnsupportedOperationException, InvalidInputException {
@@ -216,11 +215,10 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method enables player to drop a wall if there is no wall under it.
+	 * This method enables player to drop a wall.
 	 * 
-	 * @param Player   that is going to drop the wall
-	 * @param Wall     that the player intends to drop
-	 * @param WallMove that the wall is going to be placed
+	 * @param Player playerToMove   that is going to drop the wall
+	 * @param Wall wall    that the player intends to drop
 	 * @throws UnsupportedOperationException
 	 * @author Xinyue Chen, 260830761
 	 * @throws InvalidInputException 
