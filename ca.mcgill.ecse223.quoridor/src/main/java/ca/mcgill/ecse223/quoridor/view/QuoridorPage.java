@@ -11,6 +11,10 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+
 public class QuoridorPage extends JFrame{
 
 	// UI elements
@@ -103,6 +107,13 @@ public class QuoridorPage extends JFrame{
 			}
 		});
 		
+		/*listeners for Grab Wall
+		grabAWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+			}
+		});*/
+		
 		//Layout
 		GroupLayout layout = new GroupLayout(getContentPane());
 		getContentPane().setLayout(layout);
@@ -111,7 +122,16 @@ public class QuoridorPage extends JFrame{
 		//layout.setHorizontalGroup(
 				
 				//);
-		
+		/*public void Rect(Graphics g) {
+			
+		    Graphics2D g2d = (Graphics2D)g;
+		    g2d.setColor(Color.BLACK);
+		    Rectangle wall = new Rectangle(100, 100, 20, 20);
+		  
+		    g2d.draw(rect2);
+		    g2d.fill(rect2);
+		}
+		*/
 		
 	}
 	
