@@ -121,7 +121,6 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		ArrayList<Player> players = createUsersAndPlayers("user1", "user2");
 		new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
-
 	}
 
 	// ***********************************************
@@ -480,7 +479,18 @@ public class CucumberStepDefinitions {
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@And("The wall in my hand shall disappear from my stock")
 	public void theWallInMyHandShouldDisappearFromMyStock(Wall wall) {
-		// GUI
+	
+	 List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getWalls();
+	 List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getWalls();
+	 
+	 if (!whiteWalls.isEmpty()) {
+		 
+		 whiteWalls.remove(wall); 
+	 }
+	 if (blackWalls.isEmpty()) {
+			throw new UnsupportedOperationException("There are no more black walls");
+	 }
+
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -520,11 +530,9 @@ public class CucumberStepDefinitions {
 	
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Given("A wall move candidate exists with <dir> at position (<row>, <col>})")
-	public void aWallMoveCandidateExistsWithDirectionAtPosition(Direction direction) {
+	public void aWallMoveCandidateExistsWithDirectionAtPosition(Direction direction, int row, int col) {
 		
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		int col = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
-		int row = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
 		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
 				.getWallDirection() == direction);
 	}
