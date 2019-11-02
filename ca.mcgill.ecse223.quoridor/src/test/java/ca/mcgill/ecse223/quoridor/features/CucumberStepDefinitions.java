@@ -481,10 +481,9 @@ public class CucumberStepDefinitions {
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@And("The wall in my hand shall disappear from my stock")
-	public void theWallInMyHandShouldDisappearFromMyStock() {
-	
-	
 
+	public void theWallInMyHandShouldDisappearFromMyStock() {
+	//GUI
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -524,12 +523,12 @@ public class CucumberStepDefinitions {
 //	}
 	
 	/** * @author Rajaa Boukhelif, 260870030 */
+
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
 	public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction, int row, int col) {
 		Direction direction1 = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
 				.getWallDirection();
 		String dir = direction1.toString() ;		
-		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
 				.getWallDirection() == direction1);
 	}

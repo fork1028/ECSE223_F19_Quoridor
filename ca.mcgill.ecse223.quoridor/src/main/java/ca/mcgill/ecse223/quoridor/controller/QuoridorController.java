@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.sql.Time;
 import java.util.List;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -150,7 +151,7 @@ public class QuoridorController {
 	 */
 	public static void grabWall(Player player, WallMove move) throws UnsupportedOperationException {
 
-		 
+	 
 		 /*ActionListener taskPerformer = new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				  if(grabButton.getModel().isPressed())  
@@ -192,8 +193,8 @@ public class QuoridorController {
 		
 		 
 	
-		
-		
+
+	
 	}
 
 	/**
@@ -206,6 +207,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
+
 	public static void rotateWall  (Wall wall, WallMove move, Direction dir) throws UnsupportedOperationException {
 		
 		
@@ -229,6 +231,7 @@ public class QuoridorController {
 	}
 	else throw new UnsupportedOperationException("The wall cannot be rotated");
 	}
+
 
 	
 	/**
