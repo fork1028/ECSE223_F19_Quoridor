@@ -735,7 +735,7 @@ public class CucumberStepDefinitions {
 	/** @author Shayne Leitman, 260688512 */
 	@When("The user initiates to save the game with name {string}")
 	public void userInitiatesSaveGame(String fileName) {
-		//QuoridorController.saveCurrentGame(fileName);
+		QuoridorController.attemptToSavePosition(fileName);
 		// CHANGE THIS IF THE METHOD CHANGES INPUTS/OUTPUTS!!!
 	}
 

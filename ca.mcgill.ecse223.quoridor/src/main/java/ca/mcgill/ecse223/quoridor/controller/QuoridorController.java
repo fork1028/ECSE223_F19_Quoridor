@@ -190,6 +190,41 @@ public class QuoridorController {
 		throw new java.lang.UnsupportedOperationException("You can't drop the wall here, there is already a wall.");
 
 	}
+	
+	/**
+	 * This method enables the user to overwrite an existing file
+	 * 
+	 * @param newFileName String representing the name to be given to the text file
+	 *                    being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static Boolean overWriteSavePosition(String newFileName, Boolean overWrite) throws UnsupportedOperationException  {
+		
+		if (overWrite) {
+			return saveCurrentPosition(newFileName);
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * This method attempts to save the current game as a text file.
+	 * 
+	 * @param newFileName String representing the name to be given to the text file
+	 *                    being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static Boolean attemptToSavePosition(String newFileName) throws UnsupportedOperationException  {
+		Boolean fileExists = fileAlreadyExists(newFileName);
+		
+		if (fileExists) {
+			return false;
+		}
+		
+		return saveCurrentPosition(newFileName);
+	}
 
 	/**
 	 * This method saves the current game as a text file.
@@ -199,15 +234,10 @@ public class QuoridorController {
 	 * @throws UnsupportedOperationException
 	 * @author Shayne Leitman, 260688512
 	 */
-	public static Boolean saveCurrentPosition(String newFileName, Boolean overWriteIfExists) throws UnsupportedOperationException {
-		// call helper function fileAlreadyExists first!!!
-		//throw new UnsupportedOperationException("Controller feature not fully implemented yet!");\
-		Boolean fileExists = fileAlreadyExists(newFileName);
+	public static Boolean saveCurrentPosition(String newFileName) throws UnsupportedOperationException {
 		
-		if (fileExists && !overWriteIfExists) {
-			//ASK USER WHETHER TO OVERWRITE OR NOT! If yes, wipe old file
-			return false;
-		}
+		//throw new UnsupportedOperationException("Controller feature not fully implemented yet!");\
+
 		
 		try {
 			
@@ -523,7 +553,7 @@ public class QuoridorController {
 				}
 				
 				positionValidated = validatePosition(row, col, tempDir);
-				overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+				//overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir); UNCOMMENT LATER!
 				
 				for (Tile curTile : tempTileList) {
 					if (curTile.getColumn() == col && curTile.getRow() == row) {
@@ -554,7 +584,7 @@ public class QuoridorController {
 				}
 				
 				positionValidated = validatePosition(row, col, tempDir);
-				overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+				//overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir); UNCOMMENT LATER!
 				
 				for (Tile curTile : tempTileList) {
 					if (curTile.getColumn() == col && curTile.getRow() == row) {
