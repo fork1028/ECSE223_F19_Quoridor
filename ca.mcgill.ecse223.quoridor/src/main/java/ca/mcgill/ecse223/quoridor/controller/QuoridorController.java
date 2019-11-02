@@ -537,7 +537,7 @@ public static void rotateWall  (Wall wall, WallMove move, Direction dir) throws 
 	 * @author Shayne Leitman, 260688512
 	 */
 
-	public static void loadSavedPosition(String fileName) throws UnsupportedOperationException {
+	public static boolean loadSavedPosition(String fileName) throws UnsupportedOperationException {
 
 		BufferedReader reader;
 		try {
@@ -718,9 +718,12 @@ public static void rotateWall  (Wall wall, WallMove move, Direction dir) throws 
 
 			reader.close();
 
+			return (positionValidated && overlapPositionValidated);
+			
 		} catch (IOException e) {
 
 		}
+		return false;
 
 	}
 
