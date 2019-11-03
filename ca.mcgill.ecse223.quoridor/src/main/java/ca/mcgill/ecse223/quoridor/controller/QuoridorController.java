@@ -184,7 +184,7 @@ public class QuoridorController {
 			// note from TA code: there are total 36 tiles in the first four rows and
 			// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
 			// pos
-
+		
 			// white initial position
 			Tile whiteStart = quoridor.getBoard().getTile(36);
 			PlayerPosition whitePos = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), whiteStart);
@@ -258,7 +258,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
-	public static void grabWall(Player player, WallMove move) throws UnsupportedOperationException {
+	public static void grabWall(Player player) throws UnsupportedOperationException {
 
 		/*
 		 * ActionListener taskPerformer = new ActionListener() { public void
@@ -277,8 +277,8 @@ public class QuoridorController {
 		int wallIdxForPlayer = 1;
 
 		if (player == whitePlayer) {
-			Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
-
+			//Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
+			Tile whiteStart=new Tile(5,5,QuoridorApplication.getQuoridor().getBoard());
 			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 					.getWhiteWallsInStock(wallIdxForPlayer);
 			WallMove nextmove = new WallMove(0, 0, player, whiteStart, null, startDir, wall);
@@ -290,7 +290,8 @@ public class QuoridorController {
 		}
 
 		if (player == blackPlayer) {
-			Tile blackStart = QuoridorApplication.getQuoridor().getBoard().getTile(44);
+			//Tile blackStart = QuoridorApplication.getQuoridor().getBoard().getTile(44);
+			Tile blackStart=new Tile(5,5,QuoridorApplication.getQuoridor().getBoard());
 			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 					.getBlackWallsInStock(wallIdxForPlayer);
 			WallMove nextmove = new WallMove(0, 0, player, blackStart, null, startDir, wall);
@@ -298,7 +299,6 @@ public class QuoridorController {
 
 			if (!blackWalls.isEmpty()) {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
-				;
 			}
 
 		}
@@ -365,12 +365,13 @@ public class QuoridorController {
 		if (row == 1 || row == 9) {
 			throw new java.lang.UnsupportedOperationException("You can't move the wall further.");
 		}
-		if (col == 'I' || col == 'A') {
+		if (col == 1 || col == 9) {
 			throw new java.lang.UnsupportedOperationException("You can't move the wall further.");
 		}
 		if (moveDirection.equals("right")) {
 			// newTile.getBoard().getTile();
 			newTile = new Tile(row, col + 1, board);
+			//newTile=board.getTile(index);
 		}
 		if (moveDirection.equals("left")) {
 			newTile = new Tile(row, col - 1, board);
@@ -381,9 +382,11 @@ public class QuoridorController {
 		if (moveDirection.equals("down")) {
 			newTile = new Tile(row + 1, col, board);
 		}
-		if (newTile != null)
+		if (newTile != null) {
 			candidate.setTargetTile(newTile);
-
+		}
+		else throw new InvalidInputException("New target tile doesn't exist");
+		
 	}
 
 	/**
@@ -397,17 +400,28 @@ public class QuoridorController {
 	 */
 	public static void dropWall(Player playerToMove, Wall wall)
 			throws UnsupportedOperationException, InvalidInputException {
+		
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		Game game=quoridor.getCurrentGame();
 
-		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Player whitePlayer = game.getWhitePlayer();
+		Player blackPlayer = game.getBlackPlayer();
+		
 		playerToMove = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		
 		if (whitePlayer == null) {
 			throw new InvalidInputException("White player doesn't exist");
 		}
 		if (blackPlayer == null) {
 			throw new InvalidInputException("Black player doesn't exist");
 		}
+		
 		wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+		
+		if(wall==null) {
+			throw new InvalidInputException("Wall doesn't exist");
+		}
+		
 		if (playerToMove == whitePlayer) {
 			QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
 		}
