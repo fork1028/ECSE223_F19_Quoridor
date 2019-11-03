@@ -686,7 +686,6 @@ public class CucumberStepDefinitions {
 					assert("down".equals(direction));
 				}
 			}
-
 	}
 
 	// ****** END of MOVEWALL ******************
@@ -707,7 +706,6 @@ public class CucumberStepDefinitions {
 		int row = candidate.getTargetTile().getRow();
 		int col = candidate.getTargetTile().getColumn();
 		assert (candidate != null);
-
 	}
 
 	/**
@@ -721,7 +719,6 @@ public class CucumberStepDefinitions {
 		Player playerToMove = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
 		QuoridorController.dropWall(playerToMove, wall);
-
 	}
 
 	/**
@@ -737,7 +734,6 @@ public class CucumberStepDefinitions {
 		int col = candidate.getTargetTile().getColumn();
 		String dir = candidate.getWallDirection().toString().toLowerCase();
 		assert (direction.equals(dir) || col != ncol); 
-
 	}
 
 	/**
