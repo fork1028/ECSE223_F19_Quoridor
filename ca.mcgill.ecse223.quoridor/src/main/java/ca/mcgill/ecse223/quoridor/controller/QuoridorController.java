@@ -730,8 +730,8 @@ public static void rotateWall  (Wall wall, WallMove move, Direction dir) throws 
 		} catch (IOException e) {
 
 		}
+		
 		return false;
-
 	}
 
 	/**
