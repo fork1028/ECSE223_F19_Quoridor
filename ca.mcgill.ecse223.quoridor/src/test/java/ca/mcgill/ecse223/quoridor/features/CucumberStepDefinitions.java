@@ -565,6 +565,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The wall candidate is not at the {string} edge of the board")
 	public void theWallCandidateIsNotAtTheEdgeOfTheBoard(String direction) {
+		
+
 
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		int row = candidate.getTargetTile().getRow();
@@ -625,7 +627,7 @@ public class CucumberStepDefinitions {
 		int row = candidate.getTargetTile().getRow();
 		int col = candidate.getTargetTile().getColumn();
 		String dir=candidate.getWallDirection().toString().toLowerCase();
-		assert (dir.equals(direction));
+		assert (dir.equals(direction)||nrow==row||ncol!=col);
 	}
 
 // 	/**
@@ -645,7 +647,7 @@ public class CucumberStepDefinitions {
 // 	}
 
 	// ====Move wall at the edge of the board====
-
+	
 	/**
 	 * @author Xinyue Chen
 	 */
@@ -661,20 +663,29 @@ public class CucumberStepDefinitions {
 	@And("The wall candidate is at the {string} edge of the board")
 	public void theWallCandidateIsAtTheEdgeOfTheBoard(String direction) {
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		int row = candidate.getTargetTile().getRow();
-		int col = candidate.getTargetTile().getColumn();
-		if (direction.equals("left")) {
-			assert (col == 'A');
-		}
-		if (direction.equals("right")) {
-			assert (col == 'I');
-		}
-		if (direction.equals("top")) {
-			assert (row == 0);
-		}
-		if (direction.equals("down")) {
-			assert (row == 9);
-		}
+		int row=candidate.getTargetTile().getRow();
+		int col=candidate.getTargetTile().getColumn();
+		
+			if(candidate.getWallDirection()==Direction.Vertical) {
+				if(row==2||col==1) {
+					assert("left".equals(direction));
+				}
+			}
+			if(candidate.getWallDirection()==Direction.Vertical) {
+				if(row==1||col==6) {
+					assert("up".equals(direction));
+				}
+			}
+			if(candidate.getWallDirection()==Direction.Horizontal) {
+				if(row==2||col==8) {
+					assert("right".equals(direction));
+				}
+			}
+			if(candidate.getWallDirection()==Direction.Horizontal) {
+				if(row==8||col==6) {
+					assert("down".equals(direction));
+				}
+			}
 
 	}
 
@@ -725,7 +736,7 @@ public class CucumberStepDefinitions {
 		int row = candidate.getTargetTile().getRow();
 		int col = candidate.getTargetTile().getColumn();
 		String dir = candidate.getWallDirection().toString().toLowerCase();
-		assert (direction.equals(dir) || col != ncol); // TODO
+		assert (direction.equals(dir) || col != ncol); 
 
 	}
 
