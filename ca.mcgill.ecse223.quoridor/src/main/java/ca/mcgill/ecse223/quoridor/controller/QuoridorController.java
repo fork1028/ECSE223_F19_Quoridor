@@ -669,6 +669,7 @@ public class QuoridorController {
 				fileLine = reader.readLine();
 				whitePlayerStr = fileLine;
 			}
+			reader.close();
 
 			// Now, cut the front part, and find the tile each player is on.
 			whitePlayerStr = whitePlayerStr.substring(3);
@@ -680,6 +681,18 @@ public class QuoridorController {
 			int whitePawnRow = Integer.parseInt(whitePlayerTile.substring(1, 2));
 			int blackPawnCol = ((int) blackPlayerTile.charAt(0)) - 96;
 			int blackPawnRow = Integer.parseInt(blackPlayerTile.substring(1, 2));
+			
+			
+			Boolean statusOfPosition = true;
+			if (!validatePawnPosition(whitePawnRow, whitePawnCol)) {
+				statusOfPosition = false;
+				return false;
+			}
+			if (!validatePawnPosition(blackPawnRow, blackPawnCol)) {
+				statusOfPosition = false;
+				return false;
+			}
+			
 
 			// We need to create a new "fake" game, add walls one by one, and validate
 			// position each time.
@@ -694,6 +707,7 @@ public class QuoridorController {
 			List<Player> players = new ArrayList<Player>();
 			players.add(player1);
 			players.add(player2);
+			
 
 			Quoridor tempQ = new Quoridor();
 			Board board = new Board(tempQ);
@@ -765,7 +779,6 @@ public class QuoridorController {
 			int col = 1;
 			int row = 1;
 			Tile tempTile = null;
-			Boolean statusOfPosition = true;
 			Boolean positionValidated = true;
 			Boolean overlapPositionValidated = true;
 
@@ -790,7 +803,7 @@ public class QuoridorController {
 					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
 				}
 				
-				if (positionValidated && overlapPositionValidated) {
+				if (!(positionValidated && overlapPositionValidated)) {
 					statusOfPosition = false;
 				}
 
@@ -829,7 +842,7 @@ public class QuoridorController {
 					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
 				}
 				
-				if (positionValidated && overlapPositionValidated) {
+				if (!(positionValidated && overlapPositionValidated)) {
 					statusOfPosition = false;
 				}
 
@@ -852,9 +865,7 @@ public class QuoridorController {
 				quoridor.setCurrentGame(game);
 				quoridor.setBoard(board);
 			}
-
-			reader.close();
-
+			
 			return (statusOfPosition);
 
 		} catch (IOException e) {
