@@ -661,7 +661,11 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("I shall be notified that my move is illegal")
 	public void iShallBeNotifiedThatMyMoveIsIllegal() {
-		// GUI related
+		String err=QuoridorGamePage.getErrMsg();
+		//assert(!err.equals("Unable to move the wall"));
+		if(err.contentEquals("Unable to move the wall")) {
+			throw new UnsupportedOperationException("Unable to move the wall");
+		}
 	}
 
 	/**
