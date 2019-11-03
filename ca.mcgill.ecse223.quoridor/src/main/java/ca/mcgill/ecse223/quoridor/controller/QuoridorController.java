@@ -354,9 +354,6 @@ public class QuoridorController {
 	 */
 	public static Boolean saveCurrentPosition(String newFileName) throws UnsupportedOperationException {
 
-		// throw new UnsupportedOperationException("Controller feature not fully
-		// implemented yet!");\
-
 		try {
 
 			FileWriter write = new FileWriter(newFileName, false);
@@ -367,12 +364,10 @@ public class QuoridorController {
 			GamePosition curGamePos = curGame.getCurrentPosition();
 			// new Bool to keep track of which player's turn it is, for text file.
 			Boolean whitePlayersTurn = false;
-			Player whitePlayer = curGame.getWhitePlayer();
 			if (curGamePos.getPlayerToMove() == curGame.getWhitePlayer()) {
 				whitePlayersTurn = true;
 			}
 
-			String temp = "";
 			PlayerPosition whitePlayerPos = curGamePos.getWhitePosition();
 			PlayerPosition blackPlayerPos = curGamePos.getBlackPosition();
 			Tile whiteTile = whitePlayerPos.getTile();
@@ -540,6 +535,7 @@ public class QuoridorController {
 			String whitePlayerStr = "";
 			String blackPlayerStr = "";
 			// First, check if first line is white or black
+			//Sort their line into the correct string variable
 			if (fileLine.substring(0, 1) == "W") {
 				whitePlayersTurn = true;
 				whitePlayerStr = fileLine;
@@ -550,7 +546,8 @@ public class QuoridorController {
 				fileLine = reader.readLine();
 				whitePlayerStr = fileLine;
 			}
-
+			
+			//Now, cut the front part, and find the tile each player is on.
 			whitePlayerStr = whitePlayerStr.substring(3);
 			blackPlayerStr = blackPlayerStr.substring(3);
 
@@ -565,7 +562,16 @@ public class QuoridorController {
 			// position each time.
 			// If the validation fails, then nothing really happens.
 			// If it IS valid, then replace the current game with the game we just created.
-
+			//Create users
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			User user1 = quoridor.addUser("tmpUser1");
+			User user2 = quoridor.addUser("tmpUser2");
+			Player player1 = new Player(new Time(180), user1, 9, Direction.Horizontal);
+			Player player2 = new Player(new Time(180), user2, 1, Direction.Horizontal);
+			List<Player> players = new ArrayList<Player>();
+			players.add(player1);
+			players.add(player2);
+			
 			Quoridor tempQ = new Quoridor();
 			Board board = new Board(tempQ);
 			// Creating tiles by rows, i.e., the column index changes with every tile
@@ -575,7 +581,13 @@ public class QuoridorController {
 					board.addTile(i, j);
 				}
 			}
-			// Copied
+			//Create all walls, assign them to a player
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 10; j++) {
+					new Wall(i * 10 + j, players.get(i));
+				}
+			}
+			
 			Tile player1StartPos = tempQ.getBoard().getTile(36);
 			Tile player2StartPos = tempQ.getBoard().getTile(44);
 
@@ -590,10 +602,6 @@ public class QuoridorController {
 				}
 			}
 
-			User user1 = tempQ.addUser("tmpUser1");
-			User user2 = tempQ.addUser("tmpUser2");
-			Player player1 = new Player(new Time(180), user1, 9, Direction.Horizontal);
-			Player player2 = new Player(new Time(180), user2, 1, Direction.Horizontal);
 
 			Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, tempQ);
 			game.setWhitePlayer(player1);
@@ -611,8 +619,8 @@ public class QuoridorController {
 
 			// Wall stock and placement on board.
 			// First, get 2 lists for all walls.
-			String[] whiteWalls = whitePlayerStr.substring(4).replace(" ", "").split(",");
-			String[] blackWalls = blackPlayerStr.substring(4).replace(" ", "").split(",");
+			String[] whiteWalls = whitePlayerStr.substring(3).replace(" ", "").split(",");
+			String[] blackWalls = blackPlayerStr.substring(3).replace(" ", "").split(",");
 			// Next, get size, so we know how many walls to place for each player.
 			int whiteWallsPlaced = whiteWalls.length;
 			int blackWallsPlaced = blackWalls.length;
@@ -651,10 +659,11 @@ public class QuoridorController {
 				} else {
 					tempDir = Direction.Vertical;
 				}
-
-				positionValidated = validatePosition(row, col, tempDir);
-				// overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
-				// UNCOMMENT LATER!
+				
+				if (j > 0) {
+					positionValidated = validatePosition(row, col, tempDir);
+					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+				}
 
 				for (Tile curTile : tempTileList) {
 					if (curTile.getColumn() == col && curTile.getRow() == row) {
@@ -684,9 +693,10 @@ public class QuoridorController {
 					tempDir = Direction.Vertical;
 				}
 
-				positionValidated = validatePosition(row, col, tempDir);
-				// overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
-				// UNCOMMENT LATER!
+				if (j > 0) {
+					positionValidated = validatePosition(row, col, tempDir);
+					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+				}
 
 				for (Tile curTile : tempTileList) {
 					if (curTile.getColumn() == col && curTile.getRow() == row) {
@@ -704,7 +714,6 @@ public class QuoridorController {
 			// Now check to see if the position is valid booleans are still true. If yes, go
 			// into REAL quoridor object and set currentGame. If not, return false?
 			if (positionValidated && overlapPositionValidated) {
-				Quoridor quoridor = QuoridorApplication.getQuoridor();
 				quoridor.setCurrentGame(game);
 			}
 
