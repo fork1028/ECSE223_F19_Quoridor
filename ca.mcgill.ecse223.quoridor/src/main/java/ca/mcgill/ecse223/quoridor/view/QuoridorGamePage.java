@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Properties;
@@ -27,9 +30,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.Timer;
 import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+
+import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
 
 public class QuoridorGamePage extends JFrame {
 
@@ -39,11 +45,15 @@ public class QuoridorGamePage extends JFrame {
 
 	// players
 	private JLabel playerWhiteNameLabel;
-	private JLabel playerBlackNameLabel;
 	private JLabel playerWhiteTurnLabel;
-	private JLabel playerBlackTurnLabel;
-	// TODO: countdown clocks and stock
+	private JLabel playerWhiteClockLabel;
 
+	private JLabel playerBlackNameLabel;
+	private JLabel playerBlackTurnLabel;
+	private JLabel playerBlackClockLabel;
+	private static final int refreshClockMS = 100; 
+	private int testTimer=0;
+	
 	// Wall
 	private JButton moveWall;
 	private JButton dropWall;
@@ -83,7 +93,7 @@ public class QuoridorGamePage extends JFrame {
 		messageLabel.setText(messageStr);
 		messageLabel.setForeground(Color.blue);
 		
-		//elements for players
+		//elements for white player
 		playerWhiteNameLabel = new JLabel();
 		playerWhiteNameLabel.setText("PLAYER WHITE"); //TODO: get username from startpage
 		playerWhiteNameLabel.setFont(new Font(null, Font.BOLD, 18));
@@ -94,17 +104,32 @@ public class QuoridorGamePage extends JFrame {
 		playerWhiteTurnLabel.setBackground(customGreen);
 		playerWhiteTurnLabel.setOpaque(true);
 		
+		playerWhiteClockLabel = new JLabel();
+		playerWhiteClockLabel.setText("MM:SS");
+		playerWhiteClockLabel.setFont(new Font(null, Font.BOLD, 25));
+		playerWhiteClockLabel.setBackground(Color.LIGHT_GRAY);
+		playerWhiteClockLabel.setOpaque(true);
+		
+		//elements for black player
 		playerBlackNameLabel = new JLabel();
 		playerBlackNameLabel.setText("PLAYER BLACK"); //TODO: get username from startpage
 		playerBlackNameLabel.setFont(new Font(null, Font.BOLD, 18));
+		
 		playerBlackTurnLabel = new JLabel();
 		playerBlackTurnLabel.setText("       WAIT        ");
 		playerBlackTurnLabel.setFont(new Font(null, Font.BOLD, 16));
 		playerBlackTurnLabel.setBackground(Color.LIGHT_GRAY);
 		playerBlackTurnLabel.setOpaque(true);
 		
-		//TODO: countdown clocks and stock
 		
+		
+		playerBlackClockLabel = new JLabel();
+		playerBlackClockLabel.setText("MM:SS");
+		playerBlackClockLabel.setFont(new Font(null, Font.BOLD, 25));
+		playerBlackClockLabel.setBackground(Color.LIGHT_GRAY);
+		playerBlackClockLabel.setOpaque(true);
+		
+
 		//elements for Wall buttons
 		moveWall=new JButton();
 		moveWall.setText("MOVE");
@@ -135,31 +160,58 @@ public class QuoridorGamePage extends JFrame {
 
 		//action listeners
 		//TODO: complete actionlisteners, map to correct action performed methods at bottom
-		moveWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		moveWall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				moveIsClicked(evt);
 			}
 		});
-		dropWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		dropWall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				dropIsClicked(evt);
 			}
 		});
-		grabWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		grabWall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				grabIsClicked(evt);
 			}
 		});
-		rotateWall.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		rotateWall.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				rotateIsClicked(evt);
 			}
 		});
-		saveGame.addActionListener(new java.awt.event.ActionListener() {
-			public void actionPerformed(java.awt.event.ActionEvent evt) {
+		saveGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
 				saveGameIsClicked(evt);
 			}
 		});
+		
+		//Timer to refresh clock display every 100ms
+		new Timer(refreshClockMS,new ActionListener() {
+		      public void actionPerformed(ActionEvent evt) {
+		          //refresh clocks every 100ms
+		    	  String blackStr = "MM:SS"; //default
+		    	  String whiteStr = "MM:SS";
+		    	  
+		    	  if (QuoridorController.getTimeForPlayer(true) != null) {
+		    		  int blackSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(true));
+			    	  blackStr = QuoridorController.getDisplayTimeString(blackSec); //new black remaining time
+		    	  }
+		    	  if (QuoridorController.getTimeForPlayer(false) != null) {
+			    	  int whiteSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(false));
+			    	  whiteStr =QuoridorController.getDisplayTimeString(whiteSec); //new white remaining time
+		    	  }	  
+		    	//TODO: REMOVE TEST TIMER
+		    	testTimer++;
+		    	int testSec = testTimer/10;
+		    	blackStr = QuoridorController.getDisplayTimeString(testSec);
+		    	whiteStr = QuoridorController.getDisplayTimeString(testSec);
+		    	  
+		    	  
+		    	  playerBlackClockLabel.setText(blackStr);
+		    	  playerWhiteClockLabel.setText(whiteStr);
+		      }
+		}).start();
 		
 
 	// Layout
@@ -189,7 +241,8 @@ public class QuoridorGamePage extends JFrame {
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 								.addComponent(playerWhiteNameLabel)	
 								.addComponent(playerWhiteTurnLabel)
-								//TODO add countdown clock and stock
+								.addComponent(playerWhiteClockLabel)
+								//TODO add stock
 						)	
 								
 						//board in middle
@@ -207,6 +260,7 @@ public class QuoridorGamePage extends JFrame {
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 								.addComponent(playerBlackNameLabel)	
 								.addComponent(playerBlackTurnLabel)
+								.addComponent(playerBlackClockLabel)
 								//TODO add countdown clock and stock
 						)
 					)
@@ -231,7 +285,8 @@ public class QuoridorGamePage extends JFrame {
 					.addGroup(layout.createSequentialGroup()
 							.addComponent(playerWhiteNameLabel)	
 							.addComponent(playerWhiteTurnLabel)
-							//TODO add countdown clock and stock
+							.addComponent(playerWhiteClockLabel)
+							//TODO add stock
 					)	
 							
 					//board in middle
@@ -250,7 +305,8 @@ public class QuoridorGamePage extends JFrame {
 					.addGroup(layout.createSequentialGroup()
 							.addComponent(playerBlackNameLabel)	
 							.addComponent(playerBlackTurnLabel)
-							//TODO add countdown clock and stock
+							.addComponent(playerBlackClockLabel)
+							//TODO add stock
 					)
 				)
 				

@@ -17,8 +17,6 @@ import java.util.List;
 import javax.swing.Timer;
 import java.util.List;
 
-import javax.swing.Timer;
-
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
@@ -40,7 +38,7 @@ public class QuoridorController {
 		throw new UnsupportedOperationException("Unable to start Game");
 
 	}
-	
+
 	/**
 	 * This method Provides or Selects a User to be used in a game
 	 * 
@@ -51,7 +49,6 @@ public class QuoridorController {
 	public static boolean provideSelectUser(String username) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Unable to set Username");
 	}
-
 
 	/**
 	 * This method creates a new User in Quoridor by username, or returns an
@@ -79,8 +76,9 @@ public class QuoridorController {
 	 * This method sets an pre-created user to the current game's black or white
 	 * player by their username
 	 * 
-	 * @param username String value of username to set
-	 * @param forBlackPlayer True to set black player of current game, false for white
+	 * @param username       String value of username to set
+	 * @param forBlackPlayer True to set black player of current game, false for
+	 *                       white
 	 * @return True if success, false if failed
 	 * @author Helen
 	 * @throws IllegalArgumentException
@@ -88,10 +86,10 @@ public class QuoridorController {
 	public static boolean setUserToPlayer(String username, boolean forBlackPlayer) throws IllegalArgumentException {
 		try {
 			User user = getUserByUsername(username);
-			Player player = forBlackPlayer ? new Player(null, user, 1, Direction.Horizontal) //black
-					: new Player(null, user, 9, Direction.Horizontal); //white
-			return forBlackPlayer ? QuoridorApplication.getQuoridor().getCurrentGame().setBlackPlayer(player) :
-				QuoridorApplication.getQuoridor().getCurrentGame().setWhitePlayer(player) ;
+			Player player = forBlackPlayer ? new Player(null, user, 1, Direction.Horizontal) // black
+					: new Player(null, user, 9, Direction.Horizontal); // white
+			return forBlackPlayer ? QuoridorApplication.getQuoridor().getCurrentGame().setBlackPlayer(player)
+					: QuoridorApplication.getQuoridor().getCurrentGame().setWhitePlayer(player);
 		} catch (RuntimeException e) {
 			throw new IllegalArgumentException("Unable to create a user");
 		}
@@ -141,8 +139,8 @@ public class QuoridorController {
 	 */
 	public static void startClock() throws InvalidInputException {
 		try {
-			QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().toString();
-			// .getRemainingTime().notify();
+			QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().getRemainingTime()
+					.notify();
 
 		} catch (RuntimeException e) {
 			throw new InvalidInputException("Unable to start clock for next player");
@@ -1154,6 +1152,44 @@ public class QuoridorController {
 		}
 
 		return null; // return null if no user found
+
+	}
+
+	/**
+	 * Helper method to return a string in format "MM:SS" for a given integer number
+	 * of seconds
+	 * 
+	 * @author Helen
+	 * @param seconds
+	 * @return String in "MM:SS"
+	 */
+	public static String getDisplayTimeString(int seconds) {
+		int min = seconds / 60;
+		int sec = seconds % 60;
+		String display = (min < 10) ? ("0" + min + ((sec < 10) ? (":0" + sec) : (":" + sec)))
+				: (min + ((sec < 10) ? (":0" + sec) : (":" + sec)));
+		return display;
+	}
+
+	/**
+	 * Helper method for view to get the remaining time for a white or black player
+	 * 
+	 * @author Helen
+	 * @param forBlackPawn True to get time of black pawn, false for white
+	 * @return Time remainingTime of the player
+	 */
+	public static Time getTimeForPlayer(boolean forBlackPlayer) {
+		Time remainingTime = null;
+		try {
+			remainingTime = forBlackPlayer
+					? QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime()
+					: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+
+		} catch (RuntimeException e) {
+			// do nothing, the game has not started yet
+		}
+
+		return remainingTime; // return null if no time found
 
 	}
 

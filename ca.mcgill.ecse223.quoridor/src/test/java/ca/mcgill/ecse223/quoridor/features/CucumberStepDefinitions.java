@@ -435,12 +435,12 @@ public class CucumberStepDefinitions {
 	public void whitesClockIsCountingDown() {
 
 		//TODO: depends on start clock in start game
-//		Time white = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
-//		long whitems = white.getTime();
-//		Time black = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
-//		long blackms = black.getTime();
-//		assertTrue(whitems < blackms);
-//		
+		Time white = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+		long whitems = white.getTime();
+		Time black = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
+		long blackms = black.getTime();
+		assertTrue(whitems < blackms);
+		
 //		//GUI TODO: check countdown gui
 
 	}
