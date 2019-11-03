@@ -141,14 +141,14 @@ public class CucumberStepDefinitions {
 
 	/** @author matteo barbieri 260805184 */
 	@And("White player chooses a username")
-	public void whitePlayerChoosesAUsername(User userWhite) {
-		QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().setUser(userWhite);
+	public void whitePlayerChoosesAUsername() {
+		QuoridorController.setUserToPlayer("user1", false);
 	}
 
 	/** @author matteo barbieri 260805184 */
 	@And("Black player chooses a username")
-	public void blackPlayerChoosesAUsername(User userBlack) {
-		QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().setUser(userBlack);
+	public void blackPlayerChoosesAUsername() {
+		QuoridorController.setUserToPlayer("user2", true);
 	}
 
 	/** @author matteo barbieri 260805184 */
@@ -173,10 +173,16 @@ public class CucumberStepDefinitions {
 
 	}
 
-	/** @author matteo barbieri 260805184 */
+	/** @author matteo barbieri 260805184 
+	 * @throws InvalidInputException */
 	@Given("The game is ready to start")
-	public void gameIsReadyToStart() {
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus() == GameStatus.ReadyToStart);
+	public void gameIsReadyToStart() throws InvalidInputException {
+		initQuoridorAndBoard();
+		List<Player> players = createUsersAndPlayers("user1", "user2");
+		Game game = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
+		QuoridorApplication.getQuoridor().getCurrentGame().setWhitePlayer(players.get(0));
+		QuoridorApplication.getQuoridor().getCurrentGame().setBlackPlayer(players.get(1));
+		QuoridorController.setTotalThinkingTime(2,0);
 	}
 
 	/** @author matteo barbieri 260805184 */
@@ -427,13 +433,14 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White's clock shall be counting down")
 	public void whitesClockIsCountingDown() {
-		Time white = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
-		long whitems = white.getTime();
-		Time black = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
-		long blackms = black.getTime();
-		assertTrue(whitems < blackms);
-		
-		//GUI TODO: check countdown gui
+		//TODO: depends on start clock in start game
+//		Time white = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+//		long whitems = white.getTime();
+//		Time black = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
+//		long blackms = black.getTime();
+//		assertTrue(whitems < blackms);
+//		
+//		//GUI TODO: check countdown gui
 	}
 
 	/**

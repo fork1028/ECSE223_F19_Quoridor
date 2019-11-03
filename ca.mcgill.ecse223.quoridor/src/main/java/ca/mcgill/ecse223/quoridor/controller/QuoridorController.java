@@ -40,7 +40,7 @@ public class QuoridorController {
 		throw new UnsupportedOperationException("Unable to start Game");
 
 	}
-
+	
 	/**
 	 * This method Provides or Selects a User to be used in a game
 	 * 
@@ -50,6 +50,52 @@ public class QuoridorController {
 	 */
 	public static boolean provideSelectUser(String username) throws UnsupportedOperationException {
 		throw new UnsupportedOperationException("Unable to set Username");
+	}
+
+
+	/**
+	 * This method creates a new User in Quoridor by username, or returns an
+	 * existing user
+	 * 
+	 * @param username desired to create new User
+	 * @throws InvalidInputException
+	 * @author Helen
+	 */
+	public static User createUser(String username) throws IllegalArgumentException {
+		try {
+			// check if pre-existing
+			User user = getUserByUsername(username);
+			if (user != null) {
+				return user; // return pre-existing user
+			} else // or create new user
+				return QuoridorApplication.getQuoridor().addUser(username);
+		} catch (RuntimeException e) {
+			throw new IllegalArgumentException("Unable to create a user");
+		}
+
+	}
+
+	/**
+	 * This method sets an pre-created user to the current game's black or white
+	 * player by their username
+	 * 
+	 * @param username String value of username to set
+	 * @param forBlackPlayer True to set black player of current game, false for white
+	 * @return True if success, false if failed
+	 * @author Helen
+	 * @throws IllegalArgumentException
+	 */
+	public static boolean setUserToPlayer(String username, boolean forBlackPlayer) throws IllegalArgumentException {
+		try {
+			User user = getUserByUsername(username);
+			Player player = forBlackPlayer ? new Player(null, user, 1, Direction.Horizontal) //black
+					: new Player(null, user, 9, Direction.Horizontal); //white
+			return forBlackPlayer ? QuoridorApplication.getQuoridor().getCurrentGame().setBlackPlayer(player) :
+				QuoridorApplication.getQuoridor().getCurrentGame().setWhitePlayer(player) ;
+		} catch (RuntimeException e) {
+			throw new IllegalArgumentException("Unable to create a user");
+		}
+
 	}
 
 	/**
@@ -62,10 +108,6 @@ public class QuoridorController {
 	 * @author Helen Lin, 260715521
 	 */
 	public static void setTotalThinkingTime(int min, int sec) throws InvalidInputException {
-
-		// started implementation
-		// throw new UnsupportedOperationException("Default implementation of
-		// setTotalThinkingTime");
 
 		// validator to check min and sec are appropriate for total thinking
 		if (min > 60 || min < 0 || sec > 60 || sec < 0) {
@@ -91,6 +133,26 @@ public class QuoridorController {
 	}
 
 	/**
+	 * This method starts clock and countdown when user clicks start clock in view
+	 * for the next player to move
+	 * 
+	 * @author Helen
+	 * @throws InvalidInputException
+	 */
+	public static void startClock() throws InvalidInputException {
+		try {
+			QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().toString();
+			// .getRemainingTime().notify();
+
+		} catch (RuntimeException e) {
+			throw new InvalidInputException("Unable to start clock for next player");
+		}
+
+		// TODO: UI part in view
+
+	}
+
+	/**
 	 * This method initializes a new board.
 	 * 
 	 * @throws InvalidInputException
@@ -99,11 +161,24 @@ public class QuoridorController {
 	public static void initializeBoard() throws InvalidInputException {
 		Quoridor quoridor = QuoridorApplication.getQuoridor();
 
-		// started implementation
-
-		// It shall be white player to move
+		// create a new board with all tiles
 		try {
-			GamePosition position = new GamePosition(0, null, null, null, null);
+			if (!quoridor.hasBoard()) {
+				Board board = new Board(quoridor);
+				if (!board.hasTiles()) {
+					for (int i = 1; i <= 9; i++) { // rows
+						for (int j = 1; j <= 9; j++) { // columns
+							board.addTile(i, j);
+						}
+					}
+				}
+			}
+		} catch (RuntimeException e) {
+			throw new UnsupportedOperationException("Unable to create board with 81 tiles");
+		}
+
+		// set white and plack initial position , and set white player to move
+		try {
 			Player white = quoridor.getCurrentGame().getWhitePlayer();
 
 			// note from TA code: there are total 36 tiles in the first four rows and
@@ -119,17 +194,45 @@ public class QuoridorController {
 			PlayerPosition blackPos = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), blackStart);
 
 			GamePosition gamePosition = new GamePosition(0, whitePos, blackPos, white, quoridor.getCurrentGame());
+			quoridor.getCurrentGame().setCurrentPosition(gamePosition);
 
 		} catch (RuntimeException e) {
-			throw new UnsupportedOperationException("Default implementation of initializeBoard");
+			throw new UnsupportedOperationException("Unable to add white player as next player to move");
 		}
 
 		// 10 walls in stock for each player
 		try {
-			for (int j = 0; j < 10; j++) {
-				quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsInStock(Wall.getWithId(j));
-				quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(Wall.getWithId(j + 10));
+
+		} catch (RuntimeException e) {
+			throw new InvalidInputException("Unable to create walls for each player.");
+		}
+
+		// 10 walls in stock for each player
+		try {
+			if (!quoridor.getCurrentGame().getCurrentPosition().hasWhiteWallsInStock()
+					|| !quoridor.getCurrentGame().getCurrentPosition().hasBlackWallsInStock()) {
+
+				// create walls (lower ID belong to white player) if needed
+				if (!quoridor.getCurrentGame().getWhitePlayer().hasWalls()
+						|| !quoridor.getCurrentGame().getBlackPlayer().hasWalls()) {
+					Player player = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+					for (int i = 0; i < 2; i++) {
+						if (i == 1) {
+							player = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+						}
+						for (int j = 0; j < 10; j++) {
+							new Wall(i * 10 + j, player);
+						}
+					}
+				}
+
+				// add walls to stock for each player if needed
+				for (int j = 0; j < 10; j++) {
+					quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsInStock(Wall.getWithId(j));
+					quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(Wall.getWithId(j + 10));
+				}
 			}
+
 		} catch (RuntimeException e) {
 			throw new InvalidInputException("Unable to add initial stock for players.");
 		}
@@ -137,6 +240,12 @@ public class QuoridorController {
 		// TODO: White clock counting down
 		// GUI TODO: clock countdown gui
 		// GUI TODO: show that this is white turn
+		// start clock for white player
+		try {
+			startClock();
+		} catch (RuntimeException e) {
+			throw new InvalidInputException(e.getMessage());
+		}
 
 	}
 
@@ -535,7 +644,7 @@ public class QuoridorController {
 			String whitePlayerStr = "";
 			String blackPlayerStr = "";
 			// First, check if first line is white or black
-			//Sort their line into the correct string variable
+			// Sort their line into the correct string variable
 			if (fileLine.substring(0, 1) == "W") {
 				whitePlayersTurn = true;
 				whitePlayerStr = fileLine;
@@ -546,8 +655,8 @@ public class QuoridorController {
 				fileLine = reader.readLine();
 				whitePlayerStr = fileLine;
 			}
-			
-			//Now, cut the front part, and find the tile each player is on.
+
+			// Now, cut the front part, and find the tile each player is on.
 			whitePlayerStr = whitePlayerStr.substring(3);
 			blackPlayerStr = blackPlayerStr.substring(3);
 
@@ -562,7 +671,7 @@ public class QuoridorController {
 			// position each time.
 			// If the validation fails, then nothing really happens.
 			// If it IS valid, then replace the current game with the game we just created.
-			//Create users
+			// Create users
 			Quoridor quoridor = QuoridorApplication.getQuoridor();
 			User user1 = quoridor.addUser("tmpUser1");
 			User user2 = quoridor.addUser("tmpUser2");
@@ -571,7 +680,7 @@ public class QuoridorController {
 			List<Player> players = new ArrayList<Player>();
 			players.add(player1);
 			players.add(player2);
-			
+
 			Quoridor tempQ = new Quoridor();
 			Board board = new Board(tempQ);
 			// Creating tiles by rows, i.e., the column index changes with every tile
@@ -581,13 +690,13 @@ public class QuoridorController {
 					board.addTile(i, j);
 				}
 			}
-			//Create all walls, assign them to a player
+			// Create all walls, assign them to a player
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 10; j++) {
 					new Wall(i * 10 + j, players.get(i));
 				}
 			}
-			
+
 			Tile player1StartPos = tempQ.getBoard().getTile(36);
 			Tile player2StartPos = tempQ.getBoard().getTile(44);
 
@@ -601,7 +710,6 @@ public class QuoridorController {
 					player2StartPos = curTile;
 				}
 			}
-
 
 			Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, tempQ);
 			game.setWhitePlayer(player1);
@@ -659,7 +767,7 @@ public class QuoridorController {
 				} else {
 					tempDir = Direction.Vertical;
 				}
-				
+
 				if (j > 0) {
 					positionValidated = validatePosition(row, col, tempDir);
 					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
@@ -724,7 +832,7 @@ public class QuoridorController {
 		} catch (IOException e) {
 
 		}
-		
+
 		return false;
 	}
 
@@ -864,6 +972,73 @@ public class QuoridorController {
 	public static int getTimeToSeconds(Time time) {
 		int ms = (int) time.getTime();
 		return ms / 1000;
+	}
+
+	/**
+	 * Helper method to get the row number for the current position of a pawn
+	 * 
+	 * @author Helen
+	 * @param forBlackPawn True to get row position of black pawn, false for white
+	 * @return int value of row position
+	 */
+	public static int getCurrentRowForPawn(boolean forBlackPawn) {
+		int row = -1;
+		try {
+			row = forBlackPawn
+					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.getTile().getRow()
+					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.getTile().getRow();
+
+		} catch (RuntimeException e) {
+			// do nothing, the game has not started yet
+		}
+
+		return row;
+	}
+
+	/**
+	 * Helper method to get the column number for the current position of a pawn
+	 * 
+	 * @author Helen
+	 * @param forBlackPawn True to get row position of black pawn, false for white
+	 * @return int value of row position
+	 */
+	public static int getCurrentColForPawn(boolean forBlackPawn) {
+		int col = -1;
+		try {
+			col = forBlackPawn
+					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.getTile().getRow()
+					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.getTile().getRow();
+
+		} catch (RuntimeException e) {
+			// do nothing, the game has not started yet
+		}
+
+		return col;
+	}
+
+	/**
+	 * Helper method to get the associated PLAYER for a given username
+	 * 
+	 * @author Helen
+	 * @param forBlackPawn True to get row position of black pawn, false for white
+	 * @return int value of row position
+	 */
+	public static User getUserByUsername(String username) {
+
+		if (QuoridorApplication.getQuoridor().hasUsers()) {
+			for (User user : QuoridorApplication.getQuoridor().getUsers()) {
+				if (user.getName().equals(username)) {
+					return user;
+				}
+			}
+		}
+
+		return null; // return null if no user found
+
 	}
 
 }
