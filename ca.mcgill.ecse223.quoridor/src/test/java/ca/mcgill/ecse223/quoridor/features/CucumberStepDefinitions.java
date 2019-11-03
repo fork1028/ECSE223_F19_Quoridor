@@ -488,6 +488,7 @@ public class CucumberStepDefinitions {
 	@And("I shall have a wall in my hand over the board")
 	public void iShallHaveAWallInMyHandOverTheBoard() {
 		// GUI
+		//hand has an element/
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -495,6 +496,7 @@ public class CucumberStepDefinitions {
 
 	public void theWallInMyHandShouldDisappearFromMyStock() {
 	//GUI
+		//delete wall element visually
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -520,13 +522,13 @@ public class CucumberStepDefinitions {
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Then("I shall be notified that I have no more walls")
 	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
-		// GUI
+		// pop up that notifies
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@And("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
-		// GUI
+		// hand does not have an element
 	}
 
 	// ****** END of GRABWALL ******************
@@ -552,26 +554,29 @@ public class CucumberStepDefinitions {
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
 	public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction, int row, int col) {
 		Direction direction1 = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-				.getWallDirection();
-		String dir = direction1.toString() ;		
+				.getWallDirection();		
 		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
 				.getWallDirection() == direction1);
+		String dir = direction1.toString() ;
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@When("I try to flip the wall")
 	public void userTriesRotateWall() {
-		Direction direction = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection();
-		
+		Direction dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection();
+		String direction = dir.toString() ;
 
 	}
-//
+
 //	/** * @author Rajaa Boukhelif, 260870030 */
-//	@Then("The wall shall be rotated over the board to {string}")
-//	public void theWallShallBeRotatedOverTheBoardToNewDIrection(String direction) {
-//		//QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction);
-//	}
-//
+	@Then("The wall shall be rotated over the board to {string}")
+	public void theWallShallBeRotatedOverTheBoardToNewDIrection(String direction) {
+		Direction direction1 = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+				.getWallDirection();
+		QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction1);
+		String dir = direction1.toString() ;	
+	}
+
 
 	// ****** END of ROTATEWALL ******************
 	

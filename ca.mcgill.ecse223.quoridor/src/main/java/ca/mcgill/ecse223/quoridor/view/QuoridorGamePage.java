@@ -288,7 +288,7 @@ public class QuoridorGamePage extends JFrame {
 	}
 	
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
-		//TODO
+		
 	}
 	
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
