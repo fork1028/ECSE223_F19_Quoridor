@@ -867,7 +867,7 @@ public class QuoridorController {
 			return (statusOfPosition);
 
 		} catch (IOException e) {
-			return false;
+			throw new UnsupportedOperationException(" * Invalid position being loaded...");
 		}
 
 	}
