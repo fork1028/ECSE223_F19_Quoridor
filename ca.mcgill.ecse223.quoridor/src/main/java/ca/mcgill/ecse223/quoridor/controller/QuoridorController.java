@@ -177,7 +177,8 @@ public class QuoridorController {
 			 if (!whiteWalls.isEmpty()) {
 				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
 			 }
-			
+			 else 
+				 throw new UnsupportedOperationException(" There are no more white walls");
 			 }
 			
 		
@@ -189,8 +190,11 @@ public class QuoridorController {
 			
 
 			 if (!blackWalls.isEmpty()) {
-				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);;
+				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
 			 }
+			 else 
+				 throw new UnsupportedOperationException(" There are no more black walls");
+			
 		
 		}
 		

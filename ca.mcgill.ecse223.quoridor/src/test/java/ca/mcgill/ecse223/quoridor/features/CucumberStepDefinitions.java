@@ -33,6 +33,7 @@ import io.cucumber.java.en.But;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import junit.framework.Assert;
 
 public class CucumberStepDefinitions {
 
@@ -493,8 +494,21 @@ public class CucumberStepDefinitions {
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Given("I have no more walls on stock")
 	public void iHaveNoMoreWallsOnStock() {
+		 List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock();
+		 List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock();
 		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		assert (player.hasWalls() == false);
+	//	assert (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().hasWalls() == false);
+		//assert(blackWalls.isEmpty());
+		///assert(whiteWalls.isEmpty());
+		if (whiteWalls.isEmpty()) {
+		Assert.assertEquals(whiteWalls.size(),0);}
+		if (blackWalls.isEmpty()) {
+		Assert.assertEquals(blackWalls.size(),0);}
+	//	assert(whiteWalls.size()==0);
+		//assert(blackWalls.size()==0);
+		
+		
+		
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
