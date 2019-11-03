@@ -101,20 +101,20 @@ public class QuoridorStartGame extends JFrame {
 		//TODO: map all listeners to correct actionPerformed method
 		createNewGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
+				createNewGameButtonActionPerformed(evt);
 			}
 		});
 				
 		loadGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
+				loadGameButtonActionPerformed(evt);
 			}
 		});
 		
 		//listeners for User
-		readyButton.addActionListener(new java.awt.event.ActionListener() {
+		createUserButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
+				createUserButtonActionPerformed(evt);
 			}
 		});
 		
@@ -199,6 +199,19 @@ public class QuoridorStartGame extends JFrame {
 	}
 
 	//TODO: create action performed methods to handle each listener
+	//ACTION PERFORMED METHODS
 	
+	private void createNewGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+	}
+	
+	
+	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+	}
+	
+	private void createUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		
+	}
 	
 }
