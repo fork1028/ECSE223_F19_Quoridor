@@ -553,28 +553,31 @@ public class CucumberStepDefinitions {
 
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
 	public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction, int row, int col) {
-		Direction direction1 = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+		Direction directionini = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
 				.getWallDirection();		
 		assert (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-				.getWallDirection() == direction1);
-		String dir = direction1.toString() ;
+				.getWallDirection() == directionini);
+		String dir = direction.toString() ;
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@When("I try to flip the wall")
 	public void userTriesRotateWall() {
 		Direction dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection();
-		String direction = dir.toString() ;
+		String direction1 = dir.toString() ;
 
 	}
 
 //	/** * @author Rajaa Boukhelif, 260870030 */
 	@Then("The wall shall be rotated over the board to {string}")
 	public void theWallShallBeRotatedOverTheBoardToNewDIrection(String direction) {
-		Direction direction1 = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+		Direction directionfin = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
 				.getWallDirection();
-		QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction1);
-		String dir = direction1.toString() ;	
+	//	QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(directionfin);
+		String dirnew = directionfin.toString() ;
+		String dir = direction.toString() ;
+		assert(dirnew.contentEquals(dir));
+		
 	}
 
 

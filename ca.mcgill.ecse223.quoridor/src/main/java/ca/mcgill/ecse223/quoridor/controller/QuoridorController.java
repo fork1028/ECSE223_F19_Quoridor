@@ -1,6 +1,7 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -270,10 +271,12 @@ public class QuoridorController {
 				.getWhiteWallsInStock();
 		List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 				.getBlackWallsInStock();
+		
 		Direction startDir = Direction.Horizontal;
 
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		
 		int wallIdxForPlayer = 1;
 
 		if (player == whitePlayer) {
@@ -281,6 +284,7 @@ public class QuoridorController {
 			 Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock(wallIdxForPlayer);
 			 WallMove nextmove = new WallMove(0, 0, player, whiteStart, null, startDir, wall);
 			 QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
+			 
 			 if (!whiteWalls.isEmpty()) {
 				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
 			 }
@@ -323,13 +327,15 @@ public class QuoridorController {
 		 * 
 		 * }};
 		 */
+		// in board or game ->if(clicked then)
+		//g2d.rotate(Math.toRadians(90)); then call controller
 
 		if (dir == Direction.Horizontal) {
 			Direction newDir = Direction.Vertical;
 			QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir);
 			// dir = newDir;
 			// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
-			// g2d.rotate(Math.toRadians(90));
+		
 		}
 		if (dir == Direction.Vertical) {
 			Direction newDir = Direction.Horizontal;
