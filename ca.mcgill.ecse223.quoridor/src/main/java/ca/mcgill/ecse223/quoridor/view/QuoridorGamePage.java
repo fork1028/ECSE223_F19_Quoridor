@@ -21,7 +21,6 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -32,62 +31,57 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
-
-public class QuoridorBoardPage extends JFrame{
-
+public class QuoridorGamePage extends JFrame {
 
 	private static final long serialVersionUID = -45345345345345345L;
 
-	
 	// UI elements
 
-	private QuoridorBoardVisualizer boardVisualizer;
-	
-	//buttons
-	private boolean moveIsClicked;
-	private boolean dropIsClicked;
-	private boolean grabIsClicked;
-	private boolean rotateIsClicked;
-	
-	//players
+	// players
 	private JLabel playerWhiteNameLabel;
 	private JLabel playerBlackNameLabel;
 	private JLabel playerWhiteTurnLabel;
 	private JLabel playerBlackTurnLabel;
-	//TODO: countdown clocks and stock
-	
-	//Wall
+	// TODO: countdown clocks and stock
+
+	// Wall
 	private JButton moveWall;
 	private JButton dropWall;
 	private JButton grabWall;
 	private JButton rotateWall;
-	
-	//board visualizer
+
+	// save game
+	private JButton saveGame;
+	private JTextField saveGameAs;
+
+	// board visualizer
+	private QuoridorBoardVisualizer boardVisualizer;
 	private static final int WIDTH_BOARD = 600;
 	private static final int HEIGHT_BOARD = 600;
-	
+
 	// data elements
-	private String error = "TEST message";
-	private JLabel errorMsg;
-	
-	
-	//graphics
-	Color customGreen = new Color(0,204,0);
-	/** Creates new QuoridorBoardPage */
-	public QuoridorBoardPage() {
+	private String messageStr = "TEST message";
+	private JLabel messageLabel;
+
+	// graphics
+	Color customGreen = new Color(0, 204, 0);
+
+	/** Constructor to create QuoridorBoardPage */
+	public QuoridorGamePage() {
 		initComponents();
 		refreshData();
 		refreshBoardVisualizer();
 	}
-	
-	
+
+	/************ INITIALIZATION AND LAYOUT ***************/
+
 	/** This method is called from within the constructor to initialize the form.
 	 */
 	private void initComponents() {
 		// elements for error message
-		errorMsg = new JLabel();
-		errorMsg.setText(error);
-		errorMsg.setForeground(Color.blue);
+		messageLabel = new JLabel();
+		messageLabel.setText(messageStr);
+		messageLabel.setForeground(Color.blue);
 		
 		//elements for players
 		playerWhiteNameLabel = new JLabel();
@@ -114,21 +108,21 @@ public class QuoridorBoardPage extends JFrame{
 		//elements for Wall buttons
 		moveWall=new JButton();
 		moveWall.setText("MOVE");
-		moveWall.setActionCommand("move");
-		moveIsClicked=false;
 		dropWall=new JButton();
 		dropWall.setText("DROP");
-		dropWall.setActionCommand("drop");
-		dropIsClicked=false;
 		rotateWall=new JButton();
 		rotateWall.setText("ROTATE");
-		rotateWall.setActionCommand("drop");
-		rotateIsClicked=false;
 		grabWall=new JButton();
 		grabWall.setText("GRAB");
-		grabWall.setActionCommand("drop");
-		grabIsClicked=false;
 		
+		//save and pause game
+		saveGame=new JButton();
+		saveGame.setText("SAVE GAME");
+		saveGame.setToolTipText("Enter a filename and click SAVE GAME to save current game as a .dat file");
+		saveGameAs =new JTextField();
+		saveGameAs.setToolTipText("Enter the filename for your saved game .dat file");
+		
+		//visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
 		
@@ -139,26 +133,39 @@ public class QuoridorBoardPage extends JFrame{
 		setTitle("Quoridor Board and Game - Group 13");
 		
 
-		//listeners for Wall buttons
+		//action listeners
+		//TODO: complete actionlisteners, map to correct action performed methods at bottom
 		moveWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(evt.getActionCommand().equals("move")) {
-					moveIsClicked=true;
-				}
+				moveIsClicked(evt);
 			}
 		});
 		dropWall.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				if(evt.getActionCommand().equals("drop")) {
-					dropIsClicked=true;
-				}
+				dropIsClicked(evt);
+			}
+		});
+		grabWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				grabIsClicked(evt);
+			}
+		});
+		rotateWall.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				rotateIsClicked(evt);
+			}
+		});
+		saveGame.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				saveGameIsClicked(evt);
 			}
 		});
 		
-		
-		//Layout
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
+
+	// Layout
+	GroupLayout layout = new GroupLayout(getContentPane());
+
+	getContentPane().setLayout(layout);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 		// horizontal line elements
@@ -169,6 +176,13 @@ public class QuoridorBoardPage extends JFrame{
 		//board in middle
 		layout.setHorizontalGroup(
 				layout.createParallelGroup()
+					//main controls (save, pause)
+					.addGroup(layout.createSequentialGroup()
+							.addComponent(saveGameAs)	
+							.addComponent(saveGame)
+									//TODO save game name	
+						
+					)
 					//player1, board, player2
 					.addGroup(layout.createSequentialGroup()
 						//player1 controls etc on left
@@ -199,12 +213,18 @@ public class QuoridorBoardPage extends JFrame{
 					
 					.addGroup(layout.createSequentialGroup()
 							//error msg
-							.addComponent(errorMsg)	
+							.addComponent(messageLabel)	
 					)
 		);
 		
 		layout.setVerticalGroup(
 				layout.createSequentialGroup()
+				//main controls (save, pause)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+					.addComponent(saveGameAs)	
+					.addComponent(saveGame)
+							//TODO save game name					
+				)
 				//player1, board, player2
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 					//player1 controls etc on left
@@ -237,7 +257,7 @@ public class QuoridorBoardPage extends JFrame{
 				
 				.addGroup(layout.createParallelGroup()
 						//error msg
-						.addComponent(errorMsg)	
+						.addComponent(messageLabel)	
 				)
 		);
 		
@@ -245,30 +265,42 @@ public class QuoridorBoardPage extends JFrame{
 		pack();
 
 	}
-	
+
+	/************ REFRESH METHODS ***************/
 	private void refreshData() {
-		moveIsClicked=false;
-		dropIsClicked=false;
-		//if turn changes
-		//if stock changes
-		//countdown
-		//moves
-		
+		//TODO ???
+		// if turn changes
+		// if stock changes
+		// countdown
+		// moves
+
 	}
-	
+
 	private void refreshBoardVisualizer() {
-		//TODO pass where the board is clicked to the board visualizer?
-		
+		// TODO
+		// board visualizer already automatically detects which tile is clicked
+		// implement for walls
+	}
+
+	/************ ACTION PERFORMED METHODS ***************/
+	private void moveIsClicked(java.awt.event.ActionEvent evt) {
+		//TODO
 	}
 	
-	
-	
-	private boolean getMoveIsClicked() {
-		return moveIsClicked;
+	private void grabIsClicked(java.awt.event.ActionEvent evt) {
+		//TODO
 	}
 	
-	private boolean getDropIsClicked() {
-		return dropIsClicked;
+	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
+		//TODO
 	}
 	
+	private void dropIsClicked(java.awt.event.ActionEvent evt) {
+		//TODO
+	}
+	
+	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
+		//TODO
+	}
+
 }

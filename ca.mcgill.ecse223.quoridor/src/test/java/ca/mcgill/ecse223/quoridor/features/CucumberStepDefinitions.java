@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -827,6 +828,10 @@ public class CucumberStepDefinitions {
 	@Given("No file {string} exists in the filesystem")
 	public void noFileExistsWithName(String fileName) {
 		Boolean fileAlreadyExistsWithThatName = false;
+		File tempFile = new File(fileName);
+		if (tempFile.exists()) {
+			tempFile.delete();
+		}
 		assertEquals(fileAlreadyExistsWithThatName, QuoridorController.fileAlreadyExists(fileName));
 	}
 
@@ -855,18 +860,20 @@ public class CucumberStepDefinitions {
 	@And("The user confirms to overwrite existing file")
 	public void userconfirmsToOverWriteFile() {
 		// GUI Feature, to be implemented in future part of project.
+		//FIX THIS LATER
+		String newFileName = "save_game_test.dat";
+		Boolean temp = QuoridorController.overWriteSavePosition(newFileName, true);
+		
+		assertEquals(true, temp);
 	}
 
 	/** @author Shayne Leitman, 260688512 */
 	@Then("File with {string} shall be updated in the filesystem")
 	public void fileIsUpdated(String fileName) {
-		Boolean fileAlreadyExistsWithThatName = true;
-		assertEquals(fileAlreadyExistsWithThatName, QuoridorController.fileAlreadyExists(fileName));
 		Boolean tempBool = false;
-		if (QuoridorController.lastModifiedToCurrentTime(fileName) < 10000) {
+		if (QuoridorController.lastModifiedToCurrentTime(fileName) < 100) {
 			tempBool = true;
 		}
-		
 		assertEquals(true, tempBool);
 	}
 
@@ -882,7 +889,7 @@ public class CucumberStepDefinitions {
 		Boolean fileAlreadyExistsWithThatName = true;
 		assertEquals(fileAlreadyExistsWithThatName, QuoridorController.fileAlreadyExists(fileName));
 		Boolean tempBool = false;
-		if (QuoridorController.lastModifiedToCurrentTime(fileName) < 10000) {
+		if (QuoridorController.lastModifiedToCurrentTime(fileName) < 1) {
 			tempBool = true;
 		}
 		

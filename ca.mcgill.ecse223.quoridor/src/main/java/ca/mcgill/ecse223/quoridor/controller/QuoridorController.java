@@ -724,8 +724,8 @@ public class QuoridorController {
 		} catch (IOException e) {
 
 		}
+		
 		return false;
-
 	}
 
 	/**
