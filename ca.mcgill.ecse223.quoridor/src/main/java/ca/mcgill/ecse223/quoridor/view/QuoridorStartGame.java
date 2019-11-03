@@ -98,6 +98,7 @@ public class QuoridorStartGame extends JFrame {
 		setTitle("Quoridor Application Group 13");
 		
 		// listeners for Game
+		//TODO: map all listeners to correct actionPerformed method
 		createNewGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				
@@ -197,7 +198,7 @@ public class QuoridorStartGame extends JFrame {
 		
 	}
 
-	
+	//TODO: create action performed methods to handle each listener
 	
 	
 }
