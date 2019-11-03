@@ -751,6 +751,7 @@ public class QuoridorController {
 			int col = 1;
 			int row = 1;
 			Tile tempTile = null;
+			Boolean statusOfPosition = true;
 			Boolean positionValidated = true;
 			Boolean overlapPositionValidated = true;
 
@@ -767,10 +768,16 @@ public class QuoridorController {
 				} else {
 					tempDir = Direction.Vertical;
 				}
-
+				//If j is 0, calling validate position throws nullpointerexception since list of walls is empty. So at 0, only check if it is on board, not if it hits other walls.
 				if (j > 0) {
-					positionValidated = validatePosition(row, col, tempDir);
-					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+					positionValidated = validatePosition(row, col, tempDir, tempQ);
+					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
+				} else {
+					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
+				}
+				
+				if (positionValidated && overlapPositionValidated) {
+					statusOfPosition = false;
 				}
 
 				for (Tile curTile : tempTileList) {
@@ -802,8 +809,14 @@ public class QuoridorController {
 				}
 
 				if (j > 0) {
-					positionValidated = validatePosition(row, col, tempDir);
-					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir);
+					positionValidated = validatePosition(row, col, tempDir, tempQ);
+					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
+				} else {
+					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
+				}
+				
+				if (positionValidated && overlapPositionValidated) {
+					statusOfPosition = false;
 				}
 
 				for (Tile curTile : tempTileList) {
@@ -821,19 +834,19 @@ public class QuoridorController {
 
 			// Now check to see if the position is valid booleans are still true. If yes, go
 			// into REAL quoridor object and set currentGame. If not, return false?
-			if (positionValidated && overlapPositionValidated) {
+			if (statusOfPosition) {
 				quoridor.setCurrentGame(game);
+				quoridor.setBoard(board);
 			}
 
 			reader.close();
 
-			return (positionValidated && overlapPositionValidated);
+			return (statusOfPosition);
 
 		} catch (IOException e) {
-
+			return false;
 		}
 
-		return false;
 	}
 
 	/**
@@ -912,6 +925,84 @@ public class QuoridorController {
 		return true;
 	}
 
+	/**
+	 * 11B. Validate Position
+	 * 
+	 * This method (along with the methods it calls) validates a potential pawn or
+	 * wall move position.
+	 * 
+	 * @param row       row of the move position
+	 * @param col       col of the move position
+	 * @param direction direction of the move position -- null if pawn,
+	 *                  horizontal/vertical if wall
+	 * @throws UnsupportedOperationException
+	 * @return boolean -- true if valid position, false if invalid position
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean validatePosition(int row, int col, Direction direction, Quoridor quoridor) throws UnsupportedOperationException {
+		boolean position;
+		if (direction == null) {
+			return position = validatePawnPosition(row, col);
+			// return validatePawnPosition(row, col);
+		} else {
+			return validateWallBoundaryPosition(row, col, direction, quoridor)
+					&& validateWallOverlapPosition(row, col, direction, quoridor);
+		}
+	}
+
+	/*
+	private static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
+		if (row <= 0 || row >= 10 || col <= 0 || col >= 10) {
+			throw new UnsupportedOperationException(" * Invalid position for pawn...");
+		}
+		return true;
+	}
+	*/
+
+	private static boolean validateWallBoundaryPosition(int row, int col, Direction direction, Quoridor quoridor)
+			throws UnsupportedOperationException {
+		if (row == 9 || col == 9)
+			throw new UnsupportedOperationException(" * Out of bounds position for wall...");
+		else
+			return true;
+	}
+
+	private static boolean validateWallOverlapPosition(int row, int col, Direction direction, Quoridor quoridor)
+			throws UnsupportedOperationException {
+		List<Wall> blackWalls = quoridor.getCurrentGame().getCurrentPosition()
+				.getBlackWallsOnBoard();
+		List<Wall> whiteWalls = quoridor.getCurrentGame().getCurrentPosition()
+				.getWhiteWallsOnBoard();
+
+		List<Wall> allWalls = new ArrayList<Wall>();
+		allWalls.addAll(blackWalls);
+		allWalls.addAll(whiteWalls);
+
+		for (int i = 0; i <= allWalls.size(); i++) {
+			int currRow = allWalls.get(i).getMove().getTargetTile().getRow();
+			int currCol = allWalls.get(i).getMove().getTargetTile().getColumn();
+			Direction currDir = allWalls.get(i).getMove().getWallDirection();
+
+			if (currRow == row && currCol == col) {
+				throw new UnsupportedOperationException(" * Wall already exists in this position...");
+			}
+
+			if (direction == Direction.Vertical) {
+				if ((currRow == row - 1 || currRow == row + 1) && currCol == col && currDir == Direction.Vertical) {
+					throw new UnsupportedOperationException(" * Wall overlaps with another wall...");
+				}
+			}
+
+			if (direction == Direction.Horizontal) {
+				if (currRow == row && (currCol == col - 1 || currCol == col + 1) && currDir == Direction.Horizontal) {
+					throw new UnsupportedOperationException(" * Wall overlaps with another wall...");
+				}
+			}
+		}
+
+		return true;
+	}
+	
 	/**
 	 * 12. Switch Current Player
 	 * 
