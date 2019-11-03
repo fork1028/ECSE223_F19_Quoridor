@@ -615,20 +615,19 @@ public class CucumberStepDefinitions {
 	}
 
 
-// 	/**
-// 	 * @author Xinyue Chen
-// 	 * @param direction
-// 	 * @param row
-// 	 * @param col
-// 	 */
-// 	@And("A wall move candidate shall exist with {string} at position \\({int}, {int})")
-// 	public void aWallMoveCandidateShallExistWithDirectionAtPosition(String direction, int nrow, int ncol) {
-// 		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-// 		int row=candidate.getTargetTile().getRow();
-// 		int col=candidate.getTargetTile().getColumn();
-// 		assert(col==ncol&&row==nrow);
-		
-// 	}
+ 	/**
+ 	 * @author Xinyue Chen
+ 	 * @param direction
+ 	 * @param row
+ 	 * @param col
+ 	 */
+ 	@And("A wall move candidate shall exist with {string} at position \\({int}, {int})")
+ 	public void aWallMoveCandidateShallExistWithDirectionAtPosition(String direction, int nrow, int ncol) {
+ 		WallMove candidate=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+ 		int row=candidate.getTargetTile().getRow();
+ 		int col=candidate.getTargetTile().getColumn();
+ 		assert(col==ncol&&row==nrow);	
+ 	}
 	
 	
 	
