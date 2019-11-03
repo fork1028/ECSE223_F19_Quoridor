@@ -258,7 +258,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
-	public static void grabWall(Player player, WallMove move) throws UnsupportedOperationException {
+	public static void grabWall(Player player) throws UnsupportedOperationException {
 
 		/*
 		 * ActionListener taskPerformer = new ActionListener() { public void
@@ -278,30 +278,30 @@ public class QuoridorController {
 
 		if (player == whitePlayer) {
 			Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
-
-			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
-					.getWhiteWallsInStock(wallIdxForPlayer);
-			WallMove nextmove = new WallMove(0, 0, player, whiteStart, null, startDir, wall);
-			QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
-			if (!whiteWalls.isEmpty()) {
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
-			}
-
-		}
-
-		if (player == blackPlayer) {
+			 Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock(wallIdxForPlayer);
+			 WallMove nextmove = new WallMove(0, 0, player, whiteStart, null, startDir, wall);
+			 QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
+			 if (!whiteWalls.isEmpty()) {
+				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
+			 }
+			 else 
+				 throw new UnsupportedOperationException(" There are no more white walls");
+			 }
+			
+		
+		if(player == blackPlayer) {
 			Tile blackStart = QuoridorApplication.getQuoridor().getBoard().getTile(44);
-			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
-					.getBlackWallsInStock(wallIdxForPlayer);
-			WallMove nextmove = new WallMove(0, 0, player, blackStart, null, startDir, wall);
-			QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
-
-			if (!blackWalls.isEmpty()) {
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
-				;
-			}
-
-		}
+			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock(wallIdxForPlayer);
+			 WallMove nextmove = new WallMove(0, 0, player, blackStart, null, startDir, wall);
+			 QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
+	
+			 if (!blackWalls.isEmpty()) {
+				 QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
+			 }
+			 else 
+				 throw new UnsupportedOperationException(" There are no more black walls");}
+			
+	
 
 	}
 
