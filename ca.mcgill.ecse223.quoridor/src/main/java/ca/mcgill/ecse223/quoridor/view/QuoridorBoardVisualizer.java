@@ -188,12 +188,15 @@ public class QuoridorBoardVisualizer extends JPanel {
 			int w = 0;
 			int h = 0;
 			if (curWall.getMove().getWallDirection() == Direction.Horizontal) {
+				x = -SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+				y = SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+				w = WALLHEIGHT;
+				h = WALLWIDTH;
+			} else {
 				x = SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
 				y = -SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
 				w = WALLWIDTH;
 				h = WALLHEIGHT;
-			} else {
-				
 			}
 			Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
 			rectanglesForWalls.add(rectangle);
@@ -207,11 +210,22 @@ public class QuoridorBoardVisualizer extends JPanel {
 
 			int column = curWall.getMove().getTargetTile().getColumn();
 			int row = curWall.getMove().getTargetTile().getRow();
-			Rectangle2D rectangle = new Rectangle2D.Float(
-					SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING) + 1,
-					-SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING) + 1,
-					WALLWIDTH,
-					WALLHEIGHT);
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			if (curWall.getMove().getWallDirection() == Direction.Horizontal) {
+				x = -SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+				y = SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+				w = WALLHEIGHT;
+				h = WALLWIDTH;
+			} else {
+				x = SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+				y = -SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+				w = WALLWIDTH;
+				h = WALLHEIGHT;
+			}
+			Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
 			rectanglesForWalls.add(rectangle);
 			g2d.setColor(Color.ORANGE);
 			g2d.fill(rectangle);
