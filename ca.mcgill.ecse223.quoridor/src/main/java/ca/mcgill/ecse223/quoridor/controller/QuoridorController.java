@@ -37,10 +37,48 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Matteo Barbieri 260805184
 	 */
-	public static Game startGame(User blackPlayer, User whitePlayer, Time time) throws UnsupportedOperationException {
+	public static void startGame(User blackPlayer, User whitePlayer, int min, int sec) throws UnsupportedOperationException {
+		//create game
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		
+		Game currGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, null, null, quoridor);
+		QuoridorApplication.getQuoridor().setCurrentGame(currGame);
+		//create and set players to a colour
+		QuoridroController.createUser(whitePlayer);
+		QuoridorController.setUserToPlayer(username, false);
+	 
+		QuoridroController.createUser(blackPlayer);
+		QuoridorController.setUserToPlayer(blackPlayer, true);
+		
+		//set total thinking time
+		QuoridorController.SetTotalThinkingTime(min, sec);
 		setTimers();
-		throw new UnsupportedOperationException("Unable to start Game");
-
+		
+		
+		//set positions of players and walls to set a game position
+		Tile player1StartPos = quoridor.getBoard().getTile(36);
+		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		
+		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(),
+				player1StartPos);
+		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(),
+				player2StartPos);
+		
+		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
+		
+		for (int j = 0; j < 10; j++) {
+			Wall wall = Wall.getWithId(j);
+			gamePosition.addWhiteWallsInStock(wall);
+		}
+		for (int j = 0; j < 10; j++) {
+			Wall wall = Wall.getWithId(j + 10);
+			gamePosition.addBlackWallsInStock(wall);
+		}
+		
+		currgame.setCurrentPosition(gamePosition);
+		
+		QuoridorController.initializeBoard();
+		QuoridorApplication.getQuoridor.getCurrentGame().setGameStatus(GameStatus.Running);
 	}
 
 	/**
@@ -50,8 +88,15 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Matteo Barbieri 260805184
 	 */
-	public static boolean provideSelectUser(String username) throws UnsupportedOperationException {
-		throw new UnsupportedOperationException("Unable to set Username");
+	public static void provideSelectUser(String username) throws UnsupportedOperationException {
+		if (getUserByUsername(username) != null) {
+			//create user and ouput warning
+			createUser(username)
+			else
+				//creates user without warning
+				createUser(username)
+		}
+		
 	}
 
 	/**
