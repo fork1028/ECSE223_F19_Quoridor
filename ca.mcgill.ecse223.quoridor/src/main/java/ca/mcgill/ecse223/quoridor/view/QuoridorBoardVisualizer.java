@@ -191,7 +191,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 		
 		//White walls first
 		for (Wall curWall : whiteWalls) {
-
+			String tempDir = "";
+			
 			int column = curWall.getMove().getTargetTile().getColumn();
 			int row = curWall.getMove().getTargetTile().getRow();
 			Rectangle2D rectangle = new Rectangle2D.Float(
