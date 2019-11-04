@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
 import ca.mcgill.ecse223.quoridor.model.User;
 
@@ -243,6 +244,16 @@ public class QuoridorStartGame extends JFrame {
 		//Clear error msg
 		error = null;
 		//controller method
+		if (blackUserList.getSelectedItem() == whiteUserList.getSelectedItem()) {
+			error = ("You cannot select the same user to be both players!");
+		} else if (minuteList.getSelectedItem() == "0" && secondList.getSelectedItem() == "0") {
+			error = ("You must give the players each a real thinking time!");
+		} else if (minuteList.getSelectedItem() == null || secondList.getSelectedItem() == null || blackUserList.getSelectedItem() == null || whiteUserList.getSelectedItem() ==null) {
+			error = ("You must give a value for all players and both time boxes");
+		} else {
+			//ADD SOMETHING TO CREATE A NEW GAME!
+		}
+		
 		
 		
 	}
@@ -256,6 +267,7 @@ public class QuoridorStartGame extends JFrame {
 		} catch (UnsupportedOperationException e) {
 			error = e.getMessage();
 		}
+		new QuoridorGamePage().setVisible(true);
 		
 	}
 	
@@ -263,7 +275,12 @@ public class QuoridorStartGame extends JFrame {
 		//Clear error msg
 		error = null;
 		//controller method
-		
+		try {
+			QuoridorController.createUser(createUserTextField.getText());
+		} catch (RuntimeException e) {
+			error = e.getMessage();
+		}
+		refreshData();
 		
 	}
 	

@@ -43,6 +43,7 @@ import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 
+
 public class QuoridorGamePage extends JFrame {
 
 	private static final long serialVersionUID = -45345345345345345L;
@@ -175,13 +176,13 @@ public class QuoridorGamePage extends JFrame {
 		dropWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if(evt.getActionCommand().equals("DROP")) {
-					Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-					Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
-					try {
-						QuoridorController.dropWall(player, wall);
-					} catch (UnsupportedOperationException | InvalidInputException e) {
-						errorMsg="Unable to drop a wall";
-					}
+					//Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+					//Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+//					try {
+//						QuoridorController.dropWall(player, wall);
+//					} catch (UnsupportedOperationException | InvalidInputException e) {
+//						errorMsg="Unable to drop a wall";
+//					}
 				}
 			}
 		});
@@ -331,6 +332,7 @@ public class QuoridorGamePage extends JFrame {
 		// countdown
 		// moves
 		errorMsg="";
+		infoMsg="";
 
 	}
 

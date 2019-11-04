@@ -10,12 +10,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.Timer;
+//import javax.swing.Timer;
 import java.util.List;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -36,7 +38,7 @@ public class QuoridorController {
 	 * @author Matteo Barbieri 260805184
 	 */
 	public static Game startGame(User blackPlayer, User whitePlayer, Time time) throws UnsupportedOperationException {
-		//setTimers();
+		setTimers();
 		throw new UnsupportedOperationException("Unable to start Game");
 
 	}
@@ -1043,25 +1045,8 @@ public class QuoridorController {
 		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Player otherPlayer = player.getNextPlayer();
 
-		Timer playerTimer = new Timer(0, null);
-		Timer otherPlayerTimer = new Timer(0, null);
-
-		// playerTimer.scheduleAtFixedRate(new TimerTask() {
-		// @Override
-		// public void run() {
-		// // Your database code here
-		// }
-		// }, 2*60*1000, 2*60*1000);
-
-		int delay = 1000; // milliseconds
-		ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				// ...Perform a task...
-			}
-		};
-		new Timer(delay, taskPerformer).start();
-
 		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setPlayerToMove(otherPlayer);
+		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().setNextPlayer(player);
 	}
 
 	// helper methods
@@ -1196,11 +1181,11 @@ public class QuoridorController {
 		return remainingTime; // return null if no time found
 
 	}
-	
-	/* Helper method to set timer for each player.
-//	 * @author Sami Junior Kahil, 260834568
+
+	/**
+	 * Helper method to set timer for each player and keeps track of the timers.
+	 * @author Sami Junior Kahil, 260834568
 	 */
-	 /*
 	private static void setTimers() {
 		Timer whitePlayerTimer = new Timer();
 		Timer blackPlayerTimer = new Timer();
@@ -1271,6 +1256,6 @@ public class QuoridorController {
 		}; 
 
 		checker.scheduleAtFixedRate(check, 0, 100);
-	}*/
+	}
 
 }
