@@ -984,9 +984,10 @@ public class QuoridorController {
 	 * @param col       col of the move position
 	 * @param direction direction of the move position -- null if pawn,
 	 *                  horizontal/vertical if wall
+	 * @param quoridor  quoridor object that the game exists in
 	 * @throws UnsupportedOperationException
 	 * @return boolean -- true if valid position, false if invalid position
-	 * @author Sami Junior Kahil, 260834568
+	 * @author Sami Junior Kahil, 260834568/Shayne Leitman, 260688512
 	 */
 	public static boolean validatePosition(int row, int col, Direction direction, Quoridor quoridor) throws UnsupportedOperationException {
 		boolean position;

@@ -252,6 +252,8 @@ public class QuoridorStartGame extends JFrame {
 			error = ("You must give a value for all players and both time boxes");
 		} else {
 			//ADD SOMETHING TO CREATE A NEW GAME!
+			
+			
 		}
 		
 		
