@@ -4,6 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
@@ -85,6 +86,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 
 		repaint(); //repaint with doDrawingForBoardAndTiles
 	}
+	
 
 	/**
 	 * @author Helen
@@ -139,43 +141,29 @@ public class QuoridorBoardVisualizer extends JPanel {
 				//add by row and col
 				if (tile.getRow() <= MAXROWS && tile.getColumn() <= MAXCOLS) {
 					//create new tile as a square and add to list of squares and hashmap of tiles 
-					Rectangle2D square = new Rectangle2D.Float(
-							-SQUAREWIDTH/2 + tile.getColumn()*(SQUAREWIDTH + SPACING),
-							-SQUAREWIDTH/2 + tile.getRow()*(SQUAREWIDTH + SPACING),
-							SQUAREWIDTH,
-							SQUAREWIDTH);
-					squaresForTiles.add(square);
-					tiles.put(square, tile);
-
-					//set visuals
-					g2d.setColor(Color.lightGray);
-					g2d.fill(square);
-					g2d.setColor(Color.BLACK);
-					g2d.draw(square);
-					String testLabel = "["+ "r" + ":" + tile.getRow() + ", c" + ":" + tile.getColumn() + "]";
-					g2d.drawString(testLabel,
-							-SQUAREWIDTH/4 + tile.getColumn()* (SQUAREWIDTH + SPACING),
-							-SQUAREWIDTH/4 + tile.getRow()* (SQUAREWIDTH + SPACING));
-					
-					//get selected tile
-					if (selectedTileRow == tile.getRow() && selectedTileCol == tile.getColumn()) {
-						g2d.setColor(Color.YELLOW);
-						g2d.fill(square);
-					}
-					
-					//set current pawn positions as a coloured tile
-					int blackRow = QuoridorController.getCurrentRowForPawn(true);
-					int blackCol = QuoridorController.getCurrentColForPawn(true);
-					int whiteRow = QuoridorController.getCurrentRowForPawn(false);
-					int whiteCol = QuoridorController.getCurrentColForPawn(false);
-					
-					if (blackRow == tile.getRow() && blackCol == tile.getColumn()) {
-						g2d.setColor(Color.BLACK);
-						g2d.fill(square);
-					} else if (whiteRow == tile.getRow() && whiteCol == tile.getColumn()) {
+				
+					//create white walls
+					int space=10;
+					for(int i=0;i<10;i++) {
+						Rectangle rec=new Rectangle(0,20+space*5,10,30);
 						g2d.setColor(Color.WHITE);
-						g2d.fill(square);
+						g2d.fill(rec);
+						space+=10;
+						g2d.setColor(Color.BLACK);
+						g2d.drawRect(rec.x,rec.y,rec.width,rec.height);
 					}
+					
+					//create black walls
+					int spacing=10;
+					for(int i=0;i<10;i++) {
+						Rectangle rec=new Rectangle(580,20+spacing*5,10,30);
+						g2d.setColor(Color.BLACK);
+						g2d.fill(rec);
+						spacing+=10;
+						g2d.setColor(Color.WHITE);
+						g2d.drawRect(rec.x,rec.y,rec.width,rec.height);
+					}
+					
 				}
 			}
 		}
@@ -252,7 +240,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
-		doDrawingForWallsOnLoad(g);
+		//doDrawingForWallsOnLoad(g);
 	}
 
 }
