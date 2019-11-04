@@ -13,7 +13,10 @@ import java.util.List;
 
 import javax.swing.JPanel;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.*;
+import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 
 public class QuoridorBoardVisualizer extends JPanel {
 
@@ -23,6 +26,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private List<Rectangle2D> squaresForTiles = new ArrayList<Rectangle2D>();
 	private List<Rectangle2D> rectanglesForWalls = new ArrayList<Rectangle2D>();
 	private static final int SQUAREWIDTH = 50;
+	private static final int WALLWIDTH = 8;
+	private static final int WALLHEIGHT = 110;
 	private static final int SPACING = 10;
 	private static final int MAXROWS = 9;
 	private static final int MAXCOLS = 9;
@@ -178,6 +183,46 @@ public class QuoridorBoardVisualizer extends JPanel {
 		
 	}
 	
+	public void doDrawingForWallsOnLoad(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g.create();
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		List<Wall> whiteWalls = quoridor.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+		List<Wall> blackWalls = quoridor.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+		
+		//White walls first
+		for (Wall curWall : whiteWalls) {
+
+			int column = curWall.getMove().getTargetTile().getColumn();
+			int row = curWall.getMove().getTargetTile().getRow();
+			Rectangle2D rectangle = new Rectangle2D.Float(
+					SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING),
+					-SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING),
+					WALLWIDTH,
+					WALLHEIGHT);
+			rectanglesForWalls.add(rectangle);
+			g2d.setColor(Color.ORANGE);
+			g2d.fill(rectangle);
+			g2d.setColor(Color.GREEN);
+			g2d.draw(rectangle);
+		}
+		
+		for (Wall curWall : blackWalls) {
+
+			int column = curWall.getMove().getTargetTile().getColumn();
+			int row = curWall.getMove().getTargetTile().getRow();
+			Rectangle2D rectangle = new Rectangle2D.Float(
+					SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING) + 1,
+					-SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING) + 1,
+					WALLWIDTH,
+					WALLHEIGHT);
+			rectanglesForWalls.add(rectangle);
+			g2d.setColor(Color.ORANGE);
+			g2d.fill(rectangle);
+			g2d.setColor(Color.GREEN);
+			g2d.draw(rectangle);
+		}
+		
+	}
 	
 //	public void setRoute(TORoute route) {
 //		this.route = route;
@@ -206,6 +251,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
+		doDrawingForWallsOnLoad(g);
 	}
 
 }
