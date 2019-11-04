@@ -190,8 +190,8 @@ public class QuoridorGamePage extends JFrame {
 			public void actionPerformed(ActionEvent evt) {
 				if (evt.getActionCommand().equals("GRAB")) {
 					
-						Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-						QuoridorController.grabWall(player);
+					Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+					QuoridorController.grabWall(player);
 					}
 				//grabIsClicked(evt);
 			}
@@ -352,7 +352,7 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
-	//	g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
+	   //g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
 		//g2d.rotate(Math.toRadians(90));
 	}
 
