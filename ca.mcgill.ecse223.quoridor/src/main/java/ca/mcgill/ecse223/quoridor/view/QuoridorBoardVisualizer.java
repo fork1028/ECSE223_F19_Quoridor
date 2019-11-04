@@ -143,9 +143,14 @@ public class QuoridorBoardVisualizer extends JPanel {
 				if (tile.getRow() <= MAXROWS && tile.getColumn() <= MAXCOLS) {
 					//create new tile as a square and add to list of squares and hashmap of tiles 
 				
+					//SHAYNE CHANGES: NEED TO ONLY LOAD WALLS THAT AREN'T PLACED!
+					Quoridor quoridor = QuoridorApplication.getQuoridor();
+					int whiteStock = quoridor.getCurrentGame().getCurrentPosition().getWhiteWallsInStock().size();
+					int blackStock = quoridor.getCurrentGame().getCurrentPosition().getBlackWallsInStock().size();
 					//create white walls
+								
 					int space=8;
-					for(int i=0;i<10;i++) {
+					for(int i=0;i<whiteStock;i++) {
 						Rectangle rec=new Rectangle(0,space*5,10,45);
 						g2d.setColor(Color.WHITE);
 						g2d.fill(rec);
@@ -156,7 +161,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 					
 					//create black walls
 					int spacing=8;
-					for(int i=0;i<10;i++) {
+					for(int i=0;i<blackStock;i++) {
 						Rectangle rec=new Rectangle(580,spacing*5,10,45);
 						g2d.setColor(Color.BLACK);
 						g2d.fill(rec);
