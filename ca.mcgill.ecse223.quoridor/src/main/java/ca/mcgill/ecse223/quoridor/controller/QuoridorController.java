@@ -36,7 +36,7 @@ public class QuoridorController {
 	 * @author Matteo Barbieri 260805184
 	 */
 	public static Game startGame(User blackPlayer, User whitePlayer, Time time) throws UnsupportedOperationException {
-		setTimers();
+		//setTimers();
 		throw new UnsupportedOperationException("Unable to start Game");
 
 	}
@@ -1197,9 +1197,10 @@ public class QuoridorController {
 
 	}
 	
-	* Helper method to set timer for each player.
-	 * @author Sami Junior Kahil, 260834568
+	/* Helper method to set timer for each player.
+//	 * @author Sami Junior Kahil, 260834568
 	 */
+	 /*
 	private static void setTimers() {
 		Timer whitePlayerTimer = new Timer();
 		Timer blackPlayerTimer = new Timer();
@@ -1270,6 +1271,6 @@ public class QuoridorController {
 		}; 
 
 		checker.scheduleAtFixedRate(check, 0, 100);
-	}
+	}*/
 
 }

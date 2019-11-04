@@ -41,6 +41,7 @@ import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Wall;
+import ca.mcgill.ecse223.quoridor.model.WallMove;
 
 public class QuoridorGamePage extends JFrame {
 
@@ -186,12 +187,29 @@ public class QuoridorGamePage extends JFrame {
 		});
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				grabIsClicked(evt);
+				if (evt.getActionCommand().equals("GRAB")) {
+					
+						Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+						QuoridorController.grabWall(player);
+					}
+				//grabIsClicked(evt);
 			}
 		});
 		rotateWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				rotateIsClicked(evt);
+				
+				if (evt.getActionCommand().equals("ROTATE")) {
+					// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
+					// g2d.rotate(Math.toRadians(90));
+					Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+					Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+				 	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+					String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+							.getWallDirection().toString().toLowerCase();
+					
+					QuoridorController.rotateWall( wall,  move,  dir);
+				}
+				//rotateIsClicked(evt);
 			}
 		});
 		saveGame.addActionListener(new ActionListener() {
@@ -328,15 +346,12 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
-<<<<<<< HEAD
-		
-=======
-		// TODO
->>>>>>> branch 'master' of https://github.com/McGill-ECSE223-Fall2019/ecse223-project--group-13.git
+
 	}
 
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
-		// TODO
+	//	g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
+		//g2d.rotate(Math.toRadians(90));
 	}
 
 	private void dropIsClicked(java.awt.event.ActionEvent evt) {
