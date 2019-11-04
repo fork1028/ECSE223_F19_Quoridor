@@ -287,7 +287,9 @@ public class QuoridorController {
 			QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
 			if (!whiteWalls.isEmpty()) {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
-			}
+			}									
+			 else 
+				 throw new UnsupportedOperationException(" There are no more white walls");
 
 		}
 
@@ -302,6 +304,8 @@ public class QuoridorController {
 			if (!blackWalls.isEmpty()) {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeBlackWallsInStock(wall);
 			}
+			 else 
+				 throw new UnsupportedOperationException(" There are no more black		 walls");
 
 		}
 
@@ -333,13 +337,16 @@ public class QuoridorController {
 				QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir1);
 			} 
 			
+
 		
 		  if (dir.equals("horizontal")) {
 			Direction newDir = Direction.Vertical;
 			QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir);
-		
-		}
-		
+		  }
+			// Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock(wallIdxForPlayer);
+			// WallMove nextmove = new WallMove(0, 0, player, whiteStart, null, startDir, wall);
+			// QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
+			
 		
 	}
 
