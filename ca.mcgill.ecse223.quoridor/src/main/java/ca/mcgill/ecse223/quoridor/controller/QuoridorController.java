@@ -1042,25 +1042,8 @@ public class QuoridorController {
 		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Player otherPlayer = player.getNextPlayer();
 
-		Timer playerTimer = new Timer(0, null);
-		Timer otherPlayerTimer = new Timer(0, null);
-
-		// playerTimer.scheduleAtFixedRate(new TimerTask() {
-		// @Override
-		// public void run() {
-		// // Your database code here
-		// }
-		// }, 2*60*1000, 2*60*1000);
-
-		int delay = 1000; // milliseconds
-		ActionListener taskPerformer = new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-				// ...Perform a task...
-			}
-		};
-		new Timer(delay, taskPerformer).start();
-
 		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setPlayerToMove(otherPlayer);
+		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().setNextPlayer(player);
 	}
 
 	// helper methods
