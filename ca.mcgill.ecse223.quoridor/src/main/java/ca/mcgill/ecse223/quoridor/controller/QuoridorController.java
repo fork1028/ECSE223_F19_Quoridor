@@ -9,6 +9,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -1194,7 +1196,8 @@ public class QuoridorController {
 
 	}
 	
-	* Helper method to set timer for each player.
+	/**
+	 * Helper method to set timer for each player and keeps track of the timers.
 	 * @author Sami Junior Kahil, 260834568
 	 */
 	private static void setTimers() {
