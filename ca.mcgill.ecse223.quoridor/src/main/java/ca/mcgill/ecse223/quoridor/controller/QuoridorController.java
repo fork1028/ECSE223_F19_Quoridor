@@ -722,13 +722,13 @@ public class QuoridorController {
 			List<Player> players = new ArrayList<Player>();
 			players.add(player1);
 			players.add(player2);
-			/*
+
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 10; j++) {
 					new Wall(i * 10 + j, players.get(i));
 				}
 			}
-			*/
+			
 			Board board = new Board(tempQ);
 			// Creating tiles by rows, i.e., the column index changes with every tile
 			// creation

@@ -11,8 +11,7 @@ public class QuoridorApplication {
 	private static Quoridor quoridor;
 	
 	public static void main(String[] args) {
-		
-		System.out.println(QuoridorController.loadSavedPosition("quoridor_test_game_invalid_wall_out-of-track.dat"));
+
 		
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
