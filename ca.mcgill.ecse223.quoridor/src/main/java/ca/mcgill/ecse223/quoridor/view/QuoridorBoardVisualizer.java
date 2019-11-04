@@ -34,7 +34,6 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private static final int MAXROWS = 9;
 	private static final int MAXCOLS = 9;
 
-	//TODO: pawn
 	
 	// data elements
 	private int selectedTileRow;
@@ -62,7 +61,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 				for (Rectangle2D square : squaresForTiles) {
 					if (square.contains(x, y)) {
 						selectedTileRow = tiles.get(square).getRow();
-						selectedTileCol = tiles.get(square).getRow();
+						selectedTileCol = tiles.get(square).getColumn();
 						break;
 					}
 				}
@@ -96,10 +95,6 @@ public class QuoridorBoardVisualizer extends JPanel {
 		//only create graphics for board and tiles if we have a board
 		if (board != null) {
 			Graphics2D g2d = (Graphics2D) g.create();
-//					BasicStroke thickStroke = new BasicStroke(4);
-//					g2d.setStroke(thickStroke);
-//					lineHeight = (number - 1) * (RECTHEIGHT + SPACING);
-//					g2d.drawLine(LINEX, LINETOPY, LINEX, LINETOPY + lineHeight);
 			
 			BasicStroke thinStroke = new BasicStroke(2);
 			g2d.setStroke(thinStroke);
@@ -119,8 +114,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 					squaresForTiles.add(square);
 					tiles.put(square, tile);
 
-					//set visuals
-					g2d.setColor(Color.WHITE);
+					//set visuals for a square tile
+					g2d.setColor(Color.LIGHT_GRAY);
 					g2d.fill(square);
 					g2d.setColor(Color.BLACK);
 					g2d.draw(square);
@@ -129,10 +124,27 @@ public class QuoridorBoardVisualizer extends JPanel {
 							-SQUAREWIDTH/4 + tile.getColumn()* (SQUAREWIDTH + SPACING),
 							-SQUAREWIDTH/4 + tile.getRow()* (SQUAREWIDTH + SPACING));
 
+					//if currently selected
 					if (selectedTileRow == tile.getRow() && selectedTileCol == tile.getColumn()) {
 						g2d.setColor(Color.YELLOW);
 						g2d.fill(square);
 					}
+					
+					
+					//draw current pawn position
+					//set current pawn positions as a coloured tile
+ 					int blackRow = QuoridorController.getCurrentRowForPawn(true);
+ 					int blackCol = QuoridorController.getCurrentColForPawn(true);
+ 					int whiteRow = QuoridorController.getCurrentRowForPawn(false);
+ 					int whiteCol = QuoridorController.getCurrentColForPawn(false);
+
+ 					if (blackRow == tile.getRow() && blackCol == tile.getColumn()) {
+ 						g2d.setColor(Color.BLACK);
+ 						g2d.fill(square);
+ 					} else if (whiteRow == tile.getRow() && whiteCol == tile.getColumn()) {
+ 						g2d.setColor(Color.WHITE);
+ 						g2d.fill(square);
+ 					}
 				}
 			}
 			
@@ -239,28 +251,6 @@ public class QuoridorBoardVisualizer extends JPanel {
 		}
 		
 	}
-	
-//	public void setRoute(TORoute route) {
-//		this.route = route;
-//		busStops = new HashMap<Rectangle2D, TOBusStop>();
-//		selectedBusStop = 0;
-//		firstVisibleBusStop = 0;
-//		repaint();
-//	}
-
-//	public void moveUp() {
-//		if (firstVisibleBusStop > 0) {
-//			firstVisibleBusStop--;
-//			repaint();
-//		}
-//	}
-//
-//	public void moveDown() {
-//		if (route != null && firstVisibleBusStop < route.getNrBusStops() - MAXNUMBEROFBUSSTOPSSHOWN) {
-//			firstVisibleBusStop++;
-//			repaint();
-//		}
-//	}
 
 
 	@Override

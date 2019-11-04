@@ -37,48 +37,66 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Matteo Barbieri 260805184
 	 */
-	public static void startGame(User blackPlayer, User whitePlayer, int min, int sec) throws UnsupportedOperationException {
-		//create game
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		
-		Game currGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, null, null, quoridor);
-		QuoridorApplication.getQuoridor().setCurrentGame(currGame);
-		//create and set players to a colour
-		QuoridroController.createUser(whitePlayer);
-		QuoridorController.setUserToPlayer(username, false);
-	 
-		QuoridroController.createUser(blackPlayer);
-		QuoridorController.setUserToPlayer(blackPlayer, true);
-		
-		//set total thinking time
-		QuoridorController.SetTotalThinkingTime(min, sec);
-		setTimers();
-		
-		
-		//set positions of players and walls to set a game position
-		Tile player1StartPos = quoridor.getBoard().getTile(36);
-		Tile player2StartPos = quoridor.getBoard().getTile(44);
-		
-		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(),
-				player1StartPos);
-		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(),
-				player2StartPos);
-		
-		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
-		
-		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j);
-			gamePosition.addWhiteWallsInStock(wall);
+//	public static void startGame(User blackPlayer, User whitePlayer, int min, int sec) throws UnsupportedOperationException {
+//		//create game
+//		Quoridor quoridor = QuoridorApplication.getQuoridor();
+//		
+//		Game currGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, null, null, quoridor);
+//		QuoridorApplication.getQuoridor().setCurrentGame(currGame);
+//		//create and set players to a colour
+//		QuoridroController.createUser(whitePlayer);
+//		QuoridorController.setUserToPlayer(username, false);
+//	 
+//		QuoridroController.createUser(blackPlayer);
+//		QuoridorController.setUserToPlayer(blackPlayer, true);
+//		
+//		//set total thinking time
+//		QuoridorController.SetTotalThinkingTime(min, sec);
+//		setTimers();
+//		
+//		
+//		//set positions of players and walls to set a game position
+//		Tile player1StartPos = quoridor.getBoard().getTile(36);
+//		Tile player2StartPos = quoridor.getBoard().getTile(44);
+//		
+//		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(),
+//				player1StartPos);
+//		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(),
+//				player2StartPos);
+//		
+//		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
+//		
+//		for (int j = 0; j < 10; j++) {
+//			Wall wall = Wall.getWithId(j);
+//			gamePosition.addWhiteWallsInStock(wall);
+//		}
+//		for (int j = 0; j < 10; j++) {
+//			Wall wall = Wall.getWithId(j + 10);
+//			gamePosition.addBlackWallsInStock(wall);
+//		}
+//		
+//		currgame.setCurrentPosition(gamePosition);
+//		
+//		QuoridorController.initializeBoard();
+//		QuoridorApplication.getQuoridor.getCurrentGame().setGameStatus(GameStatus.Running);
+//	}
+	
+	/**
+	 * 
+	 * This method initializes a new game
+	 * 
+	 * @throws IllegalArgumemtException
+	 * @author matteo barbieri 260805184
+	 */
+	public static void initializeNewGame() throws InvalidInputException {
+		try {
+			new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
+			
+
 		}
-		for (int j = 0; j < 10; j++) {
-			Wall wall = Wall.getWithId(j + 10);
-			gamePosition.addBlackWallsInStock(wall);
+		catch(RuntimeException e) {
+			throw new InvalidInputException("Unable to create initialize new Game");
 		}
-		
-		currgame.setCurrentPosition(gamePosition);
-		
-		QuoridorController.initializeBoard();
-		QuoridorApplication.getQuoridor.getCurrentGame().setGameStatus(GameStatus.Running);
 	}
 
 	/**
@@ -88,13 +106,14 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Matteo Barbieri 260805184
 	 */
-	public static void provideSelectUser(String username) throws UnsupportedOperationException {
+	public static void provideSelectUser(String username) throws InvalidInputException {
 		if (getUserByUsername(username) != null) {
 			//create user and ouput warning
-			createUser(username)
-			else
+			createUser(username);
+			}
+			else {
 				//creates user without warning
-				createUser(username)
+				createUser(username);
 		}
 		
 	}
@@ -107,7 +126,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Helen
 	 */
-	public static User createUser(String username) throws IllegalArgumentException {
+	public static User createUser(String username) throws InvalidInputException {
 		try {
 			// check if pre-existing
 			User user = getUserByUsername(username);
@@ -116,7 +135,7 @@ public class QuoridorController {
 			} else // or create new user
 				return QuoridorApplication.getQuoridor().addUser(username);
 		} catch (RuntimeException e) {
-			throw new IllegalArgumentException("Unable to create a user");
+			throw new InvalidInputException("Unable to create a user");
 		}
 
 	}
@@ -130,9 +149,9 @@ public class QuoridorController {
 	 *                       white
 	 * @return True if success, false if failed
 	 * @author Helen
-	 * @throws IllegalArgumentException
+	 * @throws InvalidInputException
 	 */
-	public static boolean setUserToPlayer(String username, boolean forBlackPlayer) throws IllegalArgumentException {
+	public static boolean setUserToPlayer(String username, boolean forBlackPlayer) throws InvalidInputException {
 		try {
 			User user = getUserByUsername(username);
 			Player player = forBlackPlayer ? new Player(null, user, 1, Direction.Horizontal) // black
@@ -140,7 +159,7 @@ public class QuoridorController {
 			return forBlackPlayer ? QuoridorApplication.getQuoridor().getCurrentGame().setBlackPlayer(player)
 					: QuoridorApplication.getQuoridor().getCurrentGame().setWhitePlayer(player);
 		} catch (RuntimeException e) {
-			throw new IllegalArgumentException("Unable to create a user");
+			throw new InvalidInputException("Unable to set user to player");
 		}
 
 	}
@@ -173,10 +192,14 @@ public class QuoridorController {
 			}
 			if (!whitePlayer.setRemainingTime(time))
 				throw new InvalidInputException("Unable to set thinking time for  WHITE player.");
+			if(blackPlayer.getUser() != null && whitePlayer.getUser() != null) {
+				QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
+			}
 		} catch (RuntimeException e) {
 			throw new InvalidInputException(e.getMessage());
 		}
 
+		
 	}
 
 	/**
@@ -1181,9 +1204,9 @@ public class QuoridorController {
 		try {
 			col = forBlackPawn
 					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-							.getTile().getRow()
+							.getTile().getColumn()
 					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
-							.getTile().getRow();
+							.getTile().getColumn();
 
 		} catch (RuntimeException e) {
 			// do nothing, the game has not started yet

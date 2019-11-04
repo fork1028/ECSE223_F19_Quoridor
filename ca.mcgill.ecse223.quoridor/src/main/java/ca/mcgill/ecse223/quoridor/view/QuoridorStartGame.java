@@ -200,6 +200,7 @@ public class QuoridorStartGame extends JFrame {
 	}
 	
 	private void refreshData() {
+		errorMsg.setText(error);
 		
 		//set all text fields to be empty.
 		loadGameTextField.setText("");
@@ -223,6 +224,7 @@ public class QuoridorStartGame extends JFrame {
 		secondList.setSelectedIndex(-1);
 		
 		whiteUserList.removeAllItems();
+		//TODO replace model obbj w controller method
 		for (User tmpUser : QuoridorApplication.getQuoridor().getUsers()) {
 			whiteUserList.addItem(tmpUser.getName());
 		}
@@ -253,7 +255,10 @@ public class QuoridorStartGame extends JFrame {
 		} else {
 			//ADD SOMETHING TO CREATE A NEW GAME!
 			
-			
+		//QuoridorController.createNewGame();
+			//Game new Game(,,)
+			//set username to players
+			//initboard
 		}
 		
 		
@@ -269,6 +274,8 @@ public class QuoridorStartGame extends JFrame {
 			new QuoridorGamePage().setVisible(true);
 		} catch (UnsupportedOperationException e) {
 			error = e.getMessage();
+			refreshData();
+			return;
 		}
 		//QuoridorStartGame().setVisible(false);
 		//new QuoridorGamePage().setVisible(true);

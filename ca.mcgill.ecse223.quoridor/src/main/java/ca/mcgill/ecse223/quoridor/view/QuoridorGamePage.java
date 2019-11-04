@@ -49,8 +49,6 @@ public class QuoridorGamePage extends JFrame {
 	private static final long serialVersionUID = -45345345345345345L;
 
 	// UI elements
-	private static String errorMsg="";
-	private static String infoMsg="";
 
 	// players
 	private JLabel playerWhiteNameLabel;
@@ -81,8 +79,8 @@ public class QuoridorGamePage extends JFrame {
 	private static final int HEIGHT_BOARD = 600;
 
 	// data elements
-	private String messageStr = "TEST message";
-	private JLabel messageLabel;
+	private static String error = "TEST message";
+	private JLabel errorMsg;
 
 	// graphics
 	Color customGreen = new Color(0, 204, 0);
@@ -103,9 +101,9 @@ public class QuoridorGamePage extends JFrame {
 	 */
 	private void initComponents() {
 		// elements for error message
-		messageLabel = new JLabel();
-		messageLabel.setText(messageStr);
-		messageLabel.setForeground(Color.blue);
+		errorMsg = new JLabel();
+		errorMsg.setText(error);
+		errorMsg.setForeground(Color.blue);
 
 		// elements for white player
 		playerWhiteNameLabel = new JLabel();
@@ -170,13 +168,17 @@ public class QuoridorGamePage extends JFrame {
 		setTitle("Quoridor Board and Game - Group 13");
 
 		// action listeners
+		
+		//TODO: add clocks
+		
+		
 		// TODO: complete actionlisteners, map to correct action performed methods at
 		// bottom
 		moveWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if (evt.getActionCommand().equals("MOVE")) {
 					// TODO make a wall appear at the default location on the board
-					infoMsg="I have a wall in my hand now";
+					error="I have a wall in my hand now";
 				}
 			}
 		});
@@ -196,7 +198,7 @@ public class QuoridorGamePage extends JFrame {
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				grabIsClicked(evt);
-				infoMsg="I have a wall in my hand now";
+				error="I have a wall in my hand now";
 			}
 		});
 		rotateWall.addActionListener(new ActionListener() {
@@ -293,7 +295,7 @@ public class QuoridorGamePage extends JFrame {
 
 				.addGroup(layout.createSequentialGroup()
 						// error msg
-						.addComponent(messageLabel)));
+						.addComponent(errorMsg)));
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				// main controls (save, pause)
@@ -326,7 +328,7 @@ public class QuoridorGamePage extends JFrame {
 
 				.addGroup(layout.createParallelGroup()
 						// error msg
-						.addComponent(messageLabel)));
+						.addComponent(errorMsg)));
 
 		pack();
 
@@ -339,8 +341,7 @@ public class QuoridorGamePage extends JFrame {
 		// if stock changes
 		// countdown
 		// moves
-		errorMsg="";
-		infoMsg="";
+		errorMsg.setText(error);
 
 	}
 
@@ -374,7 +375,7 @@ public class QuoridorGamePage extends JFrame {
 			QuoridorController.rotateWall( wall,  move,  dir);
 		}
 		catch(Exception e) {
-			errorMsg="";}
+			error="error rotating wall";}
 		refreshData();
 	}
 
@@ -384,21 +385,21 @@ public class QuoridorGamePage extends JFrame {
 			Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 			QuoridorController.grabWall(player);
 		} catch (RuntimeException e) {
-			errorMsg="Unable to move the wall";
+			error="Unable to move the wall";
 		}
 		refreshData();
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
-		errorMsg = "";
+		error = "";
 		Boolean tmp = false;
 		if (saveGameAs.getText() == "") {
-			errorMsg = "Must include the file name you wish to save";
+			error = "Must include the file name you wish to save";
 		} else {
 			tmp = QuoridorController.attemptToSavePosition(saveGameAs.getText());
 		}
 		
-		if (errorMsg == "" && !tmp) {
+		if (error == "" && !tmp) {
 			overwriteYes.setEnabled(true);
 			overwriteCancel.setEnabled(true);
 		}
@@ -417,7 +418,7 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void keyTyped(KeyEvent event) throws UnsupportedOperationException, InvalidInputException {
-		errorMsg="";
+		error="";
 		try {
 			if (event.getKeyCode() == KeyEvent.VK_UP) {
 				QuoridorController.moveWall("up");
@@ -433,16 +434,16 @@ public class QuoridorGamePage extends JFrame {
 			}
 		}
 		catch(Exception e) {
-			errorMsg="Unable to move the wall";
+			error="Unable to move the wall";
 		}
 	}
 	
 	public static String getErrMsg() {
-		return errorMsg;
+		return error;
 	}
 	
 	public static String getInfoMsg() {
-		return infoMsg;
+		return error;
 	}
 
 }
