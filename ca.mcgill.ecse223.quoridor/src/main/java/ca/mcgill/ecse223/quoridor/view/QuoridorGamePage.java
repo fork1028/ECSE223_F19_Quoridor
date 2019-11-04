@@ -195,29 +195,14 @@ public class QuoridorGamePage extends JFrame {
 		});
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (evt.getActionCommand().equals("GRAB")) {
-					
-					Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-					QuoridorController.grabWall(player);
-					}
-				//grabIsClicked(evt);
+				grabIsClicked(evt);
+				infoMsg="I have a wall in my hand now";
 			}
 		});
 		rotateWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				
-				if (evt.getActionCommand().equals("ROTATE")) {
-					// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
-					// g2d.rotate(Math.toRadians(90));
-				Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-				Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
-				 	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-					String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-							.getWallDirection().toString().toLowerCase();
-					
-					QuoridorController.rotateWall( wall,  move,  dir);
-				}
-				//rotateIsClicked(evt);
+				rotateIsClicked(evt);
 			}
 		});
 		saveGame.addActionListener(new ActionListener() {
@@ -374,13 +359,34 @@ public class QuoridorGamePage extends JFrame {
 
 	}
 
+	
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
-	   //g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
-		//g2d.rotate(Math.toRadians(90));
+
+		try {
+			// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
+			// g2d.rotate(Math.toRadians(90));
+		Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+		 	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+			String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+					.getWallDirection().toString().toLowerCase();
+			
+			QuoridorController.rotateWall( wall,  move,  dir);
+		}
+		catch(Exception e) {
+			errorMsg="";}
+		refreshData();
 	}
 
 	private void dropIsClicked(java.awt.event.ActionEvent evt) {
-		// TODO
+		try {
+
+			Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+			QuoridorController.grabWall(player);
+		} catch (RuntimeException e) {
+			errorMsg="Unable to move the wall";
+		}
+		refreshData();
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
