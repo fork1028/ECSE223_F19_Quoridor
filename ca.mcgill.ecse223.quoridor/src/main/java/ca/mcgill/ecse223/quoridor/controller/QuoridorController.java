@@ -35,6 +35,7 @@ public class QuoridorController {
 	 * @author Matteo Barbieri 260805184
 	 */
 	public static Game startGame(User blackPlayer, User whitePlayer, Time time) throws UnsupportedOperationException {
+		setTimers();
 		throw new UnsupportedOperationException("Unable to start Game");
 
 	}
