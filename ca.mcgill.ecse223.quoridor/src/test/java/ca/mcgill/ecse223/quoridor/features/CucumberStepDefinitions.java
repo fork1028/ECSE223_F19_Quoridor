@@ -34,6 +34,7 @@ import io.cucumber.java.en.But;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import junit.framework.Assert;
 
 public class CucumberStepDefinitions {
 
@@ -503,8 +504,18 @@ public class CucumberStepDefinitions {
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Given("I have no more walls on stock")
 	public void iHaveNoMoreWallsOnStock() {
+		 List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock();
+		 List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock();
 		Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		assert (player.hasWalls() == false);
+	//	assert (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().hasWalls() == false);
+		//assert(blackWalls.isEmpty());
+		///assert(whiteWalls.isEmpty());
+		if (whiteWalls.isEmpty()) {
+		Assert.assertEquals(whiteWalls.size(),0);}
+		if (blackWalls.isEmpty()) {
+		Assert.assertEquals(blackWalls.size(),0);}
+	//	assert(whiteWalls.size()==0);
+		//assert(blackWalls.size()==0);
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -540,6 +551,13 @@ public class CucumberStepDefinitions {
 
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
 	public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction, int row, int col) {
+		/*Player playerToMove=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		QuoridorController.grabWall(playerToMove);
+		String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+				.getWallDirection().toString();
+		int nrow = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
+		int ncol = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
+		assert (direction.equals(dir)&&nrow==row&&ncol==col);*/
 		Player playerToMove=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		QuoridorController.grabWall(playerToMove);
 		Direction direction1 = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
@@ -553,15 +571,32 @@ public class CucumberStepDefinitions {
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@When("I try to flip the wall")
 	public void userTriesRotateWall() {
-		Direction direction = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-				.getWallDirection();
+		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+	 	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		String direction = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+				.getWallDirection().toString().toLowerCase();
+		QuoridorController.rotateWall(wall, move, direction);
 
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Then("The wall shall be rotated over the board to {string}")
 	public void theWallShallBeRotatedOverTheBoardToNewDIrection(String direction) {
-		// QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction);
+	
+	    WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+
+        String dir = candidate.getWallDirection().toString().toLowerCase();
+       if(candidate.getWallDirection() == Direction.Vertical)
+    //	if(direction.equals("vertical"))  
+    		assert(dir.equals("vertical"));
+      // if(direction.equals("horizontal")) 
+       if(candidate.getWallDirection() == Direction.Horizontal)
+    	   assert(dir.equals("horizontal"));
+       // assert(candidate.getWallDirection() == Direction.Horizontal);
+    
+
+
+	//	QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction);
 	}
 
 	// ****** END of ROTATEWALL ******************

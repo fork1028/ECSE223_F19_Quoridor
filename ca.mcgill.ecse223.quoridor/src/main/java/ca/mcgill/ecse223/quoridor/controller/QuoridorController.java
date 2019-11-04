@@ -314,7 +314,7 @@ public class QuoridorController {
 	 * @throws InvalidInputException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
-	public static void rotateWall(Wall wall, WallMove move, Direction dir) throws UnsupportedOperationException {
+	public static void rotateWall(Wall wall, WallMove move, String dir) throws UnsupportedOperationException {
 
 		/*
 		 * ActionListener taskPerformer = new ActionListener() { public void
@@ -323,19 +323,21 @@ public class QuoridorController {
 		 * }};
 		 */
 
-		if (dir == Direction.Horizontal) {
+		// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
+		// g2d.rotate(Math.toRadians(90));
+		  if (dir.equals("vertical")) {
+				Direction newDir1 = Direction.Horizontal;
+				QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir1);
+			} 
+			
+		
+		  if (dir.equals("horizontal")) {
 			Direction newDir = Direction.Vertical;
 			QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir);
-			// dir = newDir;
-			// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
-			// g2d.rotate(Math.toRadians(90));
+		
 		}
-		if (dir == Direction.Vertical) {
-			Direction newDir = Direction.Horizontal;
-			// dir = newDir ;
-			QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(newDir);
-		} else
-			throw new UnsupportedOperationException("The wall cannot be rotated");
+		
+		
 	}
 
 	/**
