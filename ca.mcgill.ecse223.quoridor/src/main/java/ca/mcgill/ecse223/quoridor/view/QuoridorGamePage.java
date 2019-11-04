@@ -68,6 +68,8 @@ public class QuoridorGamePage extends JFrame {
 	// save game
 	private JButton saveGame;
 	private JTextField saveGameAs;
+	private JButton overwriteYes;
+	private JButton overwriteCancel;
 
 	// board visualizer
 	private QuoridorBoardVisualizer boardVisualizer;
@@ -86,6 +88,8 @@ public class QuoridorGamePage extends JFrame {
 		initComponents();
 		refreshData();
 		refreshBoardVisualizer();
+		overwriteYes.setEnabled(false);
+		overwriteCancel.setEnabled(false);
 	}
 
 	/************ INITIALIZATION AND LAYOUT ***************/
@@ -149,7 +153,10 @@ public class QuoridorGamePage extends JFrame {
 		saveGame.setToolTipText("Enter a filename and click SAVE GAME to save current game as a .dat file");
 		saveGameAs = new JTextField();
 		saveGameAs.setToolTipText("Enter the filename for your saved game .dat file");
-
+		overwriteYes = new JButton();
+		overwriteYes.setText("Overwrite Existing File");
+		overwriteCancel = new JButton();
+		overwriteCancel.setText("Do NOT overwrite existing file");
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
@@ -198,6 +205,18 @@ public class QuoridorGamePage extends JFrame {
 			}
 		});
 
+		overwriteYes.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				overwriteYesIsClicked(evt);
+			}
+		});
+		
+		overwriteCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				overwriteCancelIsClicked(evt);
+			}
+		});
+		
 		// Timer to refresh clock display every 100ms
 		new Timer(refreshClockMS, new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -239,6 +258,8 @@ public class QuoridorGamePage extends JFrame {
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				// main controls (save, pause)
 				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame)
+						.addComponent(overwriteYes)
+						.addComponent(overwriteCancel)
 				// TODO save game name
 
 				)
@@ -274,6 +295,8 @@ public class QuoridorGamePage extends JFrame {
 						.addComponent(saveGame)
 				// TODO save game name
 				)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(overwriteYes)
+						.addComponent(overwriteCancel))
 				// player1, board, player2
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						// player1 controls etc on left
@@ -339,7 +362,30 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
-		// TODO
+		errorMsg = "";
+		Boolean tmp = false;
+		if (saveGameAs.getText() == "") {
+			errorMsg = "Must include the file name you wish to save";
+		} else {
+			tmp = QuoridorController.attemptToSavePosition(saveGameAs.getText());
+		}
+		
+		if (errorMsg == "" && !tmp) {
+			overwriteYes.setEnabled(true);
+			overwriteCancel.setEnabled(true);
+		}
+	}
+	
+	private void overwriteYesIsClicked(java.awt.event.ActionEvent evt) {
+		QuoridorController.overWriteSavePosition(saveGameAs.getText(), true);
+		overwriteYes.setEnabled(false);
+		overwriteCancel.setEnabled(false);
+	}
+	
+	private void overwriteCancelIsClicked(java.awt.event.ActionEvent evt) {
+		QuoridorController.overWriteSavePosition(saveGameAs.getText(), false);
+		overwriteYes.setEnabled(false);
+		overwriteCancel.setEnabled(false);
 	}
 
 	private void keyTyped(KeyEvent event) throws UnsupportedOperationException, InvalidInputException {
