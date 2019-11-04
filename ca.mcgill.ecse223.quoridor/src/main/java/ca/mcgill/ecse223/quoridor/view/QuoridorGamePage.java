@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -35,13 +36,19 @@ import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
+import ca.mcgill.ecse223.quoridor.model.Player;
+import ca.mcgill.ecse223.quoridor.model.Wall;
 
 public class QuoridorGamePage extends JFrame {
 
 	private static final long serialVersionUID = -45345345345345345L;
 
 	// UI elements
+	private static String errorMsg="";
+	private static String infoMsg="";
 
 	// players
 	private JLabel playerWhiteNameLabel;
@@ -51,9 +58,9 @@ public class QuoridorGamePage extends JFrame {
 	private JLabel playerBlackNameLabel;
 	private JLabel playerBlackTurnLabel;
 	private JLabel playerBlackClockLabel;
-	private static final int refreshClockMS = 100; 
-	private int testTimer=0;
-	
+	private static final int refreshClockMS = 100;
+	private int testTimer = 0;
+
 	// Wall
 	private JButton moveWall;
 	private JButton dropWall;
@@ -85,89 +92,96 @@ public class QuoridorGamePage extends JFrame {
 
 	/************ INITIALIZATION AND LAYOUT ***************/
 
-	/** This method is called from within the constructor to initialize the form.
+	/**
+	 * This method is called from within the constructor to initialize the form.
 	 */
 	private void initComponents() {
 		// elements for error message
 		messageLabel = new JLabel();
 		messageLabel.setText(messageStr);
 		messageLabel.setForeground(Color.blue);
-		
-		//elements for white player
+
+		// elements for white player
 		playerWhiteNameLabel = new JLabel();
-		playerWhiteNameLabel.setText("PLAYER WHITE"); //TODO: get username from startpage
+		playerWhiteNameLabel.setText("PLAYER WHITE"); // TODO: get username from startpage
 		playerWhiteNameLabel.setFont(new Font(null, Font.BOLD, 18));
-		
+
 		playerWhiteTurnLabel = new JLabel();
 		playerWhiteTurnLabel.setText("  YOUR TURN  ");
 		playerWhiteTurnLabel.setFont(new Font(null, Font.BOLD, 16));
 		playerWhiteTurnLabel.setBackground(customGreen);
 		playerWhiteTurnLabel.setOpaque(true);
-		
+
 		playerWhiteClockLabel = new JLabel();
 		playerWhiteClockLabel.setText("MM:SS");
 		playerWhiteClockLabel.setFont(new Font(null, Font.BOLD, 25));
 		playerWhiteClockLabel.setBackground(Color.LIGHT_GRAY);
 		playerWhiteClockLabel.setOpaque(true);
-		
-		//elements for black player
+
+		// elements for black player
 		playerBlackNameLabel = new JLabel();
-		playerBlackNameLabel.setText("PLAYER BLACK"); //TODO: get username from startpage
+		playerBlackNameLabel.setText("PLAYER BLACK"); // TODO: get username from startpage
 		playerBlackNameLabel.setFont(new Font(null, Font.BOLD, 18));
-		
+
 		playerBlackTurnLabel = new JLabel();
 		playerBlackTurnLabel.setText("       WAIT        ");
 		playerBlackTurnLabel.setFont(new Font(null, Font.BOLD, 16));
 		playerBlackTurnLabel.setBackground(Color.LIGHT_GRAY);
 		playerBlackTurnLabel.setOpaque(true);
-		
-		
-		
+
 		playerBlackClockLabel = new JLabel();
 		playerBlackClockLabel.setText("MM:SS");
 		playerBlackClockLabel.setFont(new Font(null, Font.BOLD, 25));
 		playerBlackClockLabel.setBackground(Color.LIGHT_GRAY);
 		playerBlackClockLabel.setOpaque(true);
-		
 
-		//elements for Wall buttons
-		moveWall=new JButton();
+		// elements for Wall buttons
+		moveWall = new JButton();
 		moveWall.setText("MOVE");
-		dropWall=new JButton();
+		dropWall = new JButton();
 		dropWall.setText("DROP");
-		rotateWall=new JButton();
+		rotateWall = new JButton();
 		rotateWall.setText("ROTATE");
-		grabWall=new JButton();
+		grabWall = new JButton();
 		grabWall.setText("GRAB");
-		
-		//save and pause game
-		saveGame=new JButton();
+
+		// save and pause game
+		saveGame = new JButton();
 		saveGame.setText("SAVE GAME");
 		saveGame.setToolTipText("Enter a filename and click SAVE GAME to save current game as a .dat file");
-		saveGameAs =new JTextField();
+		saveGameAs = new JTextField();
 		saveGameAs.setToolTipText("Enter the filename for your saved game .dat file");
-		
-		//visualizer for board
+
+		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
-		
-		
-		
+
 		// global settings
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Quoridor Board and Game - Group 13");
-		
 
-		//action listeners
-		//TODO: complete actionlisteners, map to correct action performed methods at bottom
+		// action listeners
+		// TODO: complete actionlisteners, map to correct action performed methods at
+		// bottom
 		moveWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				moveIsClicked(evt);
+				if (evt.getActionCommand().equals("MOVE")) {
+					// TODO make a wall appear at the default location on the board
+					infoMsg="I have a wall in my hand now";
+				}
 			}
 		});
 		dropWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				dropIsClicked(evt);
+				if(evt.getActionCommand().equals("DROP")) {
+					Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+					Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+					try {
+						QuoridorController.dropWall(player, wall);
+					} catch (UnsupportedOperationException | InvalidInputException e) {
+						errorMsg="Unable to drop a wall";
+					}
+				}
 			}
 		});
 		grabWall.addActionListener(new ActionListener() {
@@ -185,150 +199,120 @@ public class QuoridorGamePage extends JFrame {
 				saveGameIsClicked(evt);
 			}
 		});
-		
-		//Timer to refresh clock display every 100ms
-		new Timer(refreshClockMS,new ActionListener() {
-		      public void actionPerformed(ActionEvent evt) {
-		          //refresh clocks every 100ms
-		    	  String blackStr = "MM:SS"; //default
-		    	  String whiteStr = "MM:SS";
-		    	  
-		    	  if (QuoridorController.getTimeForPlayer(true) != null) {
-		    		  int blackSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(true));
-			    	  blackStr = QuoridorController.getDisplayTimeString(blackSec); //new black remaining time
-		    	  }
-		    	  if (QuoridorController.getTimeForPlayer(false) != null) {
-			    	  int whiteSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(false));
-			    	  whiteStr =QuoridorController.getDisplayTimeString(whiteSec); //new white remaining time
-		    	  }	  
-		    	//TODO: REMOVE TEST TIMER
-		    	testTimer++;
-		    	int testSec = testTimer/10;
-		    	blackStr = QuoridorController.getDisplayTimeString(testSec);
-		    	whiteStr = QuoridorController.getDisplayTimeString(testSec);
-		    	  
-		    	  
-		    	  playerBlackClockLabel.setText(blackStr);
-		    	  playerWhiteClockLabel.setText(whiteStr);
-		      }
+
+		// Timer to refresh clock display every 100ms
+		new Timer(refreshClockMS, new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				// refresh clocks every 100ms
+				String blackStr = "MM:SS"; // default
+				String whiteStr = "MM:SS";
+
+				if (QuoridorController.getTimeForPlayer(true) != null) {
+					int blackSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(true));
+					blackStr = QuoridorController.getDisplayTimeString(blackSec); // new black remaining time
+				}
+				if (QuoridorController.getTimeForPlayer(false) != null) {
+					int whiteSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(false));
+					whiteStr = QuoridorController.getDisplayTimeString(whiteSec); // new white remaining time
+				}
+				// TODO: REMOVE TEST TIMER
+				testTimer++;
+				int testSec = testTimer / 10;
+				blackStr = QuoridorController.getDisplayTimeString(testSec);
+				whiteStr = QuoridorController.getDisplayTimeString(testSec);
+
+				playerBlackClockLabel.setText(blackStr);
+				playerWhiteClockLabel.setText(whiteStr);
+			}
 		}).start();
-		
 
-	// Layout
-	GroupLayout layout = new GroupLayout(getContentPane());
+		// Layout
+		GroupLayout layout = new GroupLayout(getContentPane());
 
-	getContentPane().setLayout(layout);
+		getContentPane().setLayout(layout);
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 		// horizontal line elements
 		JSeparator horizontalLineTop = new JSeparator();
 		JSeparator horizontalLineMiddle = new JSeparator();
 		JSeparator horizontalLineBottom = new JSeparator();
-		//add players' buttons on each left or right side
-		//board in middle
-		layout.setHorizontalGroup(
-				layout.createParallelGroup()
-					//main controls (save, pause)
-					.addGroup(layout.createSequentialGroup()
-							.addComponent(saveGameAs)	
-							.addComponent(saveGame)
-									//TODO save game name	
-						
-					)
-					//player1, board, player2
-					.addGroup(layout.createSequentialGroup()
-						//player1 controls etc on left
+		// add players' buttons on each left or right side
+		// board in middle
+		layout.setHorizontalGroup(layout.createParallelGroup()
+				// main controls (save, pause)
+				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame)
+				// TODO save game name
+
+				)
+				// player1, board, player2
+				.addGroup(layout.createSequentialGroup()
+						// player1 controls etc on left
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-								.addComponent(playerWhiteNameLabel)	
-								.addComponent(playerWhiteTurnLabel)
+								.addComponent(playerWhiteNameLabel).addComponent(playerWhiteTurnLabel)
 								.addComponent(playerWhiteClockLabel)
-								//TODO add stock
-						)	
-								
-						//board in middle
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-								.addComponent(boardVisualizer)
+						// TODO add stock
+						)
+
+						// board in middle
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(boardVisualizer)
 								.addGroup(layout.createSequentialGroup()
-										//walls and pawn buttons
-										.addComponent(grabWall)	
-										.addComponent(rotateWall)	
-										.addComponent(moveWall)	
-										.addComponent(dropWall)	
-								)
-						)
-						//player2 controls etc on right
+										// walls and pawn buttons
+										.addComponent(grabWall).addComponent(rotateWall).addComponent(moveWall)
+										.addComponent(dropWall)))
+						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-								.addComponent(playerBlackNameLabel)	
-								.addComponent(playerBlackTurnLabel)
+								.addComponent(playerBlackNameLabel).addComponent(playerBlackTurnLabel)
 								.addComponent(playerBlackClockLabel)
-								//TODO add countdown clock and stock
+						// TODO add countdown clock and stock
+						))
+
+				.addGroup(layout.createSequentialGroup()
+						// error msg
+						.addComponent(messageLabel)));
+
+		layout.setVerticalGroup(layout.createSequentialGroup()
+				// main controls (save, pause)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(saveGameAs)
+						.addComponent(saveGame)
+				// TODO save game name
+				)
+				// player1, board, player2
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						// player1 controls etc on left
+						.addGroup(layout.createSequentialGroup().addComponent(playerWhiteNameLabel)
+								.addComponent(playerWhiteTurnLabel).addComponent(playerWhiteClockLabel)
+						// TODO add stock
 						)
-					)
-					
-					.addGroup(layout.createSequentialGroup()
-							//error msg
-							.addComponent(messageLabel)	
-					)
-		);
-		
-		layout.setVerticalGroup(
-				layout.createSequentialGroup()
-				//main controls (save, pause)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-					.addComponent(saveGameAs)	
-					.addComponent(saveGame)
-							//TODO save game name					
-				)
-				//player1, board, player2
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-					//player1 controls etc on left
-					.addGroup(layout.createSequentialGroup()
-							.addComponent(playerWhiteNameLabel)	
-							.addComponent(playerWhiteTurnLabel)
-							.addComponent(playerWhiteClockLabel)
-							//TODO add stock
-					)	
-							
-					//board in middle
-					.addGroup(layout.createSequentialGroup()
-							.addComponent(boardVisualizer)
-							//buttons and error msg
-							.addGroup(layout.createParallelGroup()
-									//walls and pawn buttons
-									.addComponent(grabWall)	
-									.addComponent(rotateWall)	
-									.addComponent(moveWall)	
-									.addComponent(dropWall)	
-							)
-					)
-					//player2 controls etc on right
-					.addGroup(layout.createSequentialGroup()
-							.addComponent(playerBlackNameLabel)	
-							.addComponent(playerBlackTurnLabel)
-							.addComponent(playerBlackClockLabel)
-							//TODO add stock
-					)
-				)
-				
-				
+
+						// board in middle
+						.addGroup(layout.createSequentialGroup().addComponent(boardVisualizer)
+								// buttons and error msg
+								.addGroup(layout.createParallelGroup()
+										// walls and pawn buttons
+										.addComponent(grabWall).addComponent(rotateWall).addComponent(moveWall)
+										.addComponent(dropWall)))
+						// player2 controls etc on right
+						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
+								.addComponent(playerBlackTurnLabel).addComponent(playerBlackClockLabel)
+						// TODO add stock
+						))
+
 				.addGroup(layout.createParallelGroup()
-						//error msg
-						.addComponent(messageLabel)	
-				)
-		);
-		
-		
+						// error msg
+						.addComponent(messageLabel)));
+
 		pack();
 
 	}
 
 	/************ REFRESH METHODS ***************/
 	private void refreshData() {
-		//TODO ???
+		// TODO ???
 		// if turn changes
 		// if stock changes
 		// countdown
 		// moves
+		errorMsg="";
 
 	}
 
@@ -340,23 +324,56 @@ public class QuoridorGamePage extends JFrame {
 
 	/************ ACTION PERFORMED METHODS ***************/
 	private void moveIsClicked(java.awt.event.ActionEvent evt) {
-		//TODO
+		// TODO
 	}
-	
+
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
+<<<<<<< HEAD
 		
+=======
+		// TODO
+>>>>>>> branch 'master' of https://github.com/McGill-ECSE223-Fall2019/ecse223-project--group-13.git
 	}
-	
+
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
-		//TODO
+		// TODO
 	}
-	
+
 	private void dropIsClicked(java.awt.event.ActionEvent evt) {
-		//TODO
+		// TODO
+	}
+
+	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
+		// TODO
+	}
+
+	private void keyTyped(KeyEvent event) throws UnsupportedOperationException, InvalidInputException {
+		errorMsg="";
+		try {
+			if (event.getKeyCode() == KeyEvent.VK_UP) {
+				QuoridorController.moveWall("up");
+			}
+			if (event.getKeyCode() == KeyEvent.VK_DOWN) {
+				QuoridorController.moveWall("down");
+			}
+			if (event.getKeyCode() == KeyEvent.VK_LEFT) {
+				QuoridorController.moveWall("left");
+			}
+			if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
+				QuoridorController.moveWall("right");
+			}
+		}
+		catch(Exception e) {
+			errorMsg="Unable to move the wall";
+		}
 	}
 	
-	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
-		//TODO
+	public static String getErrMsg() {
+		return errorMsg;
+	}
+	
+	public static String getInfoMsg() {
+		return infoMsg;
 	}
 
 }

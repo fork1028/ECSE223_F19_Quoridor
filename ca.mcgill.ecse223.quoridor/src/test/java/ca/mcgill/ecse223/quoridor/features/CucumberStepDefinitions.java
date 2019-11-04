@@ -28,6 +28,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import ca.mcgill.ecse223.quoridor.view.QuoridorGamePage;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.But;
@@ -110,7 +111,7 @@ public class CucumberStepDefinitions {
 
 	@And("I do not have a wall in my hand")
 	public void iDoNotHaveAWallInMyHand() {
-		// GUI-related feature -- TODO for later
+		// GUI-related feature 
 	}
 
 	@And("^I have a wall in my hand over the board$")
@@ -610,8 +611,6 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The wall candidate is not at the {string} edge of the board")
 	public void theWallCandidateIsNotAtTheEdgeOfTheBoard(String direction) {
-		
-
 
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		int row = candidate.getTargetTile().getRow();
@@ -698,7 +697,11 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("I shall be notified that my move is illegal")
 	public void iShallBeNotifiedThatMyMoveIsIllegal() {
-		// GUI related
+		String err=QuoridorGamePage.getErrMsg();
+		//assert(!err.equals("Unable to move the wall"));
+		if(err.contentEquals("Unable to move the wall")) {
+			throw new UnsupportedOperationException("Unable to move the wall");
+		}
 	}
 
 	/**
@@ -736,7 +739,8 @@ public class CucumberStepDefinitions {
 	// ****** END of MOVEWALL ******************
 
 	// ****** START of DROPWALL ******************
-	// DropWall Scenario Outline 1
+	
+	// Valid wall placement 
 
 	/**
 	 * @author Xinyue Chen
@@ -786,7 +790,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("I shall not have a wall in my hand")
 	public void iShallNotHaveAWallInMyHand() {
-		// GUI related
+		String err=QuoridorGamePage.getErrMsg();
+		assert(err.equals(""));
 	}
 
 	/**
@@ -794,7 +799,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("My move shall be completed")
 	public void myMoveShallBeCompleted() {
-		// GUI related
+		String err=QuoridorGamePage.getErrMsg();
+		assert(err.equals(""));
 	}
 
 	/**
@@ -809,7 +815,7 @@ public class CucumberStepDefinitions {
 
 	}
 
-	// DropWall Scenario Outline 2
+	// Invalid wall placement
 
 	/**
 	 * @author Xinyue Chen
@@ -832,7 +838,11 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("I shall be notified that my wall move is invalid")
 	public void iShallBeNotifiedThatMyWallMoveIsInvalid() {
-		// GUI related
+		String err=QuoridorGamePage.getErrMsg();
+		//assert(!err.equals("Unable to move the wall"));
+		if(err.contentEquals("Unable to move the wall")) {
+			throw new UnsupportedOperationException("Unable to move the wall");
+		}
 	}
 
 	/**
@@ -840,9 +850,10 @@ public class CucumberStepDefinitions {
 	 */
 	@And("It shall be my turn to move")
 	public void itShallBeMyTurnToMove() {
-		// assert
-		// (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove()
-		// == player);
+		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Player playerToMove=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		 assert (whitePlayer==playerToMove||blackPlayer==playerToMove);
 	}
 
 	/**
@@ -852,10 +863,13 @@ public class CucumberStepDefinitions {
 	 * @param row
 	 */
 	@But("No wall move shall be registered with {string} at position \\({int}, {int})")
-	public void noWallMoveShallBeRegisteredWithDirectionAtPosition(String direction, int col, int row) {
-		// assert
-		// (QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced()
-		// == null);
+	public void noWallMoveShallBeRegisteredWithDirectionAtPosition(String direction, int row, int col) {
+		Quoridor quoridor=QuoridorApplication.getQuoridor();
+		WallMove candidate=quoridor.getCurrentGame().getWallMoveCandidate();
+		int r=candidate.getTargetTile().getRow();
+		int c=candidate.getTargetTile().getColumn();
+		String dir=candidate.getWallDirection().toString().toLowerCase();
+		assert(row!=r||col!=c||!dir.equals(direction));
 
 	}
 	// ****** END of DROPWALL ******************

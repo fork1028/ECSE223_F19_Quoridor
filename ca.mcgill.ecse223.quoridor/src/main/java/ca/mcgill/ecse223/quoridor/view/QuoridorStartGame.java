@@ -1,6 +1,7 @@
 package ca.mcgill.ecse223.quoridor.view;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.swing.GroupLayout;
@@ -11,6 +12,10 @@ import javax.swing.JLabel;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
+import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
+import ca.mcgill.ecse223.quoridor.model.User;
 
 public class QuoridorStartGame extends JFrame {
 	
@@ -101,20 +106,20 @@ public class QuoridorStartGame extends JFrame {
 		//TODO: map all listeners to correct actionPerformed method
 		createNewGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
+				createNewGameButtonActionPerformed(evt);
 			}
 		});
 				
 		loadGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
+				loadGameButtonActionPerformed(evt);
 			}
 		});
 		
 		//listeners for User
-		readyButton.addActionListener(new java.awt.event.ActionListener() {
+		createUserButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
-				
+				createUserButtonActionPerformed(evt);
 			}
 		});
 		
@@ -195,10 +200,71 @@ public class QuoridorStartGame extends JFrame {
 	
 	private void refreshData() {
 		
+		//set all text fields to be empty.
+		loadGameTextField.setText("");
+		createUserTextField.setText("");
+		
+		//Filling minutes and seconds list
+		minuteList.removeAllItems();
+		String tmp = null;
+		for (int i = 0 ; i < 60 ; i++) {
+			tmp = Integer.toString(i);
+			minuteList.addItem(tmp);
+		}
+		minuteList.setSelectedIndex(-1);
+		
+		secondList.removeAllItems();
+		tmp = null;
+		for (int i = 0 ; i < 60 ; i++) {
+			tmp = Integer.toString(i);
+			secondList.addItem(tmp);
+		}
+		secondList.setSelectedIndex(-1);
+		
+		whiteUserList.removeAllItems();
+		for (User tmpUser : QuoridorApplication.getQuoridor().getUsers()) {
+			whiteUserList.addItem(tmpUser.getName());
+		}
+		whiteUserList.setSelectedIndex(-1);
+		
+		blackUserList.removeAllItems();
+		for (User tmpUser : QuoridorApplication.getQuoridor().getUsers()) {
+			blackUserList.addItem(tmpUser.getName());
+		}
+		blackUserList.setSelectedIndex(-1);
+		
 		
 	}
 
 	//TODO: create action performed methods to handle each listener
+	//ACTION PERFORMED METHODS
 	
+	private void createNewGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//Clear error msg
+		error = null;
+		//controller method
+		
+		
+	}
+	
+	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//Clear error msg
+		error = null;
+		//controller method
+		try {
+			QuoridorController.loadSavedPosition(loadGameTextField.getText());
+		} catch (UnsupportedOperationException e) {
+			error = e.getMessage();
+		}
+		
+	}
+	
+	private void createUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//Clear error msg
+		error = null;
+		//controller method
+		
+		
+	}
 	
 }
