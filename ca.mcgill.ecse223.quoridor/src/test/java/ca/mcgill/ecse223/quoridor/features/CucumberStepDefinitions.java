@@ -587,13 +587,13 @@ public class CucumberStepDefinitions {
 	    WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 
         String dir = candidate.getWallDirection().toString().toLowerCase();
-       if(candidate.getWallDirection() == Direction.Vertical)
-    //	if(direction.equals("vertical"))  
-    		assert(dir.equals("vertical"));
-      // if(direction.equals("horizontal")) 
-       if(candidate.getWallDirection() == Direction.Horizontal)
-    	   assert(dir.equals("horizontal"));
-       // assert(candidate.getWallDirection() == Direction.Horizontal);
+        if(candidate.getWallDirection() == Direction.Vertical)
+            //	if(direction.equals("vertical"))  
+            		assert(dir.equals("vertical"));
+              // if(direction.equals("horizontal")) 
+               if(candidate.getWallDirection() == Direction.Horizontal)
+            	   assert(dir.equals("horizontal"));
+               // assert(candidate.getWallDirection() == Direction.Horizontal);
     
 
 
