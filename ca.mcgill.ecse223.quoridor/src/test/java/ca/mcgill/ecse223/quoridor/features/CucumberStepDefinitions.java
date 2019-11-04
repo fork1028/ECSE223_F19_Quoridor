@@ -588,7 +588,7 @@ public class CucumberStepDefinitions {
 
 
 	//	QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().setWallDirection(direction);
-	}
+	} 
 
 	// ****** END of ROTATEWALL ******************
 
