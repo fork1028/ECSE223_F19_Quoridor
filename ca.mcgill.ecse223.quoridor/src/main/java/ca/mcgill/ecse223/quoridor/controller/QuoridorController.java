@@ -681,7 +681,7 @@ public class QuoridorController {
 				whitePlayerStr = fileLine;
 			}
 			reader.close();
-
+			Quoridor tempQ = new Quoridor();
 			// Now, cut the front part, and find the tile each player is on.
 			whitePlayerStr = whitePlayerStr.substring(3);
 			blackPlayerStr = blackPlayerStr.substring(3);
@@ -695,11 +695,15 @@ public class QuoridorController {
 			
 			
 			Boolean statusOfPosition = true;
-			if (!validatePawnPosition(whitePawnRow, whitePawnCol)) {
+			if (!validatePawnPosition(whitePawnRow, whitePawnCol, tempQ)) {
 				statusOfPosition = false;
 				return false;
 			}
-			if (!validatePawnPosition(blackPawnRow, blackPawnCol)) {
+			if (!validatePawnPosition(blackPawnRow, blackPawnCol, tempQ)) {
+				statusOfPosition = false;
+				return false;
+			}
+			if (blackPawnCol == whitePawnCol && blackPawnRow == whitePawnRow) {
 				statusOfPosition = false;
 				return false;
 			}
@@ -718,21 +722,19 @@ public class QuoridorController {
 			List<Player> players = new ArrayList<Player>();
 			players.add(player1);
 			players.add(player2);
-			
-
-			Quoridor tempQ = new Quoridor();
+			/*
+			for (int i = 0; i < 2; i++) {
+				for (int j = 0; j < 10; j++) {
+					new Wall(i * 10 + j, players.get(i));
+				}
+			}
+			*/
 			Board board = new Board(tempQ);
 			// Creating tiles by rows, i.e., the column index changes with every tile
 			// creation
 			for (int i = 1; i <= 9; i++) { // rows
 				for (int j = 1; j <= 9; j++) { // columns
 					board.addTile(i, j);
-				}
-			}
-			// Create all walls, assign them to a player
-			for (int i = 0; i < 2; i++) {
-				for (int j = 0; j < 10; j++) {
-					new Wall(i * 10 + j, players.get(i));
 				}
 			}
 
@@ -764,13 +766,22 @@ public class QuoridorController {
 
 			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, startingMovePlayer, game);
 
+			int whiteWallsPlaced = 0;
+			int blackWallsPlaced = 0;
 			// Wall stock and placement on board.
 			// First, get 2 lists for all walls.
-			String[] whiteWalls = whitePlayerStr.substring(3).replace(" ", "").split(",");
-			String[] blackWalls = blackPlayerStr.substring(3).replace(" ", "").split(",");
-			// Next, get size, so we know how many walls to place for each player.
-			int whiteWallsPlaced = whiteWalls.length;
-			int blackWallsPlaced = blackWalls.length;
+			String[] whiteWalls = null;
+			String[] blackWalls = null;
+			
+			if (whitePlayerStr.length() > 2) {
+				whiteWalls = whitePlayerStr.substring(3).replace(" ", "").split(",");
+				whiteWallsPlaced = whiteWalls.length;
+			}
+			if (blackPlayerStr.length() > 2) {
+				blackWalls = blackPlayerStr.substring(3).replace(" ", "").split(",");
+				blackWallsPlaced = blackWalls.length;
+			}
+			
 			// Add the walls as in stock for the players
 			for (int j = 0; j < 10 - whiteWallsPlaced; j++) {
 				Wall wall = Wall.getWithId(j);
@@ -811,11 +822,12 @@ public class QuoridorController {
 					positionValidated = validatePosition(row, col, tempDir, tempQ);
 					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
 				} else {
-					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
+					positionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
 				}
 				
 				if (!(positionValidated && overlapPositionValidated)) {
 					statusOfPosition = false;
+					return false;
 				}
 
 				for (Tile curTile : tempTileList) {
@@ -835,7 +847,7 @@ public class QuoridorController {
 			roundNumCounter = 1;
 			for (int j = 0; j < blackWallsPlaced; j++) {
 				Wall wall = Wall.getWithId(19 - j);
-				tempStr = whiteWalls[j];
+				tempStr = blackWalls[j];
 				tmpRow = tempStr.substring(1, 2);
 				dirStr = tempStr.substring(2, 3);
 				col = ((int) tempStr.charAt(0)) - 96;
@@ -850,11 +862,12 @@ public class QuoridorController {
 					positionValidated = validatePosition(row, col, tempDir, tempQ);
 					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
 				} else {
-					overlapPositionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
+					positionValidated = validateWallBoundaryPosition(row, col, tempDir, tempQ);
 				}
 				
 				if (!(positionValidated && overlapPositionValidated)) {
 					statusOfPosition = false;
+					return false;
 				}
 
 				for (Tile curTile : tempTileList) {
@@ -978,7 +991,7 @@ public class QuoridorController {
 	public static boolean validatePosition(int row, int col, Direction direction, Quoridor quoridor) throws UnsupportedOperationException {
 		boolean position;
 		if (direction == null) {
-			return position = validatePawnPosition(row, col);
+			return position = validatePawnPosition(row, col, quoridor);
 			// return validatePawnPosition(row, col);
 		} else {
 			return validateWallBoundaryPosition(row, col, direction, quoridor)
@@ -986,19 +999,19 @@ public class QuoridorController {
 		}
 	}
 
-	/*
-	private static boolean validatePawnPosition(int row, int col) throws UnsupportedOperationException {
+	
+	private static boolean validatePawnPosition(int row, int col, Quoridor quoridor) throws UnsupportedOperationException {
 		if (row <= 0 || row >= 10 || col <= 0 || col >= 10) {
-			throw new UnsupportedOperationException(" * Invalid position for pawn...");
+			return false;
 		}
 		return true;
 	}
-	*/
+	
 
 	private static boolean validateWallBoundaryPosition(int row, int col, Direction direction, Quoridor quoridor)
 			throws UnsupportedOperationException {
-		if (row == 9 || col == 9)
-			throw new UnsupportedOperationException(" * Out of bounds position for wall...");
+		if (row >= 9 || row <= 0 || col <= 0 || col >= 9)
+			return false;
 		else
 			return true;
 	}
@@ -1020,18 +1033,18 @@ public class QuoridorController {
 			Direction currDir = allWalls.get(i).getMove().getWallDirection();
 
 			if (currRow == row && currCol == col) {
-				throw new UnsupportedOperationException(" * Wall already exists in this position...");
+				return false;
 			}
 
 			if (direction == Direction.Vertical) {
 				if ((currRow == row - 1 || currRow == row + 1) && currCol == col && currDir == Direction.Vertical) {
-					throw new UnsupportedOperationException(" * Wall overlaps with another wall...");
+					return false;
 				}
 			}
 
 			if (direction == Direction.Horizontal) {
 				if (currRow == row && (currCol == col - 1 || currCol == col + 1) && currDir == Direction.Horizontal) {
-					throw new UnsupportedOperationException(" * Wall overlaps with another wall...");
+					return false;
 				}
 			}
 		}
