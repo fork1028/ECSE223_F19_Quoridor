@@ -39,6 +39,10 @@ import javax.swing.table.TableCellRenderer;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
+import ca.mcgill.ecse223.quoridor.model.Player;
+import ca.mcgill.ecse223.quoridor.model.Wall;
+import ca.mcgill.ecse223.quoridor.model.WallMove;
+
 
 public class QuoridorGamePage extends JFrame {
 
@@ -192,10 +196,12 @@ public class QuoridorGamePage extends JFrame {
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				grabIsClicked(evt);
+				infoMsg="I have a wall in my hand now";
 			}
 		});
 		rotateWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
+				
 				rotateIsClicked(evt);
 			}
 		});
@@ -350,15 +356,37 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
-		// TODO
+
 	}
 
+	
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
-		// TODO
+
+		try {
+			// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
+			// g2d.rotate(Math.toRadians(90));
+		Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+		 	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+			String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
+					.getWallDirection().toString().toLowerCase();
+			
+			QuoridorController.rotateWall( wall,  move,  dir);
+		}
+		catch(Exception e) {
+			errorMsg="";}
+		refreshData();
 	}
 
 	private void dropIsClicked(java.awt.event.ActionEvent evt) {
-		// TODO
+		try {
+
+			Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+			QuoridorController.grabWall(player);
+		} catch (RuntimeException e) {
+			errorMsg="Unable to move the wall";
+		}
+		refreshData();
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
