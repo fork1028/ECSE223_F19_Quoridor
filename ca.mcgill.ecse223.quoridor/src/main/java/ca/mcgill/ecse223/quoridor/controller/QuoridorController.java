@@ -35,6 +35,7 @@ public class QuoridorController {
 	 * @author Matteo Barbieri 260805184
 	 */
 	public static Game startGame(User blackPlayer, User whitePlayer, Time time) throws UnsupportedOperationException {
+		setTimers();
 		throw new UnsupportedOperationException("Unable to start Game");
 
 	}
@@ -1191,6 +1192,81 @@ public class QuoridorController {
 
 		return remainingTime; // return null if no time found
 
+	}
+	
+	* Helper method to set timer for each player.
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	private static void setTimers() {
+		Timer whitePlayerTimer = new Timer();
+		Timer blackPlayerTimer = new Timer();
+		Timer checker = new Timer();
+
+		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+
+		TimerTask ttWhitePlayer = new TimerTask() {
+			@Override  
+			public void run() {
+				int remainingTime = getTimeToSeconds( whitePlayer.getRemainingTime() );
+				for (int i = 0; i <= remainingTime; i++) {
+					whitePlayer.setRemainingTime( getIntToTime(0, remainingTime - i) );
+				}
+			};
+		}; 
+
+		whitePlayerTimer.scheduleAtFixedRate(ttWhitePlayer,0,1000);
+		try {
+			whitePlayerTimer.wait();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+
+		TimerTask ttBlackPlayer = new TimerTask() {
+			@Override  
+			public void run() {
+				int remainingTime = getTimeToSeconds( blackPlayer.getRemainingTime() );
+				for (int i = 0; i <= remainingTime; i++) {
+					blackPlayer.setRemainingTime( getIntToTime(0, remainingTime - i) );
+				}
+			};
+		}; 
+
+		blackPlayerTimer.scheduleAtFixedRate(ttBlackPlayer,0,1000);
+		try {
+			blackPlayerTimer.wait();
+		} catch (InterruptedException e1) {
+			e1.printStackTrace();
+		}
+
+		TimerTask check = new TimerTask() {
+			@Override  
+			public void run() {
+				GameStatus currentStatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
+				Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+
+				while (currentStatus == GameStatus.Running) {
+					if (currentPlayer == QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer()) {
+						whitePlayerTimer.notify();
+						try {
+							blackPlayerTimer.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					else {
+						blackPlayerTimer.notify();
+						try {
+							whitePlayerTimer.wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			};
+		}; 
+
+		checker.scheduleAtFixedRate(check, 0, 100);
 	}
 
 }
