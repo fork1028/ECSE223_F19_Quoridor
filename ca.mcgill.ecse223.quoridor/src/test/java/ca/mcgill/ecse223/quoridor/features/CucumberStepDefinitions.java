@@ -28,6 +28,7 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import ca.mcgill.ecse223.quoridor.view.QuoridorBoardVisualizer;
 import ca.mcgill.ecse223.quoridor.view.QuoridorGamePage;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -484,14 +485,16 @@ public class CucumberStepDefinitions {
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@And("I shall have a wall in my hand over the board")
 	public void iShallHaveAWallInMyHandOverTheBoard() {
-		// GUI
+		String err=QuoridorGamePage.getErrMsg();
+		assert(err.equals(""));
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@And("The wall in my hand shall disappear from my stock")
 
 	public void theWallInMyHandShouldDisappearFromMyStock() {
-	//GUI
+		String err=QuoridorGamePage.getErrMsg();
+		assert(err.equals(""));
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
@@ -515,13 +518,16 @@ public class CucumberStepDefinitions {
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@Then("I shall be notified that I have no more walls")
 	public void iShouldBeNotifiedThatIHaveNoMoreWalls() {
-		// GUI
+		String err=QuoridorGamePage.getErrMsg();
+		if(err.contentEquals("There are no more walls")) assert(err.equals("There are no more walls"));
 	}
 
 	/** * @author Rajaa Boukhelif, 260870030 */
 	@And("I shall have no walls in my hand")
 	public void iShallHaveNoWallsInMyHand() {
-		// GUI
+		//QuoridorGamePage.this.action(evt, wall)
+		String err=QuoridorGamePage.getErrMsg();
+		assert(err.equals(""));
 	}
 
 	// ****** END of GRABWALL ******************
