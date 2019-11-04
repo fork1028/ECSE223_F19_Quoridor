@@ -715,7 +715,7 @@ public class QuoridorController {
 			String blackPlayerStr = "";
 			// First, check if first line is white or black
 			// Sort their line into the correct string variable
-			if (fileLine.substring(0, 1) == "W") {
+			if (fileLine.substring(0, 1).equals("W")) {
 				whitePlayersTurn = true;
 				whitePlayerStr = fileLine;
 				fileLine = reader.readLine();
@@ -857,7 +857,7 @@ public class QuoridorController {
 				dirStr = tempStr.substring(2, 3);
 				col = ((int) tempStr.charAt(0)) - 96;
 				row = Integer.parseInt(tmpRow);
-				if (dirStr == "h") {
+				if (dirStr.equals("h")) {
 					tempDir = Direction.Horizontal;
 				} else {
 					tempDir = Direction.Vertical;
@@ -897,7 +897,7 @@ public class QuoridorController {
 				dirStr = tempStr.substring(2, 3);
 				col = ((int) tempStr.charAt(0)) - 96;
 				row = Integer.parseInt(tmpRow);
-				if (dirStr == "h") {
+				if (dirStr.equals("h")) {
 					tempDir = Direction.Horizontal;
 				} else {
 					tempDir = Direction.Vertical;

@@ -269,6 +269,7 @@ public class QuoridorStartGame extends JFrame {
 		} catch (UnsupportedOperationException e) {
 			error = e.getMessage();
 		}
+		//QuoridorStartGame().setVisible(false);
 		new QuoridorGamePage().setVisible(true);
 		
 	}

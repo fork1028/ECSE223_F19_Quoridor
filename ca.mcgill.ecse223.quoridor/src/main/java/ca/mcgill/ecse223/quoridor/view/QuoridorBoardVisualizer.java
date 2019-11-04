@@ -16,6 +16,7 @@ import javax.swing.JPanel;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.*;
+import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 
@@ -180,14 +181,21 @@ public class QuoridorBoardVisualizer extends JPanel {
 		//White walls first
 		for (Wall curWall : whiteWalls) {
 			String tempDir = "";
-			
 			int column = curWall.getMove().getTargetTile().getColumn();
 			int row = curWall.getMove().getTargetTile().getRow();
-			Rectangle2D rectangle = new Rectangle2D.Float(
-					SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING),
-					-SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING),
-					WALLWIDTH,
-					WALLHEIGHT);
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			if (curWall.getMove().getWallDirection() == Direction.Horizontal) {
+				x = SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+				y = -SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+				w = WALLWIDTH;
+				h = WALLHEIGHT;
+			} else {
+				
+			}
+			Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
 			rectanglesForWalls.add(rectangle);
 			g2d.setColor(Color.ORANGE);
 			g2d.fill(rectangle);
@@ -240,7 +248,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
-		//doDrawingForWallsOnLoad(g);
+		doDrawingForWallsOnLoad(g);
 	}
 
 }
