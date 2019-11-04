@@ -742,15 +742,15 @@ public class QuoridorController {
 			Boolean statusOfPosition = true;
 			if (!validatePawnPosition(whitePawnRow, whitePawnCol, tempQ)) {
 				statusOfPosition = false;
-				return false;
+				throw new UnsupportedOperationException(" * Invalid position being loaded...");
 			}
 			if (!validatePawnPosition(blackPawnRow, blackPawnCol, tempQ)) {
 				statusOfPosition = false;
-				return false;
+				throw new UnsupportedOperationException(" * Invalid position being loaded...");
 			}
 			if (blackPawnCol == whitePawnCol && blackPawnRow == whitePawnRow) {
 				statusOfPosition = false;
-				return false;
+				throw new UnsupportedOperationException(" * Invalid position being loaded...");
 			}
 			
 
@@ -872,7 +872,7 @@ public class QuoridorController {
 				
 				if (!(positionValidated && overlapPositionValidated)) {
 					statusOfPosition = false;
-					return false;
+					throw new UnsupportedOperationException(" * Invalid position being loaded...");
 				}
 
 				for (Tile curTile : tempTileList) {
@@ -912,7 +912,8 @@ public class QuoridorController {
 				
 				if (!(positionValidated && overlapPositionValidated)) {
 					statusOfPosition = false;
-					return false;
+					throw new UnsupportedOperationException(" * Invalid position being loaded...");
+					
 				}
 
 				for (Tile curTile : tempTileList) {
@@ -933,6 +934,8 @@ public class QuoridorController {
 			if (statusOfPosition) {
 				quoridor.setCurrentGame(game);
 				quoridor.setBoard(board);
+			} else {
+				throw new UnsupportedOperationException(" * Invalid position being loaded...");
 			}
 			
 			return (statusOfPosition);

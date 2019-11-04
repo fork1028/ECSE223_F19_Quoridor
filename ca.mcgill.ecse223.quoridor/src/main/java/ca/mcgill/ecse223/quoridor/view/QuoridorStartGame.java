@@ -266,11 +266,12 @@ public class QuoridorStartGame extends JFrame {
 		//controller method
 		try {
 			QuoridorController.loadSavedPosition(loadGameTextField.getText());
+			new QuoridorGamePage().setVisible(true);
 		} catch (UnsupportedOperationException e) {
 			error = e.getMessage();
 		}
 		//QuoridorStartGame().setVisible(false);
-		new QuoridorGamePage().setVisible(true);
+		//new QuoridorGamePage().setVisible(true);
 		
 	}
 	
