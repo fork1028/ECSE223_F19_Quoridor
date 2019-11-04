@@ -143,9 +143,9 @@ public class QuoridorBoardVisualizer extends JPanel {
 					//create new tile as a square and add to list of squares and hashmap of tiles 
 				
 					//create white walls
-					int space=10;
+					int space=8;
 					for(int i=0;i<10;i++) {
-						Rectangle rec=new Rectangle(0,20+space*5,10,30);
+						Rectangle rec=new Rectangle(0,space*5,10,45);
 						g2d.setColor(Color.WHITE);
 						g2d.fill(rec);
 						space+=10;
@@ -154,9 +154,9 @@ public class QuoridorBoardVisualizer extends JPanel {
 					}
 					
 					//create black walls
-					int spacing=10;
+					int spacing=8;
 					for(int i=0;i<10;i++) {
-						Rectangle rec=new Rectangle(580,20+spacing*5,10,30);
+						Rectangle rec=new Rectangle(580,spacing*5,10,45);
 						g2d.setColor(Color.BLACK);
 						g2d.fill(rec);
 						spacing+=10;
