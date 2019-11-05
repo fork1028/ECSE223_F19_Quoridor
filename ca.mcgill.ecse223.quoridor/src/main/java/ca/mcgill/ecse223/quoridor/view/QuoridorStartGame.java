@@ -16,7 +16,6 @@ import javax.swing.WindowConstants;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
-import ca.mcgill.ecse223.quoridor.model.User;
 
 public class QuoridorStartGame extends JFrame {
 	
@@ -68,7 +67,7 @@ public class QuoridorStartGame extends JFrame {
 		createNewGameButton = new JButton();
 		createNewGameButton.setText("Create New Game");
 		loadGameButton = new JButton();
-		loadGameButton.setText("Load a Game:");
+		loadGameButton.setText("Load Game");
 		loadGameTextField = new JTextField();
 		loadGameLabel = new JLabel();
 		loadGameLabel.setText("Load Game File Name:");
@@ -91,7 +90,7 @@ public class QuoridorStartGame extends JFrame {
 		readyButton.setText("Ready (USELESS BUTTON MAYBE????)");
 		//elements for Timer
 		timerLabel = new JLabel();
-		timerLabel.setText("Set Time");
+		timerLabel.setText("Set Thinking Time:");
 		minuteList = new JComboBox<String>(new String[0]);
 		secondList = new JComboBox<String>(new String[0]);
 		setMinuteLabel = new JLabel();
@@ -225,14 +224,14 @@ public class QuoridorStartGame extends JFrame {
 		
 		whiteUserList.removeAllItems();
 		//TODO replace model obbj w controller method
-		for (User tmpUser : QuoridorApplication.getQuoridor().getUsers()) {
-			whiteUserList.addItem(tmpUser.getName());
+		for (String username : QuoridorController.getAllUsernames()) {
+			whiteUserList.addItem(username);
 		}
 		whiteUserList.setSelectedIndex(-1);
 		
 		blackUserList.removeAllItems();
-		for (User tmpUser : QuoridorApplication.getQuoridor().getUsers()) {
-			blackUserList.addItem(tmpUser.getName());
+		for (String username : QuoridorController.getAllUsernames()) {
+			blackUserList.addItem(username);
 		}
 		blackUserList.setSelectedIndex(-1);
 		
@@ -290,8 +289,6 @@ public class QuoridorStartGame extends JFrame {
 			refreshData();
 			return;
 		}
-		//QuoridorStartGame().setVisible(false);
-		//new QuoridorGamePage().setVisible(true);
 		
 	}
 	

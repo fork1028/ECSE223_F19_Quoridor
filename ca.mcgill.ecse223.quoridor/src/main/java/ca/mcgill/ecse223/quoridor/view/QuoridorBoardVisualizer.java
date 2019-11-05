@@ -149,16 +149,15 @@ public class QuoridorBoardVisualizer extends JPanel {
 			}
 			
 			
-			//draw walls in current Position
+			//draw walls left in stock
 			for (TOTile tile : board.getTOTiles()) {
 				//add by row and col
 				if (tile.getRow() <= MAXROWS && tile.getColumn() <= MAXCOLS) {
 					//create new tile as a square and add to list of squares and hashmap of tiles 
 				
 					//SHAYNE CHANGES: NEED TO ONLY LOAD WALLS THAT AREN'T PLACED!
-					Quoridor quoridor = QuoridorApplication.getQuoridor();
-					int whiteStock = quoridor.getCurrentGame().getCurrentPosition().getWhiteWallsInStock().size();
-					int blackStock = quoridor.getCurrentGame().getCurrentPosition().getBlackWallsInStock().size();
+					int whiteStock = (QuoridorController.getStockOfPlayer(false) < 0) ? 10: QuoridorController.getStockOfPlayer(false); //if game not initialised, still display 10 original walls
+					int blackStock = (QuoridorController.getStockOfPlayer(true) < 0) ? 10 : QuoridorController.getStockOfPlayer(true);
 					//create white walls
 								
 					int space=8;
@@ -190,65 +189,69 @@ public class QuoridorBoardVisualizer extends JPanel {
 	}
 	
 	public void doDrawingForWallsOnLoad(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g.create();
-		Quoridor quoridor = QuoridorApplication.getQuoridor();
-		List<Wall> whiteWalls = quoridor.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
-		List<Wall> blackWalls = quoridor.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
-		
-		//White walls first
-		for (Wall curWall : whiteWalls) {
-			String tempDir = "";
-			int column = curWall.getMove().getTargetTile().getColumn();
-			int row = curWall.getMove().getTargetTile().getRow();
-			int x = 0;
-			int y = 0;
-			int w = 0;
-			int h = 0;
-			if (curWall.getMove().getWallDirection() == Direction.Horizontal) {
-				x = -SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
-				y = SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
-				w = WALLHEIGHT;
-				h = WALLWIDTH;
-			} else {
-				x = SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
-				y = -SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
-				w = WALLWIDTH;
-				h = WALLHEIGHT;
+		if (board!=null && QuoridorController.boardWasInitiated()) {
+			Graphics2D g2d = (Graphics2D) g.create();
+			
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			List<Wall> whiteWalls = quoridor.getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+			List<Wall> blackWalls = quoridor.getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+			
+			//White walls first
+			for (Wall curWall : whiteWalls) {
+				String tempDir = "";
+				int column = curWall.getMove().getTargetTile().getColumn();
+				int row = curWall.getMove().getTargetTile().getRow();
+				int x = 0;
+				int y = 0;
+				int w = 0;
+				int h = 0;
+				if (curWall.getMove().getWallDirection() == Direction.Horizontal) {
+					x = -SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+					y = SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+					w = WALLHEIGHT;
+					h = WALLWIDTH;
+				} else {
+					x = SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+					y = -SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+					w = WALLWIDTH;
+					h = WALLHEIGHT;
+				}
+				Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
+				rectanglesForWalls.add(rectangle);
+				g2d.setColor(Color.ORANGE);
+				g2d.fill(rectangle);
+				g2d.setColor(Color.GREEN);
+				g2d.draw(rectangle);
 			}
-			Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
-			rectanglesForWalls.add(rectangle);
-			g2d.setColor(Color.ORANGE);
-			g2d.fill(rectangle);
-			g2d.setColor(Color.GREEN);
-			g2d.draw(rectangle);
-		}
-		
-		for (Wall curWall : blackWalls) {
+			
+			for (Wall curWall : blackWalls) {
 
-			int column = curWall.getMove().getTargetTile().getColumn();
-			int row = curWall.getMove().getTargetTile().getRow();
-			int x = 0;
-			int y = 0;
-			int w = 0;
-			int h = 0;
-			if (curWall.getMove().getWallDirection() == Direction.Horizontal) {
-				x = -SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
-				y = SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
-				w = WALLHEIGHT;
-				h = WALLWIDTH;
-			} else {
-				x = SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
-				y = -SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
-				w = WALLWIDTH;
-				h = WALLHEIGHT;
+				int column = curWall.getMove().getTargetTile().getColumn();
+				int row = curWall.getMove().getTargetTile().getRow();
+				int x = 0;
+				int y = 0;
+				int w = 0;
+				int h = 0;
+				if (curWall.getMove().getWallDirection() == Direction.Horizontal) {
+					x = -SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+					y = SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+					w = WALLHEIGHT;
+					h = WALLWIDTH;
+				} else {
+					x = SQUAREWIDTH/2 + column*(SQUAREWIDTH + SPACING);
+					y = -SQUAREWIDTH/2 + row*(SQUAREWIDTH + SPACING);
+					w = WALLWIDTH;
+					h = WALLHEIGHT;
+				}
+				Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
+				rectanglesForWalls.add(rectangle);
+				g2d.setColor(Color.ORANGE);
+				g2d.fill(rectangle);
+				g2d.setColor(Color.GREEN);
+				g2d.draw(rectangle);
 			}
-			Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
-			rectanglesForWalls.add(rectangle);
-			g2d.setColor(Color.ORANGE);
-			g2d.fill(rectangle);
-			g2d.setColor(Color.GREEN);
-			g2d.draw(rectangle);
 		}
+		
 		
 	}
 

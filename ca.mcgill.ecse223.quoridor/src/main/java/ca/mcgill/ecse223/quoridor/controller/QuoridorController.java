@@ -925,6 +925,7 @@ public class QuoridorController {
 				throw new UnsupportedOperationException(" * Invalid position being loaded...");
 			}
 			
+			boardWasInitiated = true;
 			return (statusOfPosition);
 
 		} catch (IOException e) {
@@ -1199,6 +1200,40 @@ public class QuoridorController {
 		return null; // return null if no user found
 
 	}
+	
+	/**
+	 * helper method to get all existing usernames as a list of strings. Used in view.
+	 * @author Helen
+	 * @return List(String) of existing usernames from model
+	 */
+	public static List<String> getAllUsernames() {
+		ArrayList<String> list = new ArrayList<String>();
+		if (QuoridorApplication.getQuoridor().hasUsers()) {
+			for (User user : QuoridorApplication.getQuoridor().getUsers()) {
+				list.add(user.getName());
+			}
+		} 
+
+		return list;
+
+	}
+	
+	/**
+	 * helper method to get number in stock of a player for current game
+	 * @author Helen
+	 * @return int number of walls in stock
+	 */
+	public static int getStockOfPlayer(boolean isForBlack) {
+		try {
+			return isForBlack ? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfBlackWallsInStock():
+				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfWhiteWallsInStock();
+		} catch (RuntimeException e) {
+			//if error, because game has not started
+			return -1;
+		}
+		
+	}
+	
 	
 	/**
 	 * Helper method to check if the board was successfully initiated.
