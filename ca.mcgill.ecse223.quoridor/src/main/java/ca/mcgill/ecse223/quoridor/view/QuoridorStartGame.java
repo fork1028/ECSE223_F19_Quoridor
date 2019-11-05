@@ -285,12 +285,21 @@ public class QuoridorStartGame extends JFrame {
 	private void createUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//Clear error msg
 		error = null;
+		//if already exists, give warning to view
+		String newUser = createUserTextField.getText();
+		
+		if (QuoridorController.getUserByUsername(newUser) !=null ) {
+			//user already exists
+			error = "Username " + newUser + " already exists!";
+			refreshData();
+			return;
+		}
 		//controller method
 		try {
 			QuoridorController.createUser(createUserTextField.getText());
-		} catch (RuntimeException e) {
+		} catch (Exception e) {
 			error = e.getMessage();
-		}
+		} 
 		refreshData();
 		
 	}

@@ -2,8 +2,6 @@
 
 package ca.mcgill.ecse223.quoridor.controller;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -14,10 +12,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-//import javax.swing.Timer;
 import java.util.List;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -27,59 +21,38 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 
 public class QuoridorController {
+	private static boolean boardWasInitiated = false;
 
 	/**
-	 * This method starts the game
-	 * 
-	 * @param blackPlayer the user assigned to the black pawn
-	 * @param whitePlayer the user assigned to the black pawn
-	 * @param time        total thinking time, in seconds
-	 * @throws InvalidInputException
-	 * @author Matteo Barbieri 260805184
+	 * This method initializes a game that is ready to start. The game is initialized from the view, after all validation.
+	 * @author Helen Lin 260715521
+	 * @param blackUsername
+	 * @param whiteUsername
+	 * @param min
+	 * @param sec
+	 * @throws InvalidInputException 
 	 */
-//	public static void startGame(User blackPlayer, User whitePlayer, int min, int sec) throws UnsupportedOperationException {
-//		//create game
-//		Quoridor quoridor = QuoridorApplication.getQuoridor();
-//		
-//		Game currGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, null, null, quoridor);
-//		QuoridorApplication.getQuoridor().setCurrentGame(currGame);
-//		//create and set players to a colour
-//		QuoridroController.createUser(whitePlayer);
-//		QuoridorController.setUserToPlayer(username, false);
-//	 
-//		QuoridroController.createUser(blackPlayer);
-//		QuoridorController.setUserToPlayer(blackPlayer, true);
-//		
-//		//set total thinking time
-//		QuoridorController.SetTotalThinkingTime(min, sec);
-//		setTimers();
-//		
-//		
-//		//set positions of players and walls to set a game position
-//		Tile player1StartPos = quoridor.getBoard().getTile(36);
-//		Tile player2StartPos = quoridor.getBoard().getTile(44);
-//		
-//		PlayerPosition player1Position = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(),
-//				player1StartPos);
-//		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(),
-//				player2StartPos);
-//		
-//		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
-//		
-//		for (int j = 0; j < 10; j++) {
-//			Wall wall = Wall.getWithId(j);
-//			gamePosition.addWhiteWallsInStock(wall);
-//		}
-//		for (int j = 0; j < 10; j++) {
-//			Wall wall = Wall.getWithId(j + 10);
-//			gamePosition.addBlackWallsInStock(wall);
-//		}
-//		
-//		currgame.setCurrentPosition(gamePosition);
-//		
-//		QuoridorController.initializeBoard();
-//		QuoridorApplication.getQuoridor.getCurrentGame().setGameStatus(GameStatus.Running);
-//	}
+	public static void createReadyGame(String blackUsername, String whiteUsername, int min, int sec) throws InvalidInputException {
+		//assumes users have been created and selected into the appropriate playerlist in UI
+		
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		initializeNewGame();
+		setUserToPlayer(blackUsername, true);
+		setUserToPlayer(whiteUsername, false);
+		setTotalThinkingTime(min, sec);
+		quoridor.getCurrentGame().setGameStatus(GameStatus.ReadyToStart);
+	}
+	
+	/**
+	 * This method initializes the board, starts the clocks for the appropriate players, and also starts the game.
+	 * @throws InvalidInputException 
+	 * @author Helen
+	 */
+	public static void startGameAndClocks() throws InvalidInputException {
+		initializeBoard();
+		//update status of game
+		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Running);
+	}
 	
 	/**
 	 * 
@@ -91,8 +64,6 @@ public class QuoridorController {
 	public static void initializeNewGame() throws InvalidInputException {
 		try {
 			new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
-			
-
 		}
 		catch(RuntimeException e) {
 			throw new InvalidInputException("Unable to create initialize new Game");
@@ -163,6 +134,7 @@ public class QuoridorController {
 		}
 
 	}
+	
 
 	/**
 	 * This method sets the total thinking time for both players while a new game is
@@ -203,27 +175,7 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method starts clock and countdown when user clicks start clock in view
-	 * for the next player to move
-	 * 
-	 * @author Helen
-	 * @throws InvalidInputException
-	 */
-	public static void startClock() throws InvalidInputException {
-		try {
-			QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().getRemainingTime()
-					.notify();
-
-		} catch (RuntimeException e) {
-			throw new InvalidInputException("Unable to start clock for next player");
-		}
-
-		// TODO: UI part in view
-
-	}
-
-	/**
-	 * This method initializes a new board.
+	 * This method initializes a new board only when the game is ready to start, and user clicks start clock
 	 * 
 	 * @throws InvalidInputException
 	 * @author Helen Lin, 260715521
@@ -244,7 +196,7 @@ public class QuoridorController {
 				}
 			}
 		} catch (RuntimeException e) {
-			throw new UnsupportedOperationException("Unable to create board with 81 tiles");
+			throw new InvalidInputException("Unable to create board with 81 tiles");
 		}
 
 		// set white and plack initial position , and set white player to move
@@ -267,15 +219,9 @@ public class QuoridorController {
 			quoridor.getCurrentGame().setCurrentPosition(gamePosition);
 
 		} catch (RuntimeException e) {
-			throw new UnsupportedOperationException("Unable to add white player as next player to move");
+			throw new InvalidInputException("Unable to add white player as next player to move");
 		}
 
-		// 10 walls in stock for each player
-		try {
-
-		} catch (RuntimeException e) {
-			throw new InvalidInputException("Unable to create walls for each player.");
-		}
 
 		// 10 walls in stock for each player
 		try {
@@ -291,7 +237,13 @@ public class QuoridorController {
 							player = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 						}
 						for (int j = 0; j < 10; j++) {
-							new Wall(i * 10 + j, player);
+							//if wall with id already exists (happens from some games or tests)
+							if (Wall.hasWithId(i * 10 + j)) {
+								Wall.getWithId(i * 10 + j).setOwner(player);
+							} else {
+								new Wall(i * 10 + j, player);
+							}
+							
 						}
 					}
 				}
@@ -302,6 +254,10 @@ public class QuoridorController {
 					quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(Wall.getWithId(j + 10));
 				}
 			}
+			
+			//set controller local var to show board was successfully
+			 //initiated, necessary because usually the game is started right away after and state changes to running
+			boardWasInitiated = true;
 
 		} catch (RuntimeException e) {
 			throw new InvalidInputException("Unable to add initial stock for players.");
@@ -311,11 +267,6 @@ public class QuoridorController {
 		// GUI TODO: clock countdown gui
 		// GUI TODO: show that this is white turn
 		// start clock for white player
-		try {
-			startClock();
-		} catch (RuntimeException e) {
-			throw new InvalidInputException(e.getMessage());
-		}
 
 	}
 
@@ -325,7 +276,7 @@ public class QuoridorController {
 	 * @param player that is going to grab the wall
 	 * @param move   that is going to grab the wall
 	 * @param wall   that is on the stack
-	 * @throws InvalidInputException
+	 * @throws UnsupportedOperationException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
 	public static void grabWall(Player player) throws UnsupportedOperationException {
@@ -386,7 +337,7 @@ public class QuoridorController {
 	 * @param move      that is going to rotate the wall
 	 * @param wall      that is on the stack
 	 * @param direction that is the orientation of the wall
-	 * @throws InvalidInputException
+	 * @throws UnsupportedOperationException
 	 * @author Rajaa Boukhelif, 260870030
 	 */
 	public static void rotateWall(Wall wall, WallMove move, String dir) throws UnsupportedOperationException {
@@ -1234,6 +1185,14 @@ public class QuoridorController {
 
 		return null; // return null if no user found
 
+	}
+	
+	/**
+	 * Helper method to check if the board was successfully initiated.
+	 * @return
+	 */
+	public static boolean boardWasInitiated() {
+		return boardWasInitiated;
 	}
 
 	/**
