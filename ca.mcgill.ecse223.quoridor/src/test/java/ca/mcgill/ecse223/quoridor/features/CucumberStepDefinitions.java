@@ -220,8 +220,11 @@ public class CucumberStepDefinitions {
 	/** @author matteo barbieri 260805184 */
 	@Given("Next player to set user name is {string}")
 	public void selectExistingUser(String colour) {
-		//// GUI black player decides to click on drop down menu of users or type in a
-		//// username
+		if (colour.equals("black")) {
+			QuoridorController.setNextPlayerToSetUsername(true);
+		} else {
+			QuoridorController.setNextPlayerToSetUsername(false);
+		}
 	}
 
 	/** @author matteo barbieri 260805184 */
@@ -235,7 +238,8 @@ public class CucumberStepDefinitions {
 	 * @throws InvalidInputException */
 	@When("The player selects existing {string}")
 	public void thePlayerSelectsExistingUsername(String username) throws InvalidInputException {
-		QuoridorController.provideSelectUser(username);
+		QuoridorController.createUser(username);
+		QuoridorController.setUserToPlayer(username, QuoridorController.getNextPlayerToSetUsername());
 	}
 
 	/** @author matteo barbieri 260805184 */
@@ -253,33 +257,50 @@ public class CucumberStepDefinitions {
 	}
 
 
-	/** @author matteo barbieri 260805184 */
+	/** @author matteo barbieri 260805184 
+	 * @throws InvalidInputException */
 	@And("There is no existing user {string}")
 	public void thereIsnoExistingUsername(String username) {
-	
-
+		if(QuoridorApplication.getQuoridor().getUsers().contains(username)) {
+			QuoridorApplication.getQuoridor().getUsers().remove(username);
+		}
+		
+		
 	}
 
 	/** @author matteo barbieri 260805184 
 	 * @throws InvalidInputException */
 	@When("The player provides new user name: {string}")
 	public void thePlayerProvidesNewUsername(String username) throws InvalidInputException {
-		QuoridorController.provideSelectUser(username);
-		QuoridorApplication.getQuoridor().addUser(username);
+		try {
+			QuoridorController.provideSelectUser(username);
+		} catch (InvalidInputException e) {
+			assertEquals(e.getMessage(), "User already exists");
+		}
 	}
 
 
 	/** @author matteo barbieri 260805184 */
 	@Then("The player shall be warned that {string} already exists")
 	public void nameWarning(String username) {
-		// GUI pop up window with warning appears
+		//The actual warning message is shown in view UI when a user tries to create 2 duplicate usernames
+		try {
+			QuoridorController.provideSelectUser(username);
+		} catch (InvalidInputException e) {
+			assertEquals(e.getMessage(), "User already exists");
+		}
+		
 	}
 
 	/** @author matteo barbieri 260805184 */
 	@And("Next player to set user name shall be {string}")
 	public void setNextPlayer(String color) {
-		// GUI now the screen is ready to select white players username
-		QuoridorApplication.getQuoridor().getCurrentGame().setWhitePlayer(null);
+		boolean playerToSetUser = false;
+		if (color.equals("black")) {
+			playerToSetUser = true;
+		}
+		
+		assert(QuoridorController.getNextPlayerToSetUsername() == playerToSetUser);
 	}
 	// *******END of PROVIDESELECTUSERNAME****************************************
 

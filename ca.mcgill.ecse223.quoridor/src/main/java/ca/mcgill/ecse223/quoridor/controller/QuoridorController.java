@@ -23,6 +23,8 @@ import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 public class QuoridorController {
 	private static boolean boardWasInitiated = false;
 
+	private static boolean nextPlayerToSetUsername = false;
+	
 	/**
 	 * This method initializes a game that is ready to start. The game is initialized from the view, after all validation.
 	 * @author Helen Lin 260715521
@@ -79,12 +81,12 @@ public class QuoridorController {
 	 */
 	public static void provideSelectUser(String username) throws InvalidInputException {
 		if (getUserByUsername(username) != null) {
-			//create user and ouput warning
-			createUser(username);
+		throw new InvalidInputException("User already exists");
 			}
 			else {
 				//creates user without warning
 				createUser(username);
+				setUserToPlayer(username, nextPlayerToSetUsername);
 		}
 		
 	}
@@ -102,6 +104,7 @@ public class QuoridorController {
 			// check if pre-existing
 			User user = getUserByUsername(username);
 			if (user != null) {
+				
 				return user; // return pre-existing user
 			} else // or create new user
 				return QuoridorApplication.getQuoridor().addUser(username);
@@ -109,6 +112,16 @@ public class QuoridorController {
 			throw new InvalidInputException("Unable to create a user");
 		}
 
+	}
+	
+	public static void setNextPlayerToSetUsername(boolean forBlack) {
+			nextPlayerToSetUsername = forBlack;
+			//sets variable to true if its blacks turn and false if its whites turn
+			
+	}
+	
+	public static boolean getNextPlayerToSetUsername() {
+		return nextPlayerToSetUsername;
 	}
 
 	/**
