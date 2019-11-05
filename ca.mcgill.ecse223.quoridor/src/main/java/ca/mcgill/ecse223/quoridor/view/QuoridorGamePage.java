@@ -43,7 +43,6 @@ import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 
-
 public class QuoridorGamePage extends JFrame {
 
 	private static final long serialVersionUID = -45345345345345345L;
@@ -59,7 +58,6 @@ public class QuoridorGamePage extends JFrame {
 	private JLabel playerBlackTurnLabel;
 	private JLabel playerBlackClockLabel;
 	private static final int refreshClockMS = 100;
-	private int testTimer = 0;
 
 	// Wall
 	private JButton moveWall;
@@ -79,7 +77,7 @@ public class QuoridorGamePage extends JFrame {
 	private static final int HEIGHT_BOARD = 600;
 
 	// data elements
-	private static String error = "TEST message";
+	private static String error = "";
 	private JLabel errorMsg;
 
 	// graphics
@@ -168,25 +166,22 @@ public class QuoridorGamePage extends JFrame {
 		setTitle("Quoridor Board and Game - Group 13");
 
 		// action listeners
-		
-		//TODO: add clocks
-		
-		
-		// TODO: complete actionlisteners, map to correct action performed methods at
-		// bottom
+
 		moveWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				if (evt.getActionCommand().equals("MOVE")) {
 					// TODO make a wall appear at the default location on the board
-					error="I have a wall in my hand now";
+					error = "I have a wall in my hand now";
 				}
 			}
 		});
 		dropWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if(evt.getActionCommand().equals("DROP")) {
-					//Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-					//Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+				if (evt.getActionCommand().equals("DROP")) {
+					// Player
+					// player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+					// Wall
+					// wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
 //					try {
 //						QuoridorController.dropWall(player, wall);
 //					} catch (UnsupportedOperationException | InvalidInputException e) {
@@ -198,12 +193,12 @@ public class QuoridorGamePage extends JFrame {
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				grabIsClicked(evt);
-				error="I have a wall in my hand now";
+				error = "I have a wall in my hand now";
 			}
 		});
 		rotateWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				
+
 				rotateIsClicked(evt);
 			}
 		});
@@ -218,14 +213,18 @@ public class QuoridorGamePage extends JFrame {
 				overwriteYesIsClicked(evt);
 			}
 		});
-		
+
 		overwriteCancel.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				overwriteCancelIsClicked(evt);
 			}
 		});
 		
-		// Timer to refresh clock display every 100ms
+		/**
+		 * Timer to decrement remaining player time for current player, and also to set counter ui.
+		 * Timer refreshes every 100ms.
+		 * @author Helen
+		 */
 		new Timer(refreshClockMS, new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				// refresh clocks every 100ms
@@ -235,16 +234,39 @@ public class QuoridorGamePage extends JFrame {
 				if (QuoridorController.getTimeForPlayer(true) != null) {
 					int blackSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(true));
 					blackStr = QuoridorController.getDisplayTimeString(blackSec); // new black remaining time
+					
+					//if current player to move is black, decrement its remaining time
+					if (QuoridorController.isBlackTurn()) {
+						//also display player to move display
+						playerBlackTurnLabel.setText("  YOUR TURN  ");
+						playerBlackTurnLabel.setBackground(customGreen);
+						playerWhiteTurnLabel.setText("       WAIT        ");
+						playerWhiteTurnLabel.setBackground(Color.LIGHT_GRAY);
+						
+						//decrement remaining time
+						QuoridorController.setRemainingTime(new Time (QuoridorController.getTimeForPlayer(true).getTime() - refreshClockMS), true);
+					}
+					
 				}
 				if (QuoridorController.getTimeForPlayer(false) != null) {
 					int whiteSec = QuoridorController.getTimeToSeconds(QuoridorController.getTimeForPlayer(false));
 					whiteStr = QuoridorController.getDisplayTimeString(whiteSec); // new white remaining time
+					
+					//if current player to move is white, decrement its remaining time
+					if (QuoridorController.isWhiteTurn()) {
+						//also update player to move display
+						playerWhiteTurnLabel.setText("  YOUR TURN  ");
+						playerWhiteTurnLabel.setBackground(customGreen);
+						playerBlackTurnLabel.setText("       WAIT        ");
+						playerBlackTurnLabel.setBackground(Color.LIGHT_GRAY);
+						
+						//decrement remaining time
+						QuoridorController.setRemainingTime(new Time (QuoridorController.getTimeForPlayer(false).getTime() - refreshClockMS), false);
+					}
 				}
-				// TODO: REMOVE TEST TIMER
-				testTimer++;
-				int testSec = testTimer / 10;
-				blackStr = QuoridorController.getDisplayTimeString(testSec);
-				whiteStr = QuoridorController.getDisplayTimeString(testSec);
+
+				//blackStr = QuoridorController.getDisplayTimeString(testSec);
+				//whiteStr = QuoridorController.getDisplayTimeString(testSec);
 
 				playerBlackClockLabel.setText(blackStr);
 				playerWhiteClockLabel.setText(whiteStr);
@@ -266,8 +288,7 @@ public class QuoridorGamePage extends JFrame {
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				// main controls (save, pause)
 				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame)
-						.addComponent(overwriteYes)
-						.addComponent(overwriteCancel)
+						.addComponent(overwriteYes).addComponent(overwriteCancel)
 				// TODO save game name
 
 				)
@@ -360,32 +381,31 @@ public class QuoridorGamePage extends JFrame {
 
 	}
 
-	
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
 
 		try {
 			// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
 			// g2d.rotate(Math.toRadians(90));
-		Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
-		 	WallMove move =  QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-			String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate()
-					.getWallDirection().toString().toLowerCase();
-			
-			QuoridorController.rotateWall( wall,  move,  dir);
+			Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+			WallMove move = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+			String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection()
+					.toString().toLowerCase();
+
+			QuoridorController.rotateWall(wall, move, dir);
+		} catch (Exception e) {
+			error = "error rotating wall";
 		}
-		catch(Exception e) {
-			error="error rotating wall";}
 		refreshData();
 	}
 
 	private void dropIsClicked(java.awt.event.ActionEvent evt) {
 		try {
 
-			Player player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+			Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 			QuoridorController.grabWall(player);
 		} catch (RuntimeException e) {
-			error="Unable to move the wall";
+			error = "Unable to move the wall";
 		}
 		refreshData();
 	}
@@ -398,19 +418,19 @@ public class QuoridorGamePage extends JFrame {
 		} else {
 			tmp = QuoridorController.attemptToSavePosition(saveGameAs.getText());
 		}
-		
+
 		if (error == "" && !tmp) {
 			overwriteYes.setEnabled(true);
 			overwriteCancel.setEnabled(true);
 		}
 	}
-	
+
 	private void overwriteYesIsClicked(java.awt.event.ActionEvent evt) {
 		QuoridorController.overWriteSavePosition(saveGameAs.getText(), true);
 		overwriteYes.setEnabled(false);
 		overwriteCancel.setEnabled(false);
 	}
-	
+
 	private void overwriteCancelIsClicked(java.awt.event.ActionEvent evt) {
 		QuoridorController.overWriteSavePosition(saveGameAs.getText(), false);
 		overwriteYes.setEnabled(false);
@@ -418,7 +438,7 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void keyTyped(KeyEvent event) throws UnsupportedOperationException, InvalidInputException {
-		error="";
+		error = "";
 		try {
 			if (event.getKeyCode() == KeyEvent.VK_UP) {
 				QuoridorController.moveWall("up");
@@ -432,16 +452,15 @@ public class QuoridorGamePage extends JFrame {
 			if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
 				QuoridorController.moveWall("right");
 			}
-		}
-		catch(Exception e) {
-			error="Unable to move the wall";
+		} catch (Exception e) {
+			error = "Unable to move the wall";
 		}
 	}
-	
+
 	public static String getErrMsg() {
 		return error;
 	}
-	
+
 	public static String getInfoMsg() {
 		return error;
 	}
