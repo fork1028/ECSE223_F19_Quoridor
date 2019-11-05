@@ -105,7 +105,8 @@ public class QuoridorGamePage extends JFrame {
 
 		// elements for white player
 		playerWhiteNameLabel = new JLabel();
-		playerWhiteNameLabel.setText("PLAYER WHITE"); // TODO: get username from startpage
+		playerWhiteNameLabel.setText("PLAYER WHITE");
+		// TODO: get username from startpage
 		playerWhiteNameLabel.setFont(new Font(null, Font.BOLD, 18));
 
 		playerWhiteTurnLabel = new JLabel();
@@ -122,7 +123,8 @@ public class QuoridorGamePage extends JFrame {
 
 		// elements for black player
 		playerBlackNameLabel = new JLabel();
-		playerBlackNameLabel.setText("PLAYER BLACK"); // TODO: get username from startpage
+		playerBlackNameLabel.setText("PLAYER BLACK");
+		// TODO: get username from startpage
 		playerBlackNameLabel.setFont(new Font(null, Font.BOLD, 18));
 
 		playerBlackTurnLabel = new JLabel();
@@ -289,7 +291,6 @@ public class QuoridorGamePage extends JFrame {
 				// main controls (save, pause)
 				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame)
 						.addComponent(overwriteYes).addComponent(overwriteCancel)
-				// TODO save game name
 
 				)
 				// player1, board, player2
@@ -298,7 +299,6 @@ public class QuoridorGamePage extends JFrame {
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 								.addComponent(playerWhiteNameLabel).addComponent(playerWhiteTurnLabel)
 								.addComponent(playerWhiteClockLabel)
-						// TODO add stock
 						)
 
 						// board in middle
@@ -311,7 +311,6 @@ public class QuoridorGamePage extends JFrame {
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 								.addComponent(playerBlackNameLabel).addComponent(playerBlackTurnLabel)
 								.addComponent(playerBlackClockLabel)
-						// TODO add countdown clock and stock
 						))
 
 				.addGroup(layout.createSequentialGroup()
