@@ -754,7 +754,10 @@ public class QuoridorController {
 			List<Player> players = new ArrayList<Player>();
 			players.add(player1);
 			players.add(player2);
-
+			Time time = getIntToTime(10, 0);
+			player1.setRemainingTime(time);
+			player2.setRemainingTime(time);
+			
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 10; j++) {
 					new Wall(i * 10 + j, players.get(i));
