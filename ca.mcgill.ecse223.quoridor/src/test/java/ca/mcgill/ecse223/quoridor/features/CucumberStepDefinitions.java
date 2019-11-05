@@ -996,8 +996,9 @@ public class CucumberStepDefinitions {
 		assertEquals(row, curTile.getRow());
 		assertEquals(col, curTile.getColumn());
 	}
-
-	/** @author Shayne Leitman, 260688512 */
+	
+	/* @author Shayne Leitman, 260688512 */
+	/*
 	@And("\"<opponent>\" shall be at <row>:<col>")
 	public void opponentAtPosition(String player, int row, int col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
@@ -1016,10 +1017,10 @@ public class CucumberStepDefinitions {
 		assertEquals(row, curTile.getRow());
 		assertEquals(col, curTile.getColumn());
 	}
-
+	*/
 	/** @author Shayne Leitman, 260688512 */
-	@And("\"<player>\" shall have a <pw_orientation> wall at <pw_row>:<pw_col>")
-	public void playerHasWallAt(String player, String orientation, int row, int col) {
+	@And("{string} shall have a {string} wall at {int}:{int}")
+	public void shalls_have_a_wall_at(String player, String orientation, Integer row, Integer col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
@@ -1032,7 +1033,7 @@ public class CucumberStepDefinitions {
 			// Player is Black
 			wallList = loadedGamePosition.getBlackWallsOnBoard();
 		}
-		String tempDir = "orientation";
+		String tempDir = orientation;
 		Boolean foundWall = false;
 		Direction curDir = null;
 		if (tempDir.equals("vertical")) {
@@ -1053,8 +1054,9 @@ public class CucumberStepDefinitions {
 	}
 
 	/** @author Shayne Leitman, 260688512 */
-	@And("\"<opponent>\" shall have a <ow_orientation> wall at <ow_row>:<ow_col>")
-	public void opponentHasWallAt(Player player, Direction orientation, int row, int col) {
+	/*
+	@And("{string} shall have a {string} wall at {int}:{int}")
+	public void opponentHasWallAt(String player, String orientation, Integer row, Integer col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
@@ -1067,7 +1069,7 @@ public class CucumberStepDefinitions {
 			// Player is Black
 			wallList = loadedGamePosition.getBlackWallsOnBoard();
 		}
-		String tempDir = "orientation";
+		String tempDir = orientation;
 		Boolean foundWall = false;
 		Direction curDir = null;
 		if (tempDir.equals("vertical")) {
@@ -1086,7 +1088,7 @@ public class CucumberStepDefinitions {
 		assertEquals(true, foundWall);
 
 	}
-
+	*/
 	/** @author Shayne Leitman, 260688512 */
 	@And("Both players shall have {int} in their stacks")
 	public void bothPlayersHaveWallsRemaining(int remWalls) {
