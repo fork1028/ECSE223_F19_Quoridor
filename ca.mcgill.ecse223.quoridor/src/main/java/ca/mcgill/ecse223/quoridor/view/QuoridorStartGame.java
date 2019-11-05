@@ -238,27 +238,40 @@ public class QuoridorStartGame extends JFrame {
 		
 		
 	}
-
-	//TODO: create action performed methods to handle each listener
-	//ACTION PERFORMED METHODS
 	
 	private void createNewGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//Clear error msg
 		error = null;
-		//controller method
-		if (blackUserList.getSelectedItem() == whiteUserList.getSelectedItem()) {
-			error = ("You cannot select the same user to be both players!");
-		} else if (minuteList.getSelectedItem() == "0" && secondList.getSelectedItem() == "0") {
-			error = ("You must give the players each a real thinking time!");
-		} else if (minuteList.getSelectedItem() == null || secondList.getSelectedItem() == null || blackUserList.getSelectedItem() == null || whiteUserList.getSelectedItem() ==null) {
-			error = ("You must give a value for all players and both time boxes");
-		} else {
-			//ADD SOMETHING TO CREATE A NEW GAME!
-			
-		//QuoridorController.createNewGame();
-			//Game new Game(,,)
-			//set username to players
-			//initboard
+		
+		//validation to see if we can actually start new game
+		if (minuteList.getSelectedIndex() <0 || secondList.getSelectedIndex() <0 || blackUserList.getSelectedIndex() <0 || whiteUserList.getSelectedIndex() <0 ) {
+				error = "You must select a username for both players and select a total thinking time!";
+				refreshData();
+				return;
+		} else if (blackUserList.getSelectedIndex() == whiteUserList.getSelectedIndex()) {
+			//index of users is always the same because they are readded in refreshData each time
+			error = ("You cannot select the same user for both players!");
+			refreshData();
+			return;
+		} else if (minuteList.getSelectedIndex() == 0 && secondList.getSelectedIndex() == 0) {
+			//cannot select 00:00 for thinking time
+			error = ("You cannot select 00:00 as the total thinking time!");
+			refreshData();
+			return;
+		}else {
+			try {
+				//creates a READYTOSTART game
+				QuoridorController.createReadyGame(blackUserList.getSelectedItem().toString(), whiteUserList.getSelectedItem().toString(), minuteList.getSelectedIndex(), secondList.getSelectedIndex());
+				error = "Game is ready to start!";
+				new QuoridorGamePage().setVisible(true); //create and display new GamePage!
+				refreshData();
+				return;
+			} catch (InvalidInputException e) {
+				error = "Unable to create a new game.";
+				refreshData();
+				return;
+			}
+
 		}
 		
 		
