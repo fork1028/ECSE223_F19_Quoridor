@@ -357,7 +357,7 @@ public class CucumberStepDefinitions {
 	@When("The initialization of the board is initiated")
 	public void TheBoardIsInitialized() throws InvalidInputException {
 		QuoridorController.initializeBoard();
-		
+		new QuoridorGamePage();
 	}
 
 	/**
@@ -420,16 +420,22 @@ public class CucumberStepDefinitions {
 
 	/**
 	 * @author Helen Lin, 260715521
+	 * @throws InterruptedException 
 	 */
 	@And("White's clock shall be counting down")
-	public void whitesClockIsCountingDown() {
+	public void whitesClockIsCountingDown() throws InterruptedException {
+		
+		//wait 0.5s to actually allow timer to increment
+		Thread.sleep(500);
+		
 		Time white = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
 		long whitems = white.getTime();
 		Time black = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
 		long blackms = black.getTime();
-		//assertTrue(whitems < blackms);
 		
-		//GUI TODO: check countdown gui
+		assertTrue(whitems < blackms);
+		
+		//Clock GUI implemented in the QuoridorGamePage view as a timer that checks and updates appropriate counters
 	}
 
 	/**
@@ -437,7 +443,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("It shall be shown that this is White's turn")
 	public void itIsShownThatItIsWhitesTurn() {
-		// TODO GUI for later
+		// GUI shows in GREEN that white player has turn
+		assert(QuoridorController.isWhiteTurn() ==true);
 	}
 	
 	

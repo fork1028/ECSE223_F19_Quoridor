@@ -103,7 +103,6 @@ public class QuoridorStartGame extends JFrame {
 		setTitle("Quoridor Application Group 13");
 		
 		// listeners for Game
-		//TODO: map all listeners to correct actionPerformed method
 		createNewGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				createNewGameButtonActionPerformed(evt);
@@ -263,6 +262,7 @@ public class QuoridorStartGame extends JFrame {
 				QuoridorController.createReadyGame(blackUserList.getSelectedItem().toString(), whiteUserList.getSelectedItem().toString(), minuteList.getSelectedIndex(), secondList.getSelectedIndex());
 				error = "Game is ready to start!";
 				new QuoridorGamePage().setVisible(true); //create and display new GamePage!
+				QuoridorController.startGameAndClocks();
 				refreshData();
 				return;
 			} catch (InvalidInputException e) {
