@@ -920,6 +920,11 @@ public class CucumberStepDefinitions {
 	@And("The user cancels to overwrite existing file")
 	public void userCancelsTheOverWriteFile() {
 		// GUI Feature, to be implemented later
+		// FIX THIS LATER
+		String newFileName = "save_game_test.dat";
+		Boolean temp = QuoridorController.overWriteSavePosition(newFileName, false);
+
+		assertEquals(false, temp);
 	}
 
 	/** @author Shayne Leitman, 260688512 */
@@ -955,23 +960,32 @@ public class CucumberStepDefinitions {
 	}
 
 	/** @author Shayne Leitman, 260688512 */
-	@Then("It shall be \"<players>\"'s turn")
-	public void itIsPlayersTurn(Player players) {
+	@Then("It shall be {string}'s turn")
+	public void itIsPlayersTurn(String player) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
-		assertEquals(players, loadedGamePosition.getPlayerToMove());
+		Player tempPlayer = loadedGamePosition.getPlayerToMove();
+		String colourToMove = "";
+		if (tempPlayer == loadedGame.getBlackPlayer()) {
+			colourToMove = "black";
+		} else {
+			colourToMove = "white";
+		}
+		Boolean sameString = (colourToMove.equals(player));
+		
+		assertEquals(true, sameString);
 	}
 
 	/** @author Shayne Leitman, 260688512 */
-	@And("\"<player>\" shall be at <row>:<col>")
-	public void playerIsAtPosition(Player player, int row, int col) {
+	@And("{string} shall be at {int}:{int}")
+	public void playerIsAtPosition(String player, int row, int col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
-		Player curPlayer = loadedGamePosition.getPlayerToMove();
+		//Player curPlayer = loadedGamePosition.getPlayerToMove();
 		PlayerPosition playerPos = null;
-		if (curPlayer.equals(loadedGame.getWhitePlayer())) {
+		if (player.equals("white")) {
 			// Player is White
 			playerPos = loadedGamePosition.getWhitePosition();
 		} else {
@@ -985,13 +999,13 @@ public class CucumberStepDefinitions {
 
 	/** @author Shayne Leitman, 260688512 */
 	@And("\"<opponent>\" shall be at <row>:<col>")
-	public void opponentAtPosition(Player player, int row, int col) {
+	public void opponentAtPosition(String player, int row, int col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
-		Player curPlayer = loadedGamePosition.getPlayerToMove().getNextPlayer();
+		//Player curPlayer = loadedGamePosition.getPlayerToMove();
 		PlayerPosition playerPos = null;
-		if (curPlayer.equals(loadedGame.getWhitePlayer())) {
+		if (player.equals("white")) {
 			// Player is White
 			playerPos = loadedGamePosition.getWhitePosition();
 		} else {
@@ -1004,23 +1018,31 @@ public class CucumberStepDefinitions {
 	}
 
 	/** @author Shayne Leitman, 260688512 */
-	@And("\"<player>\" shall have a \"<orientation>\" wall at <row>:<col>")
-	public void playerHasWallAt(Player player, Direction orientation, int row, int col) {
+	@And("\"<player>\" shall have a <pw_orientation> wall at <pw_row>:<pw_col>")
+	public void playerHasWallAt(String player, String orientation, int row, int col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
-		Player curPlayer = loadedGamePosition.getPlayerToMove();
+		//Player curPlayer = loadedGamePosition.getPlayerToMove();
 		List<Wall> wallList = null;
-		if (curPlayer.equals(loadedGame.getWhitePlayer())) {
+		if (player.equals("white")) {
 			// Player is White
 			wallList = loadedGamePosition.getWhiteWallsOnBoard();
 		} else {
 			// Player is Black
 			wallList = loadedGamePosition.getBlackWallsOnBoard();
 		}
+		String tempDir = "orientation";
 		Boolean foundWall = false;
+		Direction curDir = null;
+		if (tempDir.equals("vertical")) {
+			curDir = Direction.Vertical;
+		} else {
+			curDir = Direction.Horizontal;
+		}
+		
 		for (Wall curWall : wallList) {
-			if (curWall.getMove().getWallDirection().equals(orientation)
+			if (curWall.getMove().getWallDirection().equals(curDir)
 					&& curWall.getMove().getTargetTile().getRow() == row
 					&& curWall.getMove().getTargetTile().getColumn() == col) {
 				foundWall = true;
@@ -1031,23 +1053,31 @@ public class CucumberStepDefinitions {
 	}
 
 	/** @author Shayne Leitman, 260688512 */
-	@And("\"<opponent>\" shall have a \"<orientation>\" wall at <row>:<col>")
+	@And("\"<opponent>\" shall have a <ow_orientation> wall at <ow_row>:<ow_col>")
 	public void opponentHasWallAt(Player player, Direction orientation, int row, int col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
-		Player curPlayer = loadedGamePosition.getPlayerToMove().getNextPlayer();
+		//Player curPlayer = loadedGamePosition.getPlayerToMove();
 		List<Wall> wallList = null;
-		if (curPlayer.equals(loadedGame.getWhitePlayer())) {
+		if (player.equals("white")) {
 			// Player is White
 			wallList = loadedGamePosition.getWhiteWallsOnBoard();
 		} else {
 			// Player is Black
 			wallList = loadedGamePosition.getBlackWallsOnBoard();
 		}
+		String tempDir = "orientation";
 		Boolean foundWall = false;
+		Direction curDir = null;
+		if (tempDir.equals("vertical")) {
+			curDir = Direction.Vertical;
+		} else {
+			curDir = Direction.Horizontal;
+		}
+		
 		for (Wall curWall : wallList) {
-			if (curWall.getMove().getWallDirection().equals(orientation)
+			if (curWall.getMove().getWallDirection().equals(curDir)
 					&& curWall.getMove().getTargetTile().getRow() == row
 					&& curWall.getMove().getTargetTile().getColumn() == col) {
 				foundWall = true;
