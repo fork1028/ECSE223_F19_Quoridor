@@ -1427,5 +1427,39 @@ public class QuoridorController {
 		}
 
 	}
+	
+	/**
+	 * Helper method to allow view and other methods to get column of wall at a given index
+	 * 
+	 * @param index			index of wall in list of walls
+	 * @param isForBlack	is it black players walls we are looking at
+	 * @return String		first character is the row, second is the column, and third represents the orientation of the wall
+	 */
+	public static String infoOfWallAtIndex(int i, boolean isForBlack) {
+		String row = "";
+		String col = "";
+		String dir = "";
+		Wall tempWall = null;
+		
+		try {
+			if (isForBlack) {
+				tempWall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard(i);
+			} else {
+				tempWall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard(i);
+			}
+		} catch (RuntimeException e) {
+			return "error";
+		}
+		
+		row = Integer.toString(tempWall.getMove().getTargetTile().getRow());
+		col = Integer.toString(tempWall.getMove().getTargetTile().getColumn());
+		
+		if (tempWall.getMove().getWallDirection() == Direction.Horizontal) {
+			dir = "h";
+		} else {
+			dir = "v";
+		}
+		return row + col + dir;
+	}
 
 }
