@@ -73,7 +73,7 @@ public class QuoridorGamePage extends JFrame {
 
 	// board visualizer
 	private QuoridorBoardVisualizer boardVisualizer;
-	private static final int WIDTH_BOARD = 600;
+	private static final int WIDTH_BOARD = 850;
 	private static final int HEIGHT_BOARD = 600;
 
 	// data elements

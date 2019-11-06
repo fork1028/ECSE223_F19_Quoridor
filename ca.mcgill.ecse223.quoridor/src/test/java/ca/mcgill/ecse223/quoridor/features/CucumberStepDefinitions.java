@@ -837,16 +837,6 @@ public class CucumberStepDefinitions {
 		if(err.contentEquals("Unable to move the wall")) {
 			throw new UnsupportedOperationException("Unable to move the wall");
 		}
-		String err=QuoridorGamePage.getErrMsg();
-		//assert(!err.equals("Unable to move the wall"));
-		if(err.contentEquals("Unable to move the wall")) {
-			throw new UnsupportedOperationException("Unable to move the wall");
-		}
-		String err=QuoridorGamePage.getErrMsg();
-		//assert(!err.equals("Unable to move the wall"));
-		if(err.contentEquals("Unable to move the wall")) {
-			throw new UnsupportedOperationException("Unable to move the wall");
-		}
 	}
 
 	/**

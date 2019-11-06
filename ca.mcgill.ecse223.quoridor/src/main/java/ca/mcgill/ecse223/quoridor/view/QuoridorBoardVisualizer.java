@@ -33,6 +33,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private static final int SPACING = 10;
 	private static final int MAXROWS = 9;
 	private static final int MAXCOLS = 9;
+	private static final int WALLSPACING= 130;
 
 	
 	// data elements
@@ -107,7 +108,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 				if (tile.getRow() <= MAXROWS && tile.getColumn() <= MAXCOLS) {
 					//create new tile as a square and add to list of squares and hashmap of tiles 
 					Rectangle2D square = new Rectangle2D.Float(
-							-SQUAREWIDTH/2 + tile.getColumn()*(SQUAREWIDTH + SPACING),
+							-SQUAREWIDTH/2 + tile.getColumn()*(SQUAREWIDTH + SPACING)+WALLSPACING,
 							-SQUAREWIDTH/2 + tile.getRow()*(SQUAREWIDTH + SPACING),
 							SQUAREWIDTH,
 							SQUAREWIDTH);
@@ -121,7 +122,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 					g2d.draw(square);
 					String testLabel = "["+ "r" + ":" + tile.getRow() + ", c" + ":" + tile.getColumn() + "]";
 					g2d.drawString(testLabel,
-							-SQUAREWIDTH/4 + tile.getColumn()* (SQUAREWIDTH + SPACING),
+							-SQUAREWIDTH/4 + tile.getColumn()* (SQUAREWIDTH + SPACING)+WALLSPACING,
 							-SQUAREWIDTH/4 + tile.getRow()* (SQUAREWIDTH + SPACING));
 
 					//if currently selected
@@ -158,27 +159,41 @@ public class QuoridorBoardVisualizer extends JPanel {
 					//SHAYNE CHANGES: NEED TO ONLY LOAD WALLS THAT AREN'T PLACED!
 					int whiteStock = (QuoridorController.getStockOfPlayer(false) < 0) ? 10: QuoridorController.getStockOfPlayer(false); //if game not initialised, still display 10 original walls
 					int blackStock = (QuoridorController.getStockOfPlayer(true) < 0) ? 10 : QuoridorController.getStockOfPlayer(true);
+					
 					//create white walls
-								
-					int space=8;
 					for(int i=0;i<whiteStock;i++) {
-						Rectangle rec=new Rectangle(0,space*5,10,45);
+						int x = 0;
+						int y = 0;
+						int w = 0;
+						int h = 0;
+						x = -SQUAREWIDTH/2 + (SQUAREWIDTH + SPACING);
+						y = SQUAREWIDTH + i*(SQUAREWIDTH)+20;
+						w = WALLHEIGHT;
+						h = WALLWIDTH;
+						Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
+						rectanglesForWalls.add(rectangle);
 						g2d.setColor(Color.WHITE);
-						g2d.fill(rec);
-						space+=10;
+						g2d.fill(rectangle);
 						g2d.setColor(Color.BLACK);
-						g2d.drawRect(rec.x,rec.y,rec.width,rec.height);
+						g2d.draw(rectangle);
 					}
 					
 					//create black walls
-					int spacing=8;
 					for(int i=0;i<blackStock;i++) {
-						Rectangle rec=new Rectangle(580,spacing*5,10,45);
+						int x = 0;
+						int y = 0;
+						int w = 0;
+						int h = 0;
+						x = -SQUAREWIDTH/2 + (SQUAREWIDTH + SPACING)+680;
+						y = SQUAREWIDTH + i*(SQUAREWIDTH)+20;
+						w = WALLHEIGHT;
+						h = WALLWIDTH;
+						Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
+						rectanglesForWalls.add(rectangle);
 						g2d.setColor(Color.BLACK);
-						g2d.fill(rec);
-						spacing+=10;
+						g2d.fill(rectangle);
 						g2d.setColor(Color.WHITE);
-						g2d.drawRect(rec.x,rec.y,rec.width,rec.height);
+						g2d.draw(rectangle);
 					}
 					
 				}
