@@ -824,7 +824,6 @@ public class CucumberStepDefinitions {
 		int c = candidate.getTargetTile().getColumn();
 		String dir = candidate.getWallDirection().toString().toLowerCase();
 		assert (r != row || c != col || !dir.equals(direction));
-
 	}
 
 	/**

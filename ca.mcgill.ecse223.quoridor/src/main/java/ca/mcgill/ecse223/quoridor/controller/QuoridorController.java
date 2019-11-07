@@ -472,6 +472,34 @@ public class QuoridorController {
 		}
 
 	}
+	/**
+	 * This method helps link transfer objects with models (black walls)
+	 * @author Xinyue Chen
+	 * @return
+	 */
+	public static List<TOWall> getBlackWalls() {
+		ArrayList<TOWall> walls = new ArrayList<TOWall>();
+		for (Wall wall : QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getWalls()) {
+			TOWall toWall = new TOWall(wall.getId());
+			walls.add(toWall);
+		}
+		return walls;
+	}
+	
+	/**
+	 * This method helps link transfer objects with models (white walls)
+	 * @author Xinyue Chen
+	 * @return
+	 */
+	public static List<TOWall> getWhiteWalls() {
+		ArrayList<TOWall> walls = new ArrayList<TOWall>();
+		for (Wall wall : QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getWalls()) {
+			TOWall toWall = new TOWall(wall.getId());
+			walls.add(toWall);
+		}
+		return walls;
+	}
+	
 
 	/**
 	 * This method enables the user to overwrite an existing file

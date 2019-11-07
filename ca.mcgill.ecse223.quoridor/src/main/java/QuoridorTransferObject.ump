@@ -1,0 +1,7 @@
+namespace ca.mcgill.ecse223.quoridor.controller;
+
+class TOWall{
+
+	Integer id;
+	
+}

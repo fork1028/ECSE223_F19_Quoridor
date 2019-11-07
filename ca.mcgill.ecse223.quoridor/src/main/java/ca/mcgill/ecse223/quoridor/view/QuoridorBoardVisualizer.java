@@ -27,6 +27,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 	// UI elements
 	private List<Rectangle2D> squaresForTiles = new ArrayList<Rectangle2D>();
 	private List<Rectangle2D> rectanglesForWalls = new ArrayList<Rectangle2D>();
+	private static List<Rectangle2D> rectanglesForBlackWalls = new ArrayList<Rectangle2D>();
+	private static List<Rectangle2D> rectanglesForWhiteWalls = new ArrayList<Rectangle2D>();
 	private static final int SQUAREWIDTH = 50;
 	private static final int WALLWIDTH = 8;
 	private static final int WALLHEIGHT = 110;
@@ -34,6 +36,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private static final int MAXROWS = 9;
 	private static final int MAXCOLS = 9;
 	private static final int WALLSPACING= 130;
+	private static int r=6;
+	private static int c=6;
 
 	
 	// data elements
@@ -41,6 +45,11 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private int selectedTileCol;
 	private TOBoard board;
 	private HashMap<Rectangle2D, TOTile> tiles;
+	private static HashMap<TOWall, Rectangle2D> blackWalls;
+	private static HashMap<TOWall, Rectangle2D> whiteWalls;
+	
+	private boolean enabled=true;
+	private boolean moveComplete=false;
 
 	public QuoridorBoardVisualizer() {
 		super();
@@ -54,6 +63,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 		// TODO add walls visualization
 
 		initBoardAndTiles();
+		initWalls();
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -66,10 +76,13 @@ public class QuoridorBoardVisualizer extends JPanel {
 						break;
 					}
 				}
-				repaint();
+				if(enabled) repaint();
 			}
 		});
+		
+		
 	}
+	
 
 	/**
 	 * @author Helen
@@ -87,6 +100,16 @@ public class QuoridorBoardVisualizer extends JPanel {
 
 		repaint(); //repaint with doDrawingForBoardAndTiles
 	}
+	
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	public void initWalls() {
+		blackWalls=new HashMap<TOWall,Rectangle2D>();
+		whiteWalls=new HashMap<TOWall,Rectangle2D>();;
+	}
+	
 	
 
 	/**
@@ -161,7 +184,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 					int blackStock = (QuoridorController.getStockOfPlayer(true) < 0) ? 10 : QuoridorController.getStockOfPlayer(true);
 					
 					//create white walls
-					for(int i=0;i<whiteStock;i++) {
+					int i=0;
+					for(TOWall wall : QuoridorController.getWhiteWalls()) {
 						int x = 0;
 						int y = 0;
 						int w = 0;
@@ -171,30 +195,37 @@ public class QuoridorBoardVisualizer extends JPanel {
 						w = WALLHEIGHT;
 						h = WALLWIDTH;
 						Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
-						rectanglesForWalls.add(rectangle);
+						rectanglesForWhiteWalls.add(rectangle);
+						whiteWalls.put(wall, rectangle);
 						g2d.setColor(Color.WHITE);
 						g2d.fill(rectangle);
 						g2d.setColor(Color.BLACK);
 						g2d.draw(rectangle);
+						i++;
+						
 					}
 					
+					int j=0;
 					//create black walls
-					for(int i=0;i<blackStock;i++) {
+					for(TOWall wall : QuoridorController.getWhiteWalls()) {
 						int x = 0;
 						int y = 0;
 						int w = 0;
 						int h = 0;
 						x = -SQUAREWIDTH/2 + (SQUAREWIDTH + SPACING)+680;
-						y = SQUAREWIDTH + i*(SQUAREWIDTH)+20;
+						y = SQUAREWIDTH + j*(SQUAREWIDTH)+20;
 						w = WALLHEIGHT;
 						h = WALLWIDTH;
 						Rectangle2D rectangle = new Rectangle2D.Float(x,y,w,h);
-						rectanglesForWalls.add(rectangle);
+						rectanglesForBlackWalls.add(rectangle);
+						blackWalls.put(wall,rectangle);
 						g2d.setColor(Color.BLACK);
 						g2d.fill(rectangle);
 						g2d.setColor(Color.WHITE);
 						g2d.draw(rectangle);
+						j++;
 					}
+					
 					
 				}
 			}
@@ -274,13 +305,124 @@ public class QuoridorBoardVisualizer extends JPanel {
 		
 		
 	}
+	
+	/**
+	 * helper methods
+	 * @author Xinyue Chen
+	 * @return
+	 */
+	public static HashMap<TOWall,Rectangle2D> getBlackWalls(){
+		return blackWalls;
+	}
+	
+	public static HashMap<TOWall, Rectangle2D> getWhiteWalls(){
+		return whiteWalls;
+	}
+	
+	public static  List<Rectangle2D> getWhiteRectangles(){
+		return rectanglesForWhiteWalls;
+	}
+	
+	public static  List<Rectangle2D> getBlackRectangles(){
+		return rectanglesForBlackWalls;
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param g
+	 */
+	public void drawGrab(Graphics g) {
+		    Graphics2D g2d = (Graphics2D) g.create();
+		    BasicStroke thinStroke = new BasicStroke(2);
+			g2d.setStroke(thinStroke);
+	
+			int k=0;
+			Rectangle2D rec=rectanglesForWhiteWalls.get(k);
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			x = SQUAREWIDTH/2 + 6*(SQUAREWIDTH + SPACING)+WALLSPACING-24;
+			y = -SQUAREWIDTH/2 + 6*(SQUAREWIDTH + SPACING)+29;
+			w = WALLHEIGHT;
+			h = WALLWIDTH;
+			rec.setRect(x,y,w,h);
+			g2d.setColor(Color.PINK);
+			g2d.fill(rec);
+			g2d.setColor(Color.CYAN);
+			g2d.draw(rec);
+		    //System.out.println("new rec created");
+		    //grabIsClicked=true;
+		    enabled=false;
+		    k++;
+		
+	}
+	
+	
+	public void drawMove(Graphics g, String dir) {
+		Graphics2D g2d = (Graphics2D) g.create();
+	    BasicStroke thinStroke = new BasicStroke(2);
+		g2d.setStroke(thinStroke);
 
+		int k=0;
+		Rectangle2D rec=rectanglesForWhiteWalls.get(k);
+		int x = 0;
+		int y = 0;
+		int w = 0;
+		int h = 0;
+
+		g2d.clearRect((int)rec.getX(), (int)rec.getY(), (int)rec.getWidth()+3, (int)rec.getHeight()+3);
+		if(dir.equals("up")) c=c-1;
+		if(dir.equals("down")) c=c+1;
+		if(dir.equals("left")) r=r-1;
+		if(dir.equals("right")) r=r+1;
+		x = SQUAREWIDTH/2 + r*(SQUAREWIDTH + SPACING)+WALLSPACING-24;
+		y = -SQUAREWIDTH/2 + c*(SQUAREWIDTH + SPACING)+29;
+		w = WALLHEIGHT;
+		h = WALLWIDTH;
+		rec.setRect(x,y,w,h);
+		g2d.setColor(Color.PINK);
+		g2d.fill(rec);
+		g2d.setColor(Color.CYAN);
+		g2d.draw(rec);
+	    //System.out.println("new rec created");
+	    //grabIsClicked=true;
+	    enabled=false;
+	}
+	
+
+	public void drawDrop(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g.create();
+		BasicStroke thinStroke = new BasicStroke(2);
+		g2d.setStroke(thinStroke);
+		Rectangle2D rec=rectanglesForWhiteWalls.get(0);
+		int x = 0;
+		int y = 0;
+		int w = 0;
+		int h = 0;
+		x = SQUAREWIDTH/2 + 4*(SQUAREWIDTH + SPACING)+WALLSPACING-24;
+		y = -SQUAREWIDTH/2 + 5*(SQUAREWIDTH + SPACING)+29;
+		w = WALLHEIGHT;
+		h = WALLWIDTH;
+		rec.setRect(x,y,w,h);
+		g2d.setColor(Color.PINK);
+		g2d.fill(rec);
+		g2d.setColor(Color.CYAN);
+		g2d.draw(rec);
+		moveComplete=true;
+		//enabled=true;
+	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
 		doDrawingForWallsOnLoad(g);
+		if(moveComplete) {
+			drawDrop(getGraphics());
+			moveComplete=false;
+		}
 	}
+
 
 }

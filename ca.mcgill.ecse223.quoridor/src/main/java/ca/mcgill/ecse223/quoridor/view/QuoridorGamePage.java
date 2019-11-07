@@ -3,13 +3,18 @@ package ca.mcgill.ecse223.quoridor.view;
 import java.awt.Color;
 
 import java.util.HashMap;
-
+import java.util.List;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.geom.Rectangle2D;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -39,11 +44,12 @@ import javax.swing.table.TableCellRenderer;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
+import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 
-public class QuoridorGamePage extends JFrame {
+public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	private static final long serialVersionUID = -45345345345345345L;
 
@@ -79,6 +85,14 @@ public class QuoridorGamePage extends JFrame {
 	// data elements
 	private static String error = "";
 	private JLabel errorMsg;
+	
+	// WALLs
+	private HashMap<TOWall,Rectangle2D> blackWalls;
+	private HashMap<TOWall,Rectangle2D> whiteWalls;
+	private List<Rectangle2D> rectanglesForWhiteWalls;
+	private List<Rectangle2D> rectanglesForBlackWalls;
+
+	
 
 	// graphics
 	Color customGreen = new Color(0, 204, 0);
@@ -162,6 +176,12 @@ public class QuoridorGamePage extends JFrame {
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
+		
+		//WALLS
+		blackWalls=QuoridorBoardVisualizer.getBlackWalls();
+		whiteWalls=QuoridorBoardVisualizer.getWhiteWalls();
+		rectanglesForWhiteWalls=QuoridorBoardVisualizer.getWhiteRectangles();
+		rectanglesForBlackWalls=QuoridorBoardVisualizer.getBlackRectangles();
 
 		// global settings
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -192,6 +212,7 @@ public class QuoridorGamePage extends JFrame {
 				}
 			}
 		});
+		grabWall.addKeyListener(this);
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				grabIsClicked(evt);
@@ -305,7 +326,7 @@ public class QuoridorGamePage extends JFrame {
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(boardVisualizer)
 								.addGroup(layout.createSequentialGroup()
 										// walls and pawn buttons
-										.addComponent(grabWall).addComponent(rotateWall).addComponent(moveWall)
+										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall)))
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -338,7 +359,7 @@ public class QuoridorGamePage extends JFrame {
 								// buttons and error msg
 								.addGroup(layout.createParallelGroup()
 										// walls and pawn buttons
-										.addComponent(grabWall).addComponent(rotateWall).addComponent(moveWall)
+										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall)))
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
@@ -377,7 +398,10 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
-
+		
+		boardVisualizer.drawGrab(getGraphics());		
+		//System.out.println("grab is clicked");
+		
 	}
 
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
@@ -399,14 +423,15 @@ public class QuoridorGamePage extends JFrame {
 	}
 
 	private void dropIsClicked(java.awt.event.ActionEvent evt) {
-		try {
-
-			Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-			QuoridorController.grabWall(player);
-		} catch (RuntimeException e) {
-			error = "Unable to move the wall";
-		}
-		refreshData();
+//		try {
+//
+//			Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+//			QuoridorController.grabWall(player);
+//		} catch (RuntimeException e) {
+//			error = "Unable to move the wall";
+//		}
+//		refreshData();
+		boardVisualizer.drawDrop(getGraphics());	
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
@@ -436,25 +461,6 @@ public class QuoridorGamePage extends JFrame {
 		overwriteCancel.setEnabled(false);
 	}
 
-	private void keyTyped(KeyEvent event) throws UnsupportedOperationException, InvalidInputException {
-		error = "";
-		try {
-			if (event.getKeyCode() == KeyEvent.VK_UP) {
-				QuoridorController.moveWall("up");
-			}
-			if (event.getKeyCode() == KeyEvent.VK_DOWN) {
-				QuoridorController.moveWall("down");
-			}
-			if (event.getKeyCode() == KeyEvent.VK_LEFT) {
-				QuoridorController.moveWall("left");
-			}
-			if (event.getKeyCode() == KeyEvent.VK_RIGHT) {
-				QuoridorController.moveWall("right");
-			}
-		} catch (Exception e) {
-			error = "Unable to move the wall";
-		}
-	}
 
 	public static String getErrMsg() {
 		return error;
@@ -462,6 +468,44 @@ public class QuoridorGamePage extends JFrame {
 
 	public static String getInfoMsg() {
 		return error;
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				//QuoridorController.moveWall("up");
+				boardVisualizer.drawMove(getGraphics(), "up");
+			}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				//QuoridorController.moveWall("down");
+				boardVisualizer.drawMove(getGraphics(), "down");
+			}
+			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+				//QuoridorController.moveWall("left");
+				boardVisualizer.drawMove(getGraphics(), "left");
+			}
+			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+				//QuoridorController.moveWall("right");
+				boardVisualizer.drawMove(getGraphics(), "right");
+			}
+//		} catch (Exception ex) {
+//			error = "Unable to move the wall";
+//		}
+		
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
