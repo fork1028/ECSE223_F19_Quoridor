@@ -5,3 +5,7 @@ class TOWall{
 	Integer id;
 	
 }
+
+class TOGamePosition{
+	
+}

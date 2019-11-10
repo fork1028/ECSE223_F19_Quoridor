@@ -79,6 +79,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	// board visualizer
 	private QuoridorBoardVisualizer boardVisualizer;
+	//private QuoridorWallMoveVisualizer wallVisualizer;
 	private static final int WIDTH_BOARD = 850;
 	private static final int HEIGHT_BOARD = 600;
 
@@ -91,6 +92,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private HashMap<TOWall,Rectangle2D> whiteWalls;
 	private List<Rectangle2D> rectanglesForWhiteWalls;
 	private List<Rectangle2D> rectanglesForBlackWalls;
+	private boolean droppedIsClicked=false;
+	private static String direction;
+	private static boolean directionIsClicked=false;
 
 	
 
@@ -176,12 +180,14 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
+//		wallVisualizer = new QuoridorWallMoveVisualizer();
+//		wallVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
 		
 		//WALLS
-		blackWalls=QuoridorBoardVisualizer.getBlackWalls();
-		whiteWalls=QuoridorBoardVisualizer.getWhiteWalls();
-		rectanglesForWhiteWalls=QuoridorBoardVisualizer.getWhiteRectangles();
-		rectanglesForBlackWalls=QuoridorBoardVisualizer.getBlackRectangles();
+//		blackWalls=QuoridorWallMoveVisualizer.getBlackWalls();
+//		whiteWalls=QuoridorBoardVisualizer.getWhiteWalls();
+//		rectanglesForWhiteWalls=QuoridorBoardVisualizer.getWhiteRectangles();
+//		rectanglesForBlackWalls=QuoridorBoardVisualizer.getBlackRectangles();
 
 		// global settings
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -199,23 +205,15 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		});
 		dropWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if (evt.getActionCommand().equals("DROP")) {
-					// Player
-					// player=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-					// Wall
-					// wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
-//					try {
-//						QuoridorController.dropWall(player, wall);
-//					} catch (UnsupportedOperationException | InvalidInputException e) {
-//						errorMsg="Unable to drop a wall";
-//					}
-				}
+				dropIsClicked(evt);
+				droppedIsClicked=true;
 			}
 		});
 		grabWall.addKeyListener(this);
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				grabIsClicked(evt);
+				droppedIsClicked=false;
 				error = "I have a wall in my hand now";
 			}
 		});
@@ -328,6 +326,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall)))
+						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 								.addComponent(playerBlackNameLabel).addComponent(playerBlackTurnLabel)
@@ -361,6 +360,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall)))
+						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
 								.addComponent(playerBlackTurnLabel).addComponent(playerBlackClockLabel)
@@ -398,9 +398,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
-		
-		boardVisualizer.drawGrab(getGraphics());		
+		QuoridorBoardVisualizer.grabIsClicked(true);
+		//boardVisualizer.drawGrab(getGraphics());		
 		//System.out.println("grab is clicked");
+		repaint();
 		
 	}
 
@@ -431,7 +432,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 //			error = "Unable to move the wall";
 //		}
 //		refreshData();
-		boardVisualizer.drawDrop(getGraphics());	
+		//boardVisualizer.drawDrop(getGraphics());	
+		//QuoridorController.dropWall(playerToMove, wall);
+		QuoridorBoardVisualizer.dropIsClicked(true);
+		repaint();
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
@@ -481,25 +485,72 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// TODO Auto-generated method stub
 		
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				//QuoridorController.moveWall("up");
-				boardVisualizer.drawMove(getGraphics(), "up");
+				try {
+					QuoridorController.moveWall("up");
+					
+				} catch (UnsupportedOperationException | InvalidInputException e1) {
+					
+					error = "Unable to move the wall";
+					e1.printStackTrace();
+				}
+				//boardVisualizer.drawMove(getGraphics(), "up");
+				direction="up";
+				repaint();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				//QuoridorController.moveWall("down");
-				boardVisualizer.drawMove(getGraphics(), "down");
+				try {
+					QuoridorController.moveWall("down");
+					//QuoridorBoardVisualizer.setDir("down");
+					
+				} catch (UnsupportedOperationException | InvalidInputException e1) {
+					
+					error = "Unable to move the wall";
+					e1.printStackTrace();
+				}
+				//boardVisualizer.drawMove(getGraphics(), "down");
+				direction="down";
+				repaint();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				//QuoridorController.moveWall("left");
-				boardVisualizer.drawMove(getGraphics(), "left");
+				try {
+					QuoridorController.moveWall("left");
+					
+					//QuoridorBoardVisualizer.setDir("left");
+				} catch (UnsupportedOperationException | InvalidInputException e1) {
+
+					error = "Unable to move the wall";
+					e1.printStackTrace();
+				}
+				//boardVisualizer.drawMove(getGraphics(), "left");
+				direction="left";
+				repaint();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				//QuoridorController.moveWall("right");
-				boardVisualizer.drawMove(getGraphics(), "right");
+				try {
+					QuoridorController.moveWall("right");
+					
+					//QuoridorBoardVisualizer.setDir("right");
+				} catch (UnsupportedOperationException | InvalidInputException e1) {
+					error = "Unable to move the wall";
+					e1.printStackTrace();
+				}
+				//boardVisualizer.drawMove(getGraphics(), "right");
+				direction="right";
+				repaint();
 			}
 //		} catch (Exception ex) {
 //			error = "Unable to move the wall";
 //		}
 		
+	}
+	
+	public static String getDirection() {
+		System.out.println("direction:"+direction);
+		return direction;
+	}
+	
+	public static boolean getDirectionIsClicked() {
+		return directionIsClicked;
 	}
 
 	@Override
