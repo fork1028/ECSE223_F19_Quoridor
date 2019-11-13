@@ -95,6 +95,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private boolean droppedIsClicked=false;
 	private static String direction;
 	private static boolean directionIsClicked=false;
+	private boolean grabClicked=false;
+	private boolean moveClicked=false;
+	private static int timesTyped=0;
+	private static boolean dropIsClicked=false;
 
 	
 
@@ -394,10 +398,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	/************ ACTION PERFORMED METHODS ***************/
 	private void moveIsClicked(java.awt.event.ActionEvent evt) {
-		// TODO
+		
 	}
 
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
+		grabClicked=true;
 		QuoridorBoardVisualizer.grabIsClicked(true);
 		//boardVisualizer.drawGrab(getGraphics());		
 		//System.out.println("grab is clicked");
@@ -424,18 +429,15 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 
 	private void dropIsClicked(java.awt.event.ActionEvent evt) {
-//		try {
-//
-//			Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-//			QuoridorController.grabWall(player);
-//		} catch (RuntimeException e) {
-//			error = "Unable to move the wall";
+		
+		//if(grabClicked==true&&moveClicked==true) {
+			QuoridorBoardVisualizer.incrementDropDone();
+			//dropIsClicked=true;
+			QuoridorBoardVisualizer.setDropIsClicked(true);
+			repaint();
 //		}
-//		refreshData();
-		//boardVisualizer.drawDrop(getGraphics());	
-		//QuoridorController.dropWall(playerToMove, wall);
-		QuoridorBoardVisualizer.dropIsClicked(true);
-		repaint();
+//		grabClicked=false;
+//		moveClicked=false;
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
@@ -494,7 +496,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					e1.printStackTrace();
 				}
 				//boardVisualizer.drawMove(getGraphics(), "up");
+				//boardVisualizer.setKeyOff(false);
+				timesTyped++;
 				direction="up";
+				moveClicked=true;
+				boardVisualizer.setMoveClicked(true);
 				repaint();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
@@ -508,7 +514,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					e1.printStackTrace();
 				}
 				//boardVisualizer.drawMove(getGraphics(), "down");
+				//boardVisualizer.setKeyOff(false);
 				direction="down";
+				timesTyped++;
+				moveClicked=true;
+				boardVisualizer.setMoveClicked(true);
 				repaint();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
@@ -522,7 +532,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					e1.printStackTrace();
 				}
 				//boardVisualizer.drawMove(getGraphics(), "left");
+				//boardVisualizer.setKeyOff(false);
 				direction="left";
+				moveClicked=true;
+				timesTyped++;
+				boardVisualizer.setMoveClicked(true);
 				repaint();
 			}
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
@@ -535,7 +549,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					e1.printStackTrace();
 				}
 				//boardVisualizer.drawMove(getGraphics(), "right");
+				//boardVisualizer.setKeyOff(false);
 				direction="right";
+				boardVisualizer.setMoveClicked(true);
+				moveClicked=true;
+				timesTyped++;
 				repaint();
 			}
 //		} catch (Exception ex) {
@@ -544,13 +562,21 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		
 	}
 	
+	public static int getTimesTyped() {
+		return timesTyped;
+	}
+	
 	public static String getDirection() {
-		System.out.println("direction:"+direction);
+		//System.out.println("direction:"+direction);
 		return direction;
 	}
 	
 	public static boolean getDirectionIsClicked() {
 		return directionIsClicked;
+	}
+	
+	public static boolean getDropIsClicked() {
+		return dropIsClicked;
 	}
 
 	@Override
