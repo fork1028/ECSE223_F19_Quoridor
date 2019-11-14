@@ -1,5 +1,6 @@
 package ca.mcgill.ecse223.quoridor.view;
 
+
 import java.awt.Color;
 
 import java.util.HashMap;

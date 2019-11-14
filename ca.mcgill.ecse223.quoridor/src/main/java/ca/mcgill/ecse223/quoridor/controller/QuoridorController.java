@@ -394,7 +394,7 @@ public class QuoridorController {
 
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-//		Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		//		Wall wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		if (candidate == null) {
 			throw new InvalidInputException("WallMove doesn't exist");
 		}
@@ -485,7 +485,7 @@ public class QuoridorController {
 		}
 		return walls;
 	}
-	
+
 	/**
 	 * This method helps link transfer objects with models (white walls)
 	 * @author Xinyue Chen
@@ -499,7 +499,7 @@ public class QuoridorController {
 		}
 		return walls;
 	}
-	
+
 
 	/**
 	 * This method enables the user to overwrite an existing file
@@ -782,7 +782,7 @@ public class QuoridorController {
 			Time time = getIntToTime(10, 0);
 			player1.setRemainingTime(time);
 			player2.setRemainingTime(time);
-			
+
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 10; j++) {
 					new Wall(i * 10 + j, players.get(i));
@@ -1132,7 +1132,7 @@ public class QuoridorController {
 
 		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setPlayerToMove(otherPlayer);
 		QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove().setNextPlayer(player);
-		
+
 	}
 
 	// helper methods
@@ -1176,7 +1176,7 @@ public class QuoridorController {
 			row = forBlackPawn
 					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
 							.getTile().getRow()
-					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
 							.getTile().getRow();
 
 		} catch (RuntimeException e) {
@@ -1199,7 +1199,7 @@ public class QuoridorController {
 			col = forBlackPawn
 					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
 							.getTile().getColumn()
-					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
 							.getTile().getColumn();
 
 		} catch (RuntimeException e) {
@@ -1260,7 +1260,7 @@ public class QuoridorController {
 			return isForBlack
 					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 							.numberOfBlackWallsInStock()
-					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+							: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 							.numberOfWhiteWallsInStock();
 		} catch (RuntimeException e) {
 			// if error, because game has not started
@@ -1306,7 +1306,7 @@ public class QuoridorController {
 		try {
 			remainingTime = forBlackPlayer
 					? QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime()
-					: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+							: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
 
 		} catch (RuntimeException e) {
 			// do nothing, the game has not started yet
@@ -1448,14 +1448,14 @@ public class QuoridorController {
 		try {
 			return isForBlack
 					? (QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().setRemainingTime(time))
-					: (QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().setRemainingTime(time));
+							: (QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().setRemainingTime(time));
 		} catch (RuntimeException e) {
 			// if fail, return false
 			return false;
 		}
 
 	}
-	
+
 	/**
 	 * Helper method to allow view and other methods to get column of wall at a given index
 	 * 
@@ -1468,7 +1468,7 @@ public class QuoridorController {
 		String col = "";
 		String dir = "";
 		Wall tempWall = null;
-		
+
 		try {
 			if (isForBlack) {
 				tempWall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard(i);
@@ -1478,10 +1478,10 @@ public class QuoridorController {
 		} catch (RuntimeException e) {
 			return "error";
 		}
-		
+
 		row = Integer.toString(tempWall.getMove().getTargetTile().getRow());
 		col = Integer.toString(tempWall.getMove().getTargetTile().getColumn());
-		
+
 		if (tempWall.getMove().getWallDirection() == Direction.Horizontal) {
 			dir = "h";
 		} else {
