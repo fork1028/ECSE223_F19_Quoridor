@@ -345,7 +345,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 		return whiteWalls;
 	}
 	
-	public static  List<Rectangle2D> getWhiteRectangles(){
+	public static List<Rectangle2D> getWhiteRectangles(){
 		return rectanglesForWhiteWalls;
 	}
 	

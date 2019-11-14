@@ -1489,5 +1489,104 @@ public class QuoridorController {
 		}
 		return row + col + dir;
 	}
+	
+	//Logic for determining if a pawn can move:
+	//Check all 4 adjacent tile. For each tile:
+	//NOTE: We should look at the tiles in counter clock-wise order, starting at directly above the pawn (not facing forward, ABOVE)
+	//Step 0: Check to see that the tile being looked at is actually on the board! If not, skip to next tile!
+	//Step 1: Check to see if there is a wall between. If there is, it is not an option. Skip to next tile. If there is not ->
+	//Step 2: Check to see if the other pawn is there. If no pawn there, add the tile to the list! If there is a pawn there...
+	//Step 3: Check to see if there is a wall OR EDGE OF BOARD behind the other pawn. If no wall/edge, Add tile behind pawn to the list.
+	//Step 4: If there is a wall/edge, check above/below or left/right of other pawn, depending on config.
+	
+	/**
+	 * Method for Iteration 4 to help identify if a given pawn has a pawn adjacent to it, with no wall between them
+	 * 
+	 * @param isForBlack	is it black players pawn we are looking at
+	 * @param row			the row in which we are looking for the other pawn
+	 * @param col			the column in which we are looking for the other pawn
+	 * @return List<Tile>	list of tiles that the referenced pawn can legally move to according to the rules of quoridor
+	 */
+	
+	
+	
+	/**
+	 * Method for Iteration 4 to help identify tiles that a pawn can move to
+	 * 
+	 * @param isForBlack	is it black players pawn we are looking at
+	 * @return ArrayList<Tile>	list of tiles that the referenced pawn can legally move to according to the rules of quoridor
+	 */
+	public static List<Tile> possiblePawnMoves(boolean isForBlack) {
+		List<Tile> possibleTiles = new ArrayList<Tile>();
+		PlayerPosition curPawn = isForBlack
+				? (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition())
+				: (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition());
+		PlayerPosition otherPawn = !isForBlack
+				? (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition())
+				: (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition());
+		
+		int curPawnCol = curPawn.getTile().getColumn();
+		int otherPawnCol = otherPawn.getTile().getColumn();;
+		int curPawnRow = curPawn.getTile().getRow();
+		int otherPawnRow = otherPawn.getTile().getRow();
+		
+		GamePosition curGamePos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		
+		//Create a list of adjacent tiles, where every 2 entries represents a tiles row, and column (in that order).
+		//So index 0 and 1 represent the tiles row and column respectively
+		ArrayList<Integer> adjTiles = new ArrayList<Integer>();
+		adjTiles.add(curPawnRow + 1);
+		adjTiles.add(curPawnCol);
+		adjTiles.add(curPawnRow);
+		adjTiles.add(curPawnCol - 1);
+		adjTiles.add(curPawnRow - 1);
+		adjTiles.add(curPawnCol);
+		adjTiles.add(curPawnRow);
+		adjTiles.add(curPawnCol + 1);
+		
+		Boolean isAboveorBelow = false;
+		
+		//Loop through the "4" tiles we are looking at
+		for (int i = 0 ; i < 7 ; i = i + 2) {
+			if (i == 0 || i == 4) {
+				isAboveorBelow = true;
+			} else {
+				isAboveorBelow = false;
+			}
+			Boolean wallBetween = false;
+			//Step 0: Check to see that the tile being looked at is actually on the board! If not, skip to next tile!
+			if (adjTiles.get(i) >= 10 || adjTiles.get(i) <= 0 || adjTiles.get(i + 1) >= 10 || adjTiles.get(i + 1) <= 0 ) {
+				
+				//Step 1: Check to see if there is a wall between.
+				//If there is, it is not an option. Skip to next tile. If there is not ->
+				//Loop through white walls on board, if white has walls on board, and if we haven't already found a wall!
+				//If we are looking at above or below tile, then look at horizontal walls.				
+				if (curGamePos.hasWhiteWallsOnBoard() && !wallBetween) {
+					for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
+						
+					}
+				}
+				
+				//Loop through black walls on board, only if wall between is still false and if black has walls on board
+				if (curGamePos.hasBlackWallsOnBoard() && !wallBetween) {
+					for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
+						
+					}
+				}
+				
+				if (!wallBetween) {
+					
+				}
+				
+			}
+			
+		}
+		
+		
+		
+		
+		
+		return possibleTiles;
+	}
 
 }
