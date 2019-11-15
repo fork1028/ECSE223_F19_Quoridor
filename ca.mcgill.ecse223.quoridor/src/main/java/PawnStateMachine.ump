@@ -25,15 +25,24 @@ class PawnBehavior {
 				moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))] -> NSMiddle;
 			}
 			NSMiddle {
-				moveDown [isLegalStep(MoveDirection.South)&&!(isLegalJump(MoveDirection.South))] -> NSMiddle;
-				moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))] -> NSMiddle;
-				
+				moveDown [isLegalStep(MoveDirection.South)&&!(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 7)] -> SouthBorder;
+				moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 6)] -> SouthBorder;
+				moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 7)] -> SouthEdge;
+				moveDown -> NSMiddle;
+				moveUp [isLegalStep(MoveDirection.North)&&!(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 3)] -> NorthBorder;
+				moveUp [!(isLegalStep(MoveDirection.North))&&(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 4)] -> NorthBorder;
+				moveUp [!(isLegalStep(MoveDirection.North))&&(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 3)] -> NorthEdge;
+				moveUp -> NSMiddle;
 			}
 			SouthEdge {
-			
+				moveDown / -> { illegalMove(); } SouthEdge;
+				moveUp [isLegalStep(MoveDirection.North)&&!(isLegalJump(MoveDirection.North))] -> NorthBorder;
+				moveUp [!isLegalStep(MoveDirection.North)&&(isLegalJump(MoveDirection.North))] -> NSMiddle;
 			}
 			SouthBorder {
-			
+				moveDown [isLegalStep(MoveDirection.South)] -> SouthEdge;
+				moveUp [isLegalStep(MoveDirection.North)&&!(isLegalJump(MoveDirection.North))] -> NSMiddle;
+				moveUp [!(isLegalStep(MoveDirection.North))&&(isLegalJump(MoveDirection.North))] -> NSMiddle;
 			}
 		}
 		||
