@@ -7,8 +7,59 @@ class PawnBehavior {
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
 
-    pawnSM {
-    }
+	pawnSM {
+		pawnNS {
+			Setup {
+				startGame [getPlayer.getGameAsWhite.equals(getCurrentGame())] -> NorthEdge;
+				startGame [getPlayer.getGameAsBlack.equals(getCurrentGame())] -> SouthEdge;
+			}
+			NorthEdge {
+				moveUp / -> { illegalMove(); } NorthEdge;
+				moveDown [isLegalStep(MoveDirection.South)&&!(isLegalJump(MoveDirection.South))] -> NorthBorder;
+				moveDown [!isLegalStep(MoveDirection.South)&&(isLegalJump(MoveDirection.South))] -> NSMiddle;
+				
+			}
+			NorthBorder {
+				moveUp [isLegalStep(MoveDirection.North)] -> NorthEdge;
+				moveDown [isLegalStep(MoveDirection.South)&&!(isLegalJump(MoveDirection.South))] -> NSMiddle;
+				moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))] -> NSMiddle;
+			}
+			NSMiddle {
+				moveDown [isLegalStep(MoveDirection.South)&&!(isLegalJump(MoveDirection.South))] -> NSMiddle;
+				moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))] -> NSMiddle;
+				
+			}
+			SouthEdge {
+			
+			}
+			SouthBorder {
+			
+			}
+		}
+		||
+		pawnEW {
+			Setup {
+				startGame -> EWMiddle;
+			}
+			EastEdge {
+			
+			}
+			EastBorder {
+			
+			}
+			EWMiddle {
+			
+			}
+			WestEdge {
+			
+			}
+			WestBorder {
+			
+			}
+		}
+	
+	
+	}
 
     // Returns the current row number of the pawn
     int getCurrentPawnRow() { return 0; }
