@@ -89,14 +89,14 @@ public class PawnBehavior
     switch (aPawnSMSMPawnNSPawnNS)
     {
       case Setup:
-        if (getPlayer.getGameAsWhite.equals(getCurrentGame()))
+        if (getPlayer().getGameAsWhite().equals(getCurrentGame()))
         {
           exitPawnSMSMPawnNSPawnNS();
           setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
           wasEventProcessed = true;
           break;
         }
-        if (getPlayer.getGameAsBlack.equals(getCurrentGame()))
+        if (getPlayer().getGameAsBlack().equals(getCurrentGame()))
         {
           exitPawnSMSMPawnNSPawnNS();
           setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);

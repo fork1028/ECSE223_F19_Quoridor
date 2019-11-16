@@ -11,8 +11,8 @@ class PawnBehavior {
 		SM {
 			pawnNS {
 				Setup {
-					startGame [getPlayer.getGameAsWhite.equals(getCurrentGame())] -> NorthEdge;
-					startGame [getPlayer.getGameAsBlack.equals(getCurrentGame())] -> SouthEdge;
+					startGame [getPlayer().getGameAsWhite().equals(getCurrentGame())] -> NorthEdge;
+					startGame [getPlayer().getGameAsBlack().equals(getCurrentGame())] -> SouthEdge;
 				}
 				NorthEdge {
 					moveUp -> / { illegalMove(); } NorthEdge;
