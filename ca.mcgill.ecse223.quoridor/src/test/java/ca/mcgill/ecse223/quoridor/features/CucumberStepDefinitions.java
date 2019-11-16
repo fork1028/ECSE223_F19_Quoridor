@@ -748,7 +748,7 @@ public class CucumberStepDefinitions {
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		int row = candidate.getTargetTile().getRow();
 		int col = candidate.getTargetTile().getColumn();
-		assert (candidate != null);
+		assert (row==nrow&&col==ncol);
 	}
 
 	/**
@@ -1404,6 +1404,35 @@ public class CucumberStepDefinitions {
 		}
 	}
 	// ************END of SWITCHCURRENTPLAYER**************
+	
+	
+	// ************	START OF MOVEPAWN ****************
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param row
+	 * @param col
+	 */
+	@And("The player is located at {int}:{int}")
+	public void thePlayerIsLocatedAtRowCol(int row, int col) {
+		PlayerPosition blackPos=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+		PlayerPosition whitePos=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+		Player playerToMove=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		if(playerToMove==whitePlayer) {
+			assert(whitePos.getTile().getRow()==row&&whitePos.getTile().getColumn()==col);
+		}
+		if(playerToMove==blackPlayer) {
+			assert(blackPos.getTile().getRow()==row&&blackPos.getTile().getColumn()==col);
+		}
+	}
+	
+	// ************	END OF MOVEPAWN ****************
+	
+	// ************	START OF JUMPPAWN ****************
+	
+	// ************	END OF JUMPPAWN ****************
 
 	// ***********************************************
 	// Clean up
