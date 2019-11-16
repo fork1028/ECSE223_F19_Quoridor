@@ -1213,7 +1213,7 @@ public class CucumberStepDefinitions {
 		Player whitePlayer = currentGame.getWhitePlayer();
 		Player blackPlayer = currentGame.getBlackPlayer();
 
-		if (color == "white") {
+		if (color.equals("white")) {
 			currentGame.getCurrentPosition().setPlayerToMove(whitePlayer);
 		}
 		else {
@@ -1409,6 +1409,7 @@ public class CucumberStepDefinitions {
 	// ************	START OF MOVEPAWN ****************
 	
 	/**
+	 * Part of given (pre-condition) for MovePawn
 	 * @author Xinyue Chen
 	 * @param row
 	 * @param col
@@ -1428,9 +1429,109 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+	/**
+	 * Part of given (pre-condition) for MovePawn - move ONE tile
+	 * @author Helen
+	 * @param direction "vertical" or "horizontal"
+	 * @param side "left" or "right" or "up" or "down"
+	 */
+	@And("There are no {string} walls {string} from the player")
+	public void thereAreNoDirWallsSideFromThePlayer(String direction, String side) {
+		
+	}
+	
+	/**
+	 * Part of given (pre-condition) for MovePawn - move BLOCKED by wall
+	 * @author Helen
+	 * @param direction "vertical" or "horizontal"
+	 * @param wrow row of wall that is blocking move
+	 * @param wcol column of wall that is blocking move
+	 */
+	@And("There is a {string} wall at {int}:{int}")
+	public void thereIsADirWallAtWrowWcol(String direction, int wrow, int wcol) {
+		
+	}
+
+	/**
+	 * Part of given (pre-condition) for MovePawn
+	 * @author Helen Lin
+	 * @param side "left" or "right" or "up" or "down"
+	 */
+	@And("The opponent is not {string} from the player")
+	public void theOpponentIsNotSideFromThePlayer(String side) {
+		
+	}
+	
+	
+	/**
+	 * When clause (condition) for MovePawn
+	 * @author Helen Lin
+	 * @param color "black" or "white"
+	 * @param side "left" or "right" or "up" or "down"
+	 */
+	@When("Player {string} initiates to move {string}")
+	public void playerColorInitiatesToMoveSide(String color, String side) {
+		
+	}
+	
+	/**
+	 * Part of Then (post-condition) for MovePawn
+	 * @author Helen Lin
+	 * @param side "left" or "right" or "up" or "down"
+	 * @param status "success" or "illegal"
+	 */
+	@Then("The move {string} shall be {string}")
+	public void theMoveSideShallBeStatus(String side, String status) {
+		
+	}
+ 
+	/**
+	 * Part of Then (post-condition) for MovePawn
+	 * @author Helen Lin
+	 * @param nrow next row after a move
+	 * @param ncol next column after a move
+	 */
+	@And("Player's new position shall be {int}:{int}")
+	public void playersNewPositionShallBeNrowNcol(int nrow, int ncol) {
+		
+	}
+
+	/**
+	 * Part of Then (post-condition) for MovePawn
+	 * @author Helen Lin
+	 * @param color "black" or "white" of the next player to move
+	 */
+	@And("The next player to move shall become {string}")
+	public void theNextPlayerToMoveShallBecomeNplayer(String color) {
+		
+	}
+	
 	// ************	END OF MOVEPAWN ****************
 	
 	// ************	START OF JUMPPAWN ****************
+	
+	/**
+	 * Part of given (pre-condition) for JumpPawn
+	 * @author Helen
+	 * @param row
+	 * @param col
+	 */
+	@And("The opponent is located at {int}:{int}")
+	public void theOpponentIsLocatedAtRowCol(int row, int col) {
+		//set opponent row
+		//set opponent col
+	}
+	
+	/**
+	 * Part of given (pre-condition) for JumpPawn
+	 * @author Helen
+	 * @param direction "vertical" or "horizontal"
+	 * @param side "left" or "right" or "up" or "down"
+	 */
+	@And("There are no {string} walls {string} from the player nearby")
+	public void thereAreNoDirWallsSideFromThePlayerNearBy(String direction, String side) {
+		
+	}
 	
 	// ************	END OF JUMPPAWN ****************
 

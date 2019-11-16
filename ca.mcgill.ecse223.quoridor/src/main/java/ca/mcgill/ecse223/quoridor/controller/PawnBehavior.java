@@ -699,6 +699,9 @@ public class PawnBehavior
 	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
 	    			
 	    		}
+	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal)); {
+	    			
+	    		}
 	    	}
 	    	
 	    	break;

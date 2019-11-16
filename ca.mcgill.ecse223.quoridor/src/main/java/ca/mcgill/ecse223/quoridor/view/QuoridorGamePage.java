@@ -72,6 +72,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JButton grabWall;
 	private JButton rotateWall;
 	private JButton cancel;
+	
+	// Pawn
+	private JButton movePawn;
 
 	// save game
 	private JButton saveGame;
@@ -105,7 +108,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private int grabClickedTimes=0;
 	private static boolean dropBtnIsClicked=false;
 	private static boolean cancelIsClicked=false;
-
+	private static boolean movePawnIsClicked=false;
+	private static boolean moveIsClicked=false;
 	
 
 	// graphics
@@ -178,6 +182,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		grabWall.setText("GRAB");
 		cancel=new JButton();
 		cancel.setText("cancel");
+		
+		// pawn
+		movePawn=new JButton();
+		movePawn.setText("MOVE PAWN");
 
 		// save and pause game
 		saveGame = new JButton();
@@ -244,6 +252,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			public void actionPerformed(ActionEvent evt) {
 
 				rotateIsClicked(evt);
+			}
+		});
+		movePawn.addKeyListener(this);
+		movePawn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				movePawnIsClicked(evt);
 			}
 		});
 		saveGame.addActionListener(new ActionListener() {
@@ -348,7 +363,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createSequentialGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall))).addComponent(cancel)
+										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -382,7 +397,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createParallelGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall))).addComponent(cancel)
+										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
@@ -500,6 +515,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				}
 			}
 			dropBtnIsClicked=false;
+			grabClicked=false;
 
 	}
 	
@@ -507,6 +523,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		cancelIsClicked=true;
 		repaint();
 		
+	}
+	
+	private void movePawnIsClicked(java.awt.event.ActionEvent evt) {
+		movePawnIsClicked=true;
+		repaint();
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
@@ -554,85 +575,100 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
-
-				try {
-					QuoridorController.moveWall("up");
-					error="";
-				} catch (UnsupportedOperationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					error="Unable to move wall further";
-				} catch (InvalidInputException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				
+				if(grabClicked==true) {
+					QuoridorBoardVisualizer.setMoveClicked(true);
+					direction="up";
+					try {
+						QuoridorController.moveWall("up");
+						error="";
+					} catch (UnsupportedOperationException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						error="Unable to move wall further";
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				}
+				if(movePawnIsClicked==true) {
+					QuoridorBoardVisualizer.setMoveClicked(true);
+					direction="up";
 				}
 				
-				QuoridorBoardVisualizer.setMoveClicked(true);
-				direction="up";
 				repaint();
 				
 				refreshData();
 				
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				
-				try {
-					QuoridorController.moveWall("down");
-					error="";
-				} catch (UnsupportedOperationException e1) {
-					// TODO Auto-generated catch block
-					error="Unable to move wall further";
-					e1.printStackTrace();
-				} catch (InvalidInputException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				direction="down";
 				QuoridorBoardVisualizer.setMoveClicked(true);
+				direction="down";
+				
+				if(grabClicked==true) {
+					try {
+						QuoridorController.moveWall("down");
+						error="";
+					} catch (UnsupportedOperationException e1) {
+						// TODO Auto-generated catch block
+						error="Unable to move wall further";
+						e1.printStackTrace();
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
 				refreshData();
 				repaint();
 				
 				
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-
-				try {
-					QuoridorController.moveWall("left");
-					error="";
-				} catch (UnsupportedOperationException e1) {
-					// TODO Auto-generated catch block
-					error="Unable to move wall further";
-					e1.printStackTrace();
-				} catch (InvalidInputException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				
 				QuoridorBoardVisualizer.setMoveClicked(true);
 				direction="left";
+				if(grabClicked==true) {
+					try {
+						QuoridorController.moveWall("left");
+						error="";
+					} catch (UnsupportedOperationException e1) {
+						// TODO Auto-generated catch block
+						error="Unable to move wall further";
+						e1.printStackTrace();
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
+				
+				}
 				repaint();
 				
 				refreshData();
+				
 
 				
 			}
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-
-				try {
-					QuoridorController.moveWall("right");
-					error="";
-				} catch (UnsupportedOperationException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					error="Unable to move wall further";
-				} catch (InvalidInputException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 				QuoridorBoardVisualizer.setMoveClicked(true);
 				direction="right";
+				if(grabClicked==true) {
+					try {
+						QuoridorController.moveWall("right");
+						error="";
+					} catch (UnsupportedOperationException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+						error="Unable to move wall further";
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					QuoridorBoardVisualizer.setMoveClicked(true);
+					
+					
+				}
 				repaint();
 				refreshData();
 				
@@ -672,6 +708,14 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 	public static void setCancel(boolean input) {
 		cancelIsClicked=false;
+	}
+	
+	public static boolean getMovePawnIsClicked() {
+		return movePawnIsClicked;
+	}
+	
+	public static boolean moveIsClicked() {
+		return moveIsClicked;
 	}
 
 	@Override
