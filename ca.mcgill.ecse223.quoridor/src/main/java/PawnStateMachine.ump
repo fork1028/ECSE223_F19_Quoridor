@@ -7,79 +7,8 @@ class PawnBehavior {
     0..1 -> 0..1 Game currentGame;
     0..1 -> 0..1 Player player;
 
-	pawnSM {
-		SM {
-			pawnNS {
-				Setup {
-					startGame [getPlayer().getGameAsWhite().equals(getCurrentGame())] -> NorthEdge;
-					startGame [getPlayer().getGameAsBlack().equals(getCurrentGame())] -> SouthEdge;
-				}
-				NorthEdge {
-					moveUp -> / { illegalMove(); } NorthEdge;
-					moveDown [isLegalStep(MoveDirection.South)&&!(isLegalJump(MoveDirection.South))] -> NorthBorder;
-					moveDown [!isLegalStep(MoveDirection.South)&&(isLegalJump(MoveDirection.South))] -> NSMiddle;
-					
-				}
-				NorthBorder {
-					moveUp [isLegalStep(MoveDirection.North)] -> NorthEdge;
-					moveDown [isLegalStep(MoveDirection.South)||(isLegalJump(MoveDirection.South))] -> NSMiddle;
-				}
-				NSMiddle {
-					moveDown [isLegalStep(MoveDirection.South)&&!(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 7)] -> SouthBorder;
-					moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 6)] -> SouthBorder;
-					moveDown [!(isLegalStep(MoveDirection.South))&&(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 7)] -> SouthEdge;
-					moveDown -> NSMiddle;
-					moveUp [isLegalStep(MoveDirection.North)&&!(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 3)] -> NorthBorder;
-					moveUp [!(isLegalStep(MoveDirection.North))&&(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 4)] -> NorthBorder;
-					moveUp [!(isLegalStep(MoveDirection.North))&&(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 3)] -> NorthEdge;
-					moveUp -> NSMiddle;
-				}
-				SouthEdge {
-					moveDown -> / { illegalMove(); } SouthEdge;
-					moveUp [isLegalStep(MoveDirection.North)&&!(isLegalJump(MoveDirection.North))] -> NorthBorder;
-					moveUp [!isLegalStep(MoveDirection.North)&&(isLegalJump(MoveDirection.North))] -> NSMiddle;
-				}
-				SouthBorder {
-					moveDown [isLegalStep(MoveDirection.South)] -> SouthEdge;
-					moveUp [isLegalStep(MoveDirection.North)||(isLegalJump(MoveDirection.North))] -> NSMiddle;
-				}
-			}
-			||
-			pawnEW {
-				Setup {
-					startGame -> EWMiddle;
-				}
-				EastEdge {
-					moveRight -> / { illegalMove(); } EastEdge;
-					moveLeft [isLegalStep(MoveDirection.West)&&!(isLegalJump(MoveDirection.West))] -> EastBorder;
-					moveLeft [!isLegalStep(MoveDirection.West)&&(isLegalJump(MoveDirection.West))] -> EWMiddle;
-				}
-				EastBorder {
-					moveRight [isLegalStep(MoveDirection.East)] -> EastEdge;
-					moveLeft [isLegalStep(MoveDirection.West)||(isLegalJump(MoveDirection.West))] -> EWMiddle;
-				}
-				EWMiddle {
-					moveLeft [isLegalStep(MoveDirection.West)&&!(isLegalJump(MoveDirection.West))&&(getCurrentPawnRow() == 3)] -> WestBorder;
-					moveLeft [!(isLegalStep(MoveDirection.West))&&(isLegalJump(MoveDirection.West))&&(getCurrentPawnRow() == 4)] -> WestBorder;
-					moveLeft [!(isLegalStep(MoveDirection.West))&&(isLegalJump(MoveDirection.West))&&(getCurrentPawnRow() == 3)] -> WestEdge;
-					moveLeft -> EWMiddle;
-					moveRight [isLegalStep(MoveDirection.East)&&!(isLegalJump(MoveDirection.East))&&(getCurrentPawnRow() == 7)] -> EastBorder;
-					moveRight [!(isLegalStep(MoveDirection.East))&&(isLegalJump(MoveDirection.East))&&(getCurrentPawnRow() == 6)] -> EastBorder;
-					moveRight [!(isLegalStep(MoveDirection.East))&&(isLegalJump(MoveDirection.East))&&(getCurrentPawnRow() == 7)] -> EastEdge;
-					moveRight -> EWMiddle;
-				}
-				WestEdge {
-					moveLeft -> / { illegalMove(); } WestEdge;
-					moveRight [isLegalStep(MoveDirection.East)&&!(isLegalJump(MoveDirection.East))] -> WestBorder;
-					moveRight [!isLegalStep(MoveDirection.East)&&(isLegalJump(MoveDirection.East))] -> EWMiddle;
-				}
-				WestBorder {
-					moveLeft [isLegalStep(MoveDirection.West)] -> WestEdge;
-					moveRight [isLegalStep(MoveDirection.East)||(isLegalJump(MoveDirection.East))] -> EWMiddle;
-				}
-			}
-		}
-	}
+    pawnSM {
+    }
 
     // Returns the current row number of the pawn
     int getCurrentPawnRow() { return 0; }
