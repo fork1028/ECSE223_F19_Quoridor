@@ -730,8 +730,10 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
+
 		//doDrawingForWallsOnLoad(g);
 		// i dont know why but it's throwing errors so im commenting it for now
+
 
 		drawDrop(g);
 		if(grabIsClicked==true) {
