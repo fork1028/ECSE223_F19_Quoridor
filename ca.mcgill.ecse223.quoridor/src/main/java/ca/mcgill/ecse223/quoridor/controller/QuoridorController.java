@@ -310,15 +310,19 @@ public class QuoridorController {
 
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		int wallIdxForPlayer = 1;
-
+		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
+		int wallIdxForPlayer = 0;
 		System.out.println(player);
 		if (player == whitePlayer) {
 			// Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
 			Tile whiteStart = new Tile(5, 4, QuoridorApplication.getQuoridor().getBoard());
+			System.out.println("whiteStockSize:"+QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock().size());
 			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 					.getWhiteWallsInStock(wallIdxForPlayer);
-			WallMove nextmove = new WallMove(0, 0, player, whiteStart, null, startDir, wall);
+			
+			System.out.println(wall);
+			WallMove nextmove = new WallMove(0, 0, player, whiteStart, game, startDir, wall);
+			
 			QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
 			if (!whiteWalls.isEmpty()) {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().removeWhiteWallsInStock(wall);
@@ -328,12 +332,12 @@ public class QuoridorController {
 		}
 
 		if (player == blackPlayer) {
-			System.out.println("im here");
 			// Tile blackStart = QuoridorApplication.getQuoridor().getBoard().getTile(44);
 			Tile blackStart = new Tile(5, 4, QuoridorApplication.getQuoridor().getBoard());
 			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 					.getBlackWallsInStock(wallIdxForPlayer);
-			WallMove nextmove = new WallMove(0, 0, player, blackStart, null, startDir, wall);
+			WallMove nextmove = new WallMove(0, 0, player, blackStart, game, startDir, wall);
+			nextmove.setWallPlaced(wall);
 			QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
 
 			if (!blackWalls.isEmpty()) {

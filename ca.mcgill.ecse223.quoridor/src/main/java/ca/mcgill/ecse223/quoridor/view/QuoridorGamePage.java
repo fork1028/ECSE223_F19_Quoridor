@@ -71,6 +71,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JButton dropWall;
 	private JButton grabWall;
 	private JButton rotateWall;
+	private JButton cancel;
 
 	// save game
 	private JButton saveGame;
@@ -103,6 +104,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static boolean dropFail=false;
 	private int grabClickedTimes=0;
 	private static boolean dropBtnIsClicked=false;
+	private static boolean cancelIsClicked=false;
 
 	
 
@@ -174,6 +176,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		rotateWall.setText("ROTATE");
 		grabWall = new JButton();
 		grabWall.setText("GRAB");
+		cancel=new JButton();
+		cancel.setText("cancel");
 
 		// save and pause game
 		saveGame = new JButton();
@@ -220,6 +224,12 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					e.printStackTrace();
 				}
 				droppedIsClicked=true;
+			}
+		});
+		cancel.addKeyListener(this);
+		cancel.addActionListener(new ActionListener(){
+			public void actionPerformed(ActionEvent evt) {
+				cancelIsClicked(evt);
 			}
 		});
 		grabWall.addKeyListener(this);
@@ -338,7 +348,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createSequentialGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall)))
+										.addComponent(dropWall))).addComponent(cancel)
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -372,7 +382,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createParallelGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall)))
+										.addComponent(dropWall))).addComponent(cancel)
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
@@ -485,6 +495,12 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			}
 			dropBtnIsClicked=false;
 
+	}
+	
+	private void cancelIsClicked(java.awt.event.ActionEvent evt) {
+		cancelIsClicked=true;
+		repaint();
+		
 	}
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
@@ -642,6 +658,14 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 	public static void setError(String input) {
 		error=input;
+	}
+	
+	public static boolean cancelIsClicked() {
+		return cancelIsClicked;
+	}
+	
+	public static void setCancel(boolean input) {
+		cancelIsClicked=false;
 	}
 
 	@Override
