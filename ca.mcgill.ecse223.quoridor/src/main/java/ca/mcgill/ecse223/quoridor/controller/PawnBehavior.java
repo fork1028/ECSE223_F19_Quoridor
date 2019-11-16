@@ -2,6 +2,8 @@
 /*This code was generated using the UMPLE 1.29.0.4181.a593105a9 modeling language!*/
 
 package ca.mcgill.ecse223.quoridor.controller;
+import java.util.ArrayList;
+
 import ca.mcgill.ecse223.quoridor.model.*;
 
 // line 5 "../../../../../PawnStateMachine.ump"
@@ -633,7 +635,11 @@ public class PawnBehavior
    */
   // line 85 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
-    return 0;
+    if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
+    	return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+    } else {
+    	return getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+    }
   }
 
 
@@ -642,7 +648,11 @@ public class PawnBehavior
    */
   // line 87 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
-    return 0;
+	if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
+		return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+	} else {
+	    return getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+	}
   }
 
 
@@ -651,7 +661,57 @@ public class PawnBehavior
    */
   // line 89 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
-    return false;
+	  
+	  //Assume legal until we prove it false
+	  Boolean isLegal = true;
+	  
+	  int curPawnRow = getCurrentPawnRow();
+	  int curPawnCol = getCurrentPawnColumn();
+	  //Get other pawn info here!
+	  int otherPawnRow = 0;
+	  int otherPawnCol = 0;
+		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
+			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		} else {
+		    otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		    otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		}
+		
+		//Now make a list of all the walls on the board!
+		ArrayList<Wall> wallList = new ArrayList<Wall>();
+		for (Wall wall : getCurrentGame().getCurrentPosition().getBlackWallsOnBoard()) {
+			wallList.add(wall);
+		}
+		for (Wall wall : getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard()) {
+			wallList.add(wall);
+		}
+	 
+	//Now, depending on the direction, check first against the pawn being in the way, and then if a wall is in the way!
+	 switch (dir) {
+	    case North:
+	    	if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
+	    		isLegal = false;
+	    		return isLegal;
+	    	}
+	    	
+	    	for (Wall wall : wallList) {
+	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal))
+	    	}
+	    	
+	    	break;
+	    case South:
+	    
+	    	break;
+	    case East:
+	    
+	    
+	    	break;
+	    case West:
+	    	
+	    	
+	    	break;
+	    }
   }
 
 
