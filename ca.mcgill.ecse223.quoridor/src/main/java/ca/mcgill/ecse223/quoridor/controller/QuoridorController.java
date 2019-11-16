@@ -311,7 +311,7 @@ public class QuoridorController {
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
-		int wallIdxForPlayer = 0;
+		int wallIdxForPlayer = 1;
 		System.out.println(player);
 		if (player == whitePlayer) {
 			// Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
