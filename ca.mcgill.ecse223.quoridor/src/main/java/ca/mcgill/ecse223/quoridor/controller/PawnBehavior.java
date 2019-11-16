@@ -696,7 +696,7 @@ public class PawnBehavior
 	    	}
 	    	
 	    	for (Wall wall : wallList) {
-	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal))
+	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal));
 	    	}
 	    	
 	    	break;
