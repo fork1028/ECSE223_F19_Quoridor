@@ -486,6 +486,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	 * @param g
 	 * @param dir
 	 */
+	
 	public void drawMove(Graphics g, String dir) {
 		enabled=false;
 		Graphics2D g2d = (Graphics2D) g.create();
@@ -730,8 +731,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
-		//doDrawingForWallsOnLoad(g);
-		// i dont know why but it's throwing errors so im commenting it for now
+		doDrawingForWallsOnLoad(g);
+		
 
 		drawDrop(g);
 		if(grabIsClicked==true) {
