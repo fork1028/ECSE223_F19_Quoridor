@@ -47,7 +47,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private static Graphics g;
 	private static String dir;
 	private static boolean grabIsClicked;
-	private static boolean dropIsClicked=false;;
+	private static boolean dropIsClicked=false;
+	private static boolean rotateIsClicked;
 	private static boolean keyOff=true;
 	private static int timesMoved=0;
 	private static boolean moveIsClicked=false;
@@ -410,7 +411,27 @@ public class QuoridorBoardVisualizer extends JPanel {
 			g2d.setColor(Color.CYAN);
 			g2d.draw(rec);
 			grabIsClicked=true;
-		}
+		}}
+		
+		public void drawRotate(Graphics g) {
+			Graphics2D g2d = (Graphics2D) g.create();
+			BasicStroke thinStroke = new BasicStroke(1);
+			g2d.setStroke(thinStroke);
+			Boolean rotateIsClicked = QuoridorGamePage.getDirectionIsClicked();
+			if(rotateIsClicked =true) {
+				Rectangle2D rec=rectanglesForWhiteWalls.get(indexCurrentWhiteWall);
+	
+				int x = -SQUAREWIDTH/2 + r*(SQUAREWIDTH + SPACING)+10;
+				int y = SQUAREWIDTH/2 + c*(SQUAREWIDTH + SPACING)+1;
+				int w = WALLHEIGHT;
+				int h = WALLWIDTH;
+				g2d.rotate(Math.toRadians(90));
+				rec.setRect(x,y,w,h);
+				g2d.setColor(Color.PINK);
+				g2d.fill(rec);
+				g2d.setColor(Color.CYAN);
+				g2d.draw(rec);
+	}
 
 
 	}
@@ -632,6 +653,10 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public static void setDir(String input) {
 		dir=input;
 	}
+	
+	public static void rotateIsClicked(boolean input) {
+		rotateIsClicked=input;
+	}
 
 	public static void grabIsClicked(boolean input) {
 		grabIsClicked=input;
@@ -685,6 +710,9 @@ public class QuoridorBoardVisualizer extends JPanel {
 		if(moveIsClicked==true) {
 			drawMove(g, QuoridorGamePage.getDirection());
 			moveIsClicked=false;
+		}
+		if(rotateIsClicked==true) {
+			drawRotate(g);
 		}
 		drawDrop(g);
 

@@ -429,13 +429,19 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		try {
 			// g2d.translate(wall.x+(wall.width/2), wall.y+(wall.height/2));
 			// g2d.rotate(Math.toRadians(90));
-			Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		    Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		    Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		    Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
 			WallMove move = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 			String dir = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallDirection()
 					.toString().toLowerCase();
-
+			
 			QuoridorController.rotateWall(wall, move, dir);
+			QuoridorBoardVisualizer.rotateIsClicked(true);
+			
+
+			
 		} catch (Exception e) {
 			error = "error rotating wall";
 		}
