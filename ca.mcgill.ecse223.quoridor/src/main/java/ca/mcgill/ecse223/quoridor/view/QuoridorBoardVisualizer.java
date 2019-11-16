@@ -496,7 +496,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
 		doDrawingForWallsOnLoad(g);
-		
+		 
 	
 
 		//drawDroppedWalls(g);
