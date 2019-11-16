@@ -9,3 +9,7 @@ class TOWall{
 class TOGamePosition{
 	
 }
+
+class TOPlayer{
+	Player PlayerToMove;
+}

@@ -101,6 +101,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static int timesTyped=0;
 	private static boolean dropIsClicked=false;
 	private static boolean dropFail=false;
+	private int grabClickedTimes=0;
+	private static boolean dropBtnIsClicked=false;
 
 	
 
@@ -408,6 +410,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
+		grabClickedTimes++;
+		if(grabClickedTimes>1) {
+			//QuoridorController.switchCurrentPlayer();
+		}
+		
 		grabClicked=true;
 		QuoridorBoardVisualizer.grabIsClicked(true);
 		
@@ -438,14 +445,29 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private void dropIsClicked(java.awt.event.ActionEvent evt) throws UnsupportedOperationException, InvalidInputException {
 		    Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		    Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
-			
+		    Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		    Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+			//TOWall wall=QuoridorController.getWallCandidate();
+		    grabClickedTimes++;
+		    
 			try {
-				QuoridorController.dropWall(player, wall);
-				dropFail=false;
-				error="";
-				QuoridorBoardVisualizer.incrementDropDone();
-				QuoridorBoardVisualizer.setDropIsClicked(true);
-				repaint();
+				if(player==whitePlayer) {
+					QuoridorController.dropWall(player, wall);
+					dropFail=false;
+					error="";
+					QuoridorBoardVisualizer.incrementWhiteDropDone();
+					QuoridorBoardVisualizer.setDropIsClicked(true);
+					repaint();
+				}
+				else {
+					QuoridorController.dropWall(player, wall);
+					dropFail=false;
+					error="";
+					QuoridorBoardVisualizer.incrementBlackDropDone();
+					QuoridorBoardVisualizer.setDropIsClicked(true);
+					repaint();
+				}
+
 			} catch (UnsupportedOperationException e1) {
 				// TODO Auto-generated catch block
 				error="Unable to drop the wall here";
@@ -453,6 +475,15 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				e1.printStackTrace();
 			}
 			refreshData();
+			dropBtnIsClicked=true;
+			if(grabClickedTimes>=2) {
+				if(!error.contentEquals("Unable to drop the wall here")) {
+					if(dropBtnIsClicked==true) {
+						QuoridorController.switchCurrentPlayer();
+					}
+				}
+			}
+			dropBtnIsClicked=false;
 
 	}
 
