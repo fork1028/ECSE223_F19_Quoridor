@@ -1406,28 +1406,71 @@ public class CucumberStepDefinitions {
 	// ************END of SWITCHCURRENTPLAYER**************
 	
 	
-	// ************	START OF MOVEPAWN ****************
+	// ************	START OF MOVEPAWN and JUMPPAWN****************
 	
 	/**
-	 * Part of given (pre-condition) for MovePawn
-	 * @author Xinyue Chen
+	 * Part of given (pre-condition) for MovePawn and JumpPawn
+	 * @author Xinyue Chen, Helen
 	 * @param row
 	 * @param col
 	 */
 	@And("The player is located at {int}:{int}")
 	public void thePlayerIsLocatedAtRowCol(int row, int col) {
-		PlayerPosition blackPos=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
-		PlayerPosition whitePos=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
-		Player playerToMove=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		if(playerToMove==whitePlayer) {
-			assert(whitePos.getTile().getRow()==row&&whitePos.getTile().getColumn()==col);
-		}
-		if(playerToMove==blackPlayer) {
-			assert(blackPos.getTile().getRow()==row&&blackPos.getTile().getColumn()==col);
-		}
+		
+		//find the tile that the current player is supposed to be at
+		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+			if (tile.getRow() == row && tile.getColumn() == col) {
+				//create a new playerPosition for this tile and the current player to move
+				PlayerPosition position = new PlayerPosition(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove(), tile);
+				
+				//set the new PlayerPosition for the appropriate player in game
+				if (QuoridorController.isBlackTurn()) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setBlackPosition(position);
+				}else if (QuoridorController.isWhiteTurn()) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setWhitePosition(position);
+				}
+				return; //done
+			}
+		};
+		
+		//if the correct tile wasn't found, or there was an error
+		fail();
+		
 	}
+	
+	/**
+	 * Part of given (pre-condition) for JumpPawn only
+	 * @author Helen
+	 * @param row
+	 * @param col
+	 */
+	@And("The opponent is located at {int}:{int}")
+	public void theOpponentIsLocatedAtRowCol(int row, int col) {
+		// get opponent
+		Player opponent = QuoridorController.isBlackTurn()
+				? QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer()
+				: QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+
+		// find the tile that the OPPONENT is supposed to be at
+		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+			if (tile.getRow() == row && tile.getColumn() == col) {
+				// create a new playerPosition for this tile and the OPPONENT
+				PlayerPosition position = new PlayerPosition(opponent, tile);
+
+				// set the new PlayerPosition for the OPPONENT in game
+				if (QuoridorController.isBlackTurn()) // this means white is the opponent
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setWhitePosition(position);
+				else if (QuoridorController.isWhiteTurn())
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setBlackPosition(position);
+				return; // done
+			}
+		}
+
+		// if the correct tile wasn't found, or there was an error
+		fail();
+
+	}
+	
 	
 	/**
 	 * Part of given (pre-condition) for MovePawn - move ONE tile
@@ -1437,11 +1480,26 @@ public class CucumberStepDefinitions {
 	 */
 	@And("There are no {string} walls {string} from the player")
 	public void thereAreNoDirWallsSideFromThePlayer(String direction, String side) {
+		//TODO:check if there are walls at that side of player
+		
+		//TODO:if yes, temporarily remove it for this test
 		
 	}
 	
 	/**
-	 * Part of given (pre-condition) for MovePawn - move BLOCKED by wall
+	 * Part of given (pre-condition) for JumpPawn - jump over opponent
+	 * @author Helen
+	 * @param direction "vertical" or "horizontal"
+	 * @param side "left" or "right" or "up" or "down"
+	 */
+	@And("There are no {string} walls {string} from the player nearby")
+	public void thereAreNoDirWallsSideFromThePlayerNearBy(String direction, String side) {
+		//same function as the "There are no <dir> walls <side> from the player" in MOVE pawn)
+		thereAreNoDirWallsSideFromThePlayer(direction, side); //reuse step def
+	}
+	
+	/**
+	 * Part of given (pre-condition) for MovePawn and JumpPawn when move is BLOCKED
 	 * @author Helen
 	 * @param direction "vertical" or "horizontal"
 	 * @param wrow row of wall that is blocking move
@@ -1449,89 +1507,114 @@ public class CucumberStepDefinitions {
 	 */
 	@And("There is a {string} wall at {int}:{int}")
 	public void thereIsADirWallAtWrowWcol(String direction, int wrow, int wcol) {
-		
+		//TODO: check if there is a wall at that location
+		//TODO: if no, create a wall and put it there for the test
 	}
 
 	/**
-	 * Part of given (pre-condition) for MovePawn
+	 * Part of given (pre-condition) for MovePawn only
 	 * @author Helen Lin
 	 * @param side "left" or "right" or "up" or "down"
 	 */
 	@And("The opponent is not {string} from the player")
 	public void theOpponentIsNotSideFromThePlayer(String side) {
-		
+		//TODO: check if opponent is at the given side of the player
+		//TODO: if yes, temporarily move them elsewhere
+
 	}
 	
-	
 	/**
-	 * When clause (condition) for MovePawn
+	 * When clause (condition) for MovePawn and JumpPawn
+	 * 
 	 * @author Helen Lin
 	 * @param color "black" or "white"
-	 * @param side "left" or "right" or "up" or "down"
+	 * @param side  "left","right","up","down", or "upleft", "upright", "downleft",
+	 *              "downright" in JumpPawn
 	 */
 	@When("Player {string} initiates to move {string}")
 	public void playerColorInitiatesToMoveSide(String color, String side) {
-		
+		//call CONTROLLER method to move or jump pawn
+		switch (side) {
+
+		case "left":
+			// TODO
+			break;
+		case "right":
+			// TODO
+			break;
+
+		case "up":
+			// TODO
+			break;
+
+		case "down":
+			// TODO
+			break;
+
+		case "upleft": // for jump pawn only
+			// TODO
+			break;
+		case "upright": // for jump pawn only
+			// TODO
+			break;
+
+		case "downleft": // for jump pawn only
+			// TODO
+			break;
+
+		case "downright": // for jump pawn only
+			// TODO
+			break;
+		}
+
 	}
-	
+
 	/**
-	 * Part of Then (post-condition) for MovePawn
+	 * Part of Then (post-condition) for MovePawn and JumpPawn
 	 * @author Helen Lin
-	 * @param side "left" or "right" or "up" or "down"
+	 * @param side "left","right","up","down", or "upleft", "upright", "downleft",
+	 *              "downright" in JumpPawn
 	 * @param status "success" or "illegal"
 	 */
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) {
-		
+		//TODO: assert the status (illegal or success)of that move
 	}
  
 	/**
-	 * Part of Then (post-condition) for MovePawn
+	 * Part of Then (post-condition) for MovePawn and JumpPawn
 	 * @author Helen Lin
 	 * @param nrow next row after a move
 	 * @param ncol next column after a move
 	 */
 	@And("Player's new position shall be {int}:{int}")
 	public void playersNewPositionShallBeNrowNcol(int nrow, int ncol) {
-		
+		// assert the new position for the player that JUST had their turn
+		PlayerPosition position = QuoridorController.isBlackTurn() ?
+					// this means WHITE just played, so we need to check WHITE position
+				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+					// else check Black position
+				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+
+		assertEquals(position.getTile().getRow(), nrow);
+		assertEquals(position.getTile().getRow(), ncol);
 	}
 
 	/**
-	 * Part of Then (post-condition) for MovePawn
+	 * Part of Then (post-condition) for MovePawn and JumpPawn
 	 * @author Helen Lin
 	 * @param color "black" or "white" of the next player to move
 	 */
 	@And("The next player to move shall become {string}")
 	public void theNextPlayerToMoveShallBecomeNplayer(String color) {
-		
+		Player assertedPlayer = (color.contentEquals("black"))
+				? QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer()
+				: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+				
+		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove(), assertedPlayer);
 	}
+
 	
-	// ************	END OF MOVEPAWN ****************
-	
-	// ************	START OF JUMPPAWN ****************
-	
-	/**
-	 * Part of given (pre-condition) for JumpPawn
-	 * @author Helen
-	 * @param row
-	 * @param col
-	 */
-	@And("The opponent is located at {int}:{int}")
-	public void theOpponentIsLocatedAtRowCol(int row, int col) {
-		//set opponent row
-		//set opponent col
-	}
-	
-	/**
-	 * Part of given (pre-condition) for JumpPawn
-	 * @author Helen
-	 * @param direction "vertical" or "horizontal"
-	 * @param side "left" or "right" or "up" or "down"
-	 */
-	@And("There are no {string} walls {string} from the player nearby")
-	public void thereAreNoDirWallsSideFromThePlayerNearBy(String direction, String side) {
-		
-	}
 	
 	// ************	END OF JUMPPAWN ****************
 
