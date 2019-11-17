@@ -670,6 +670,8 @@ public class PawnBehavior
 	  //Get other pawn info here!
 	  int otherPawnRow = 0;
 	  int otherPawnCol = 0;
+	  int wallRow = 0;
+	  int wallCol = 0;
 		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
 			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
 			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
@@ -697,24 +699,77 @@ public class PawnBehavior
 	    	
 	    	for (Wall wall : wallList) {
 	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
-	    			
-	    		}
-	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal)); {
-	    			
+	    			wallRow = wall.getMove().getTargetTile().getRow();
+	    			wallCol = wall.getMove().getTargetTile().getColumn();
+	    			if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			}
 	    		}
 	    	}
-	    	
 	    	break;
 	    case South:
-	    
+	    	if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
+	    		isLegal = false;
+	    		return isLegal;
+	    	}
+	    	
+	    	for (Wall wall : wallList) {
+	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
+	    			wallRow = wall.getMove().getTargetTile().getRow();
+	    			wallCol = wall.getMove().getTargetTile().getColumn();
+	    			if (curPawnRow == wallRow && curPawnCol == wallCol) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			}
+	    		}
+	    	}
 	    	break;
 	    case East:
-	    
-	    
+	    	if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
+	    		isLegal = false;
+	    		return isLegal;
+	    	}
+	    	
+	    	for (Wall wall : wallList) {
+	    		if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+	    			wallRow = wall.getMove().getTargetTile().getRow();
+	    			wallCol = wall.getMove().getTargetTile().getColumn();
+	    			if (curPawnRow == wallRow && curPawnCol == wallCol) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			}
+	    		}
+	    	}
 	    	break;
 	    case West:
+	    	if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
+	    		isLegal = false;
+	    		return isLegal;
+	    	}
 	    	
-	    	
+	    	for (Wall wall : wallList) {
+	    		if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+	    			wallRow = wall.getMove().getTargetTile().getRow();
+	    			wallCol = wall.getMove().getTargetTile().getColumn();
+	    			if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+	    				isLegal = false;
+	    				return isLegal;
+	    			}
+	    		}
+	    	}
 	    	break;
 	    }
   }
