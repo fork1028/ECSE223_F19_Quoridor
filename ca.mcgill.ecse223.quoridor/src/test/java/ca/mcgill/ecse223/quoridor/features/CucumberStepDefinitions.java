@@ -14,7 +14,7 @@ import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
-import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
+import ca.mcgill.ecse223.quoridor.controller.*;
 import ca.mcgill.ecse223.quoridor.model.Board;
 import ca.mcgill.ecse223.quoridor.model.Direction;
 import ca.mcgill.ecse223.quoridor.model.Game;
@@ -1480,10 +1480,12 @@ public class CucumberStepDefinitions {
 	 */
 	@And("There are no {string} walls {string} from the player")
 	public void thereAreNoDirWallsSideFromThePlayer(String direction, String side) {
+		//FOR NOW, THERE SHOULD BE NO WALLS HERE ANYWAY
 		//TODO:check if there are walls at that side of player
 		
 		//TODO:if yes, temporarily remove it for this test
 		
+	
 	}
 	
 	/**
@@ -1535,37 +1537,13 @@ public class CucumberStepDefinitions {
 	public void playerColorInitiatesToMoveSide(String color, String side) {
 		//call CONTROLLER method to move or jump pawn
 		switch (side) {
-
-		case "left":
-			// TODO
-			break;
-		case "right":
-			// TODO
-			break;
-
 		case "up":
-			// TODO
-			break;
-
+			//QuoridorController.movePawn(MoveDirection.North);
 		case "down":
-			// TODO
-			break;
-
-		case "upleft": // for jump pawn only
-			// TODO
-			break;
-		case "upright": // for jump pawn only
-			// TODO
-			break;
-
-		case "downleft": // for jump pawn only
-			// TODO
-			break;
-
-		case "downright": // for jump pawn only
-			// TODO
-			break;
+		case "left":
+		case "right":
 		}
+		
 
 	}
 
@@ -1668,15 +1646,15 @@ public class CucumberStepDefinitions {
 		int thinkingTime = 180;
 
 		// Players are assumed to start on opposite sides and need to make progress
-		// horizontally to get to the other side
+		// VERTICALLY to get to the other side
 		// @formatter:off
 		/*
 		 * __________ | | | | |x-> <-x| | | |__________|
 		 * 
 		 */
 		// @formatter:on
-		Player player1 = new Player(new Time(thinkingTime), user1, 9, Direction.Horizontal);
-		Player player2 = new Player(new Time(thinkingTime), user2, 1, Direction.Horizontal);
+		Player player1 = new Player(new Time(thinkingTime), user1, 9, Direction.Vertical);
+		Player player2 = new Player(new Time(thinkingTime), user2, 1, Direction.Vertical);
 
 		Player[] players = { player1, player2 };
 
@@ -1704,8 +1682,8 @@ public class CucumberStepDefinitions {
 		// There are total 36 tiles in the first four rows and
 		// indexing starts from 0 -> tiles with indices 36 and 36+8=44 are the starting
 		// positions
-		Tile player1StartPos = quoridor.getBoard().getTile(36);
-		Tile player2StartPos = quoridor.getBoard().getTile(44);
+		Tile player1StartPos = quoridor.getBoard().getTile(4);
+		Tile player2StartPos = quoridor.getBoard().getTile(76);
 
 		Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, quoridor);
 		game.setWhitePlayer(players.get(0));

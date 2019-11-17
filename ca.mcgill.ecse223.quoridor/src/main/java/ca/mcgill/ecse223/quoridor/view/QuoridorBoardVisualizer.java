@@ -198,12 +198,12 @@ public class QuoridorBoardVisualizer extends JPanel {
 					int whiteCol = QuoridorController.getCurrentColForPawn(false);
 
 					if (blackRow == tile.getRow() && blackCol == tile.getColumn()) {
-//						g2d.setColor(Color.BLACK);
-//						g2d.fill(square);
+						g2d.setColor(Color.BLACK);
+						g2d.fill(square);
 						blackPawn=square;
 					} else if (whiteRow == tile.getRow() && whiteCol == tile.getColumn()) {
-//						g2d.setColor(Color.WHITE);
-//						g2d.fill(square);
+						g2d.setColor(Color.WHITE);
+						g2d.fill(square);
 						whitePawn=square;
 					}
 				}
@@ -961,7 +961,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
 		//doDrawingForWallsOnLoad(g);
-		//doDrawingForWallsOnLoad(g);
+
 
 		if(grabIsClicked==true) {
 			drawGrab(g);
