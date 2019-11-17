@@ -98,10 +98,10 @@ class PawnBehavior {
 					moveRight [isLegalStep(MoveDirection.East)&&(getCurrentPawnColumn() == 7)] -> EastBorder;
 					moveRight [(isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn() == 6)] -> EastBorder;
 					moveRight [(isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn() == 7)] -> EastEdge;
-					moveUpRight [(isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnColumn() == 3)] -> WestBorder;
+					moveUpRight [(isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnColumn() == 7)] -> EastBorder;
 					moveUpLeft [(isLegalJump(MoveDirection.NorthWest))&&(getCurrentPawnColumn() == 3)] -> WestBorder;
 					moveDownRight [(isLegalJump(MoveDirection.SouthEast))&&(getCurrentPawnColumn() == 7)] -> EastBorder;
-					moveDownLeft [(isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnColumn() == 7)] -> EastBorder;
+					moveDownLeft [(isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnColumn() == 3)] -> WestBorder;
 					moveUpRight [(isLegalJump(MoveDirection.NorthEast))] -> EWMiddle;
 					moveUpLeft [(isLegalJump(MoveDirection.NorthWest))] -> EWMiddle;
 					moveDownRight [(isLegalJump(MoveDirection.SouthEast))] -> EWMiddle;
@@ -137,8 +137,6 @@ class PawnBehavior {
     boolean isLegalStep(MoveDirection dir) { return false; }
     // Returns if it is legal to jump in the given direction
     boolean isLegalJump(MoveDirection dir) { return false; }
-    //Returns if it is legal to jump diagonally in the given direction
-    boolean isLegalDiagJump(MoveDirection dir) { return false; }
 
     // Action to be called when an illegal move is attempted
     void illegalMove() { }

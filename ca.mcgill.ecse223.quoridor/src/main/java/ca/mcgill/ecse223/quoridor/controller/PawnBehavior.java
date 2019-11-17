@@ -367,10 +367,10 @@ public class PawnBehavior
         }
         break;
       case EWMiddle:
-        if ((isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnColumn()==3))
+        if ((isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnColumn()==7))
         {
           exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
           wasEventProcessed = true;
           break;
         }
@@ -733,10 +733,10 @@ public class PawnBehavior
         }
         break;
       case EWMiddle:
-        if ((isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnColumn()==7))
+        if ((isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnColumn()==3))
         {
           exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
           wasEventProcessed = true;
           break;
         }
@@ -1329,18 +1329,9 @@ public class PawnBehavior
 
 
   /**
-   * Returns if it is legal to jump diagonally in the given direction
-   */
-  // line 141 "../../../../../PawnStateMachine.ump"
-  public boolean isLegalDiagJump(MoveDirection dir){
-    return false;
-  }
-
-
-  /**
    * Action to be called when an illegal move is attempted
    */
-  // line 144 "../../../../../PawnStateMachine.ump"
+  // line 142 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
     
   }
@@ -1349,7 +1340,7 @@ public class PawnBehavior
   // DEVELOPER CODE - PROVIDED AS-IS
   //------------------------
   
-  // line 148 "../../../../../PawnStateMachine.ump"
+  // line 146 "../../../../../PawnStateMachine.ump"
   enum MoveDirection 
   {
     East, South, West, North, NorthWest, NorthEast, SouthWest, SouthEast;
