@@ -112,6 +112,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static boolean movePawnIsClicked=false;
 	private static boolean moveIsClicked=false;
 	private static boolean dropPawnIsClicked=false;
+	private static boolean dropPawnBtnIsClicked=false;
 	
 	
 
@@ -544,6 +545,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private void dropPawnIsClicked(java.awt.event.ActionEvent evt) {
 		movePawnIsClicked=false;
 		dropPawnIsClicked=true;
+		dropPawnBtnIsClicked=true;
+		if(dropPawnBtnIsClicked==true) {
+			QuoridorController.switchCurrentPlayer();
+		}
+		dropPawnBtnIsClicked=false;
 		repaint();
 	}
 
