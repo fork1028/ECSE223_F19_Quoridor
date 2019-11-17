@@ -375,7 +375,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createSequentialGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn).addComponent(dropPawn))
+										.addComponent(dropWall).addComponent(cancel))
+								.addGroup(layout.createSequentialGroup().addComponent(movePawn).addComponent(dropPawn)))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -409,7 +410,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createParallelGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn).addComponent(dropPawn))
+										.addComponent(dropWall).addComponent(cancel))
+								.addGroup(layout.createParallelGroup().addComponent(movePawn).addComponent(dropPawn)))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)

@@ -682,13 +682,14 @@ public class QuoridorBoardVisualizer extends JPanel {
 			}
 			int k=0;
 			for(int i=0;i<timesGrabClicked;i++) {
-				if(i%2==0) {
-					g2d.setColor(Color.LIGHT_GRAY);
-					g2d.fill(covers.get(i/2));
-					g2d.setColor(Color.LIGHT_GRAY);
-					g2d.draw(covers.get(i/2));
-				}
-				else {
+					if(i%2==0) {
+						g2d.setColor(Color.LIGHT_GRAY);
+						g2d.fill(covers.get(i/2));
+						g2d.setColor(Color.LIGHT_GRAY);
+						g2d.draw(covers.get(i/2));
+					}
+				
+					else {
 					
 					g2d.setColor(Color.LIGHT_GRAY);
 					g2d.fill(covers.get(i+9-k));
@@ -901,6 +902,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 			}
 		}
 		QuoridorGamePage.setDropPawnIsClicked(false);
+		enabled=true;
 	}
 	
 
