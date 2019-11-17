@@ -554,6 +554,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private void dropPawnIsClicked(java.awt.event.ActionEvent evt) {
 		movePawnIsClicked=false;
 		dropPawnIsClicked=true;
+		dropFail=false;
 		dropPawnBtnIsClicked=true;
 		if(dropPawnBtnIsClicked==true) {
 			QuoridorController.switchCurrentPlayer();

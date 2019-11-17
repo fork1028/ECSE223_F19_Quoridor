@@ -416,7 +416,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 			g2d.draw(rec);
 			grabIsClicked=true;
 		}
-		else {
+		if(currentPlayer==blackPlayer) {
 			boolean dropFail=QuoridorGamePage.getDropFailed();
 			timesBlackGrabClicked++;
 			if(dropFail==true) {
@@ -424,8 +424,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 				timesBlackGrabClicked--;
 			}
 			else {
+				System.out.println("im hereeeeee");
 				indexCurrentBlackWall++;
-				
 			}
 			Rectangle2D rec=rectanglesForBlackWalls.get(indexCurrentBlackWall);
 			
@@ -633,7 +633,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		System.out.println("dropWhiteDone:"+dropWhiteDone);
 		System.out.println("dropBlackDone:"+dropBlackDone);
-			if(dropIsClicked==true) {
+			if(dropIsClicked==true&&indexCurrentWhiteWall!=-1) {
 				error="";
 				int k=dropWhiteDone;
 				int index=0;
