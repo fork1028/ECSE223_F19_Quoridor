@@ -772,6 +772,7 @@ public class PawnBehavior
 	    	}
 	    	break;
 	    }
+	return false;
   }
 
 
@@ -780,7 +781,63 @@ public class PawnBehavior
    */
   // line 91 "../../../../../PawnStateMachine.ump"
   public boolean isLegalJump(MoveDirection dir){
-    return false;
+	  //Assume legal until we prove it false
+	  Boolean isLegal = true;
+	  
+	  int curPawnRow = getCurrentPawnRow();
+	  int curPawnCol = getCurrentPawnColumn();
+	  //Get other pawn info here!
+	  int otherPawnRow = 0;
+	  int otherPawnCol = 0;
+	  int wallRow = 0;
+	  int wallCol = 0;
+		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
+			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		} else {
+		    otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		    otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		}
+		
+		//Now make a list of all the walls on the board!
+		ArrayList<Wall> wallList = new ArrayList<Wall>();
+		for (Wall wall : getCurrentGame().getCurrentPosition().getBlackWallsOnBoard()) {
+			wallList.add(wall);
+		}
+		for (Wall wall : getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard()) {
+			wallList.add(wall);
+		}
+		
+		switch(dir) {
+		case North:
+		
+			break;
+		case South:
+			break;
+		case East:
+			
+			break;
+			
+		case West:
+			
+			break;
+		
+		case NorthWest:
+			
+			break;
+			
+		case SouthEast:
+			
+			break;
+		case SouthWest:
+			
+			break;
+			
+		case NorthEast:
+			
+			break;	
+			
+		}
   }
 
 
