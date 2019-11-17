@@ -74,7 +74,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JButton cancel;
 	
 	// Pawn
-	private JButton movePawn;
+	private JButton movePawn; 
+	private JButton dropPawn;
 
 	// save game
 	private JButton saveGame;
@@ -110,6 +111,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static boolean cancelIsClicked=false;
 	private static boolean movePawnIsClicked=false;
 	private static boolean moveIsClicked=false;
+	private static boolean dropPawnIsClicked=false;
+	
 	
 
 	// graphics
@@ -186,6 +189,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// pawn
 		movePawn=new JButton();
 		movePawn.setText("MOVE PAWN");
+		dropPawn=new JButton();
+		dropPawn.setText("DROP PAWN");
 
 		// save and pause game
 		saveGame = new JButton();
@@ -259,6 +264,12 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			public void actionPerformed(ActionEvent evt) {
 
 				movePawnIsClicked(evt);
+			}
+		});
+		dropPawn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				dropPawnIsClicked(evt);
 			}
 		});
 		saveGame.addActionListener(new ActionListener() {
@@ -363,7 +374,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createSequentialGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn))
+										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn).addComponent(dropPawn))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -397,7 +408,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addGroup(layout.createParallelGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn))
+										.addComponent(dropWall).addComponent(cancel)).addComponent(movePawn).addComponent(dropPawn))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
@@ -527,6 +538,12 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 	private void movePawnIsClicked(java.awt.event.ActionEvent evt) {
 		movePawnIsClicked=true;
+		repaint();
+	}
+	
+	private void dropPawnIsClicked(java.awt.event.ActionEvent evt) {
+		movePawnIsClicked=false;
+		dropPawnIsClicked=true;
 		repaint();
 	}
 
@@ -667,7 +684,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					}
 					QuoridorBoardVisualizer.setMoveClicked(true);
 					
-					
 				}
 				repaint();
 				refreshData();
@@ -716,6 +732,14 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 	public static boolean moveIsClicked() {
 		return moveIsClicked;
+	}
+	
+	public static boolean getDropPawnIsClicked() {
+		return dropPawnIsClicked;
+	}
+	
+	public static void setDropPawnIsClicked(boolean input) {
+		dropPawnIsClicked=false;
 	}
 
 	@Override

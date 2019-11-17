@@ -1703,9 +1703,8 @@ public class QuoridorController {
 		
 		
 		
-		
-		
 		return possibleTiles;
 	}
+	
 
 }
