@@ -1310,7 +1310,13 @@ public class PawnBehavior
 						} else if (curPawnRow == 2) {
 							isLegal = false;
 							return isLegal;
-						}
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			}
 					}
 				}
 				return isLegal;
@@ -1333,7 +1339,13 @@ public class PawnBehavior
 						} else if (curPawnRow == 8) {
 							isLegal = false;
 							return isLegal;
-						}
+						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			}
 					}
 				}
 				return isLegal;
@@ -1356,7 +1368,13 @@ public class PawnBehavior
 		    			} else if (curPawnCol == 8) {
 							isLegal = false;
 							return isLegal;
-						}
+						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			}
 					}
 				}
 				return isLegal;
@@ -1380,7 +1398,13 @@ public class PawnBehavior
 		    			} else if (curPawnCol == 2) {
 							isLegal = false;
 							return isLegal;
-						}
+						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			}
 					}
 				}
 				return isLegal;
@@ -1390,8 +1414,53 @@ public class PawnBehavior
 			}
 			
 		case NorthWest:
-
+			//First look at the case of opponent to the West
+			boolean temp = false;
+			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
+				for (Wall wall : wallList) {
+					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+		    			if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
+		    				temp = true;
+		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
+		    				temp = true;
+		    			} else if (curPawnCol == 2) {
+		    				temp = true;
+						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			}
+					}
+				}
+				
+				if (temp) {
+					for (Wall wall : wallList) {
+						if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+							wallRow = wall.getMove().getTargetTile().getRow();
+							wallCol = wall.getMove().getTargetTile().getColumn();
+			    			if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
+			    				temp = true;
+			    			}
+						}
+					}
+				} else {
+					isLegal = false;
+					return isLegal;
+				}
+				
+			//Next, look at case of opponent to the North
+			} else if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
+				
+			} else {
+				isLegal = false;
+				return isLegal;
+			}
 			
+			return isLegal;
 
 		case SouthEast:
 
