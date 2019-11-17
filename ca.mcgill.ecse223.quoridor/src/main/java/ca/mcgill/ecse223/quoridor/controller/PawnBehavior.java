@@ -1258,7 +1258,7 @@ public class PawnBehavior
 	    	}
 	    	break;
 	    }
-	return false;
+	return isLegal;
   }
 
 
@@ -1266,26 +1266,26 @@ public class PawnBehavior
    * Returns if it is legal to jump in the given direction
    */
   // line 91 "../../../../../PawnStateMachine.ump"
-  public boolean isLegalJump(MoveDirection dir){
-	  //Assume legal until we prove it false
-	  Boolean isLegal = true;
-	  
-	  int curPawnRow = getCurrentPawnRow();
-	  int curPawnCol = getCurrentPawnColumn();
-	  //Get other pawn info here!
-	  int otherPawnRow = 0;
-	  int otherPawnCol = 0;
-	  int wallRow = 0;
-	  int wallCol = 0;
+	public boolean isLegalJump(MoveDirection dir) {
+		// Assume legal until we prove it false
+		Boolean isLegal = true;
+
+		int curPawnRow = getCurrentPawnRow();
+		int curPawnCol = getCurrentPawnColumn();
+		// Get other pawn info here!
+		int otherPawnRow = 0;
+		int otherPawnCol = 0;
+		int wallRow = 0;
+		int wallCol = 0;
 		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
 			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
 			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
 		} else {
-		    otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-		    otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+			otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+			otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 		}
-		
-		//Now make a list of all the walls on the board!
+
+		// Now make a list of all the walls on the board!
 		ArrayList<Wall> wallList = new ArrayList<Wall>();
 		for (Wall wall : getCurrentGame().getCurrentPosition().getBlackWallsOnBoard()) {
 			wallList.add(wall);
@@ -1293,39 +1293,120 @@ public class PawnBehavior
 		for (Wall wall : getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard()) {
 			wallList.add(wall);
 		}
-		
-		switch(dir) {
-			case North:
+
+		switch (dir) {
+		case North:
+			if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
+				for (Wall wall : wallList) {
+					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+						if (curPawnRow == wallRow + 2 && curPawnCol == wallCol + 1) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 2 && curPawnCol == wallCol) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == 2) {
+							isLegal = false;
+							return isLegal;
+						}
+					}
+				}
+				return isLegal;
+			} else {
+				isLegal = false;
+				return isLegal;
+			}
+		case South:
+			if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
+				for (Wall wall : wallList) {
+					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+						if (curPawnRow + 1 == wallRow && curPawnCol == wallCol) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow + 1 == wallRow && curPawnCol == wallCol + 1) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == 8) {
+							isLegal = false;
+							return isLegal;
+						}
+					}
+				}
+				return isLegal;
+			} else {
+				isLegal = false;
+				return isLegal;
+			}
+		case East:
+			if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
+				for (Wall wall : wallList) {
+					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+		    			if (curPawnRow == wallRow && curPawnCol + 1 == wallCol) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnRow == wallRow + 1 && curPawnCol + 1 == wallCol) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnCol == 8) {
+							isLegal = false;
+							return isLegal;
+						}
+					}
+				}
+				return isLegal;
+			} else {
+				isLegal = false;
+				return isLegal;
+			}
 			
-				break;
-			case South:
-				break;
-			case East:
-				
-				break;
-				
-			case West:
-				
-				break;
+		case West:
+			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
+				for (Wall wall : wallList) {
+					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+		    			if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
+		    				isLegal = false;
+		    				return isLegal;
+		    			} else if (curPawnCol == 2) {
+							isLegal = false;
+							return isLegal;
+						}
+					}
+				}
+				return isLegal;
+			} else {
+				isLegal = false;
+				return isLegal;
+			}
 			
-			case NorthWest:
-				
-				break;
-				
-			case SouthEast:
-				
-				break;
-			case SouthWest:
-				
-				break;
-				
-			case NorthEast:
-				
-				break;	
-				
+		case NorthWest:
+
+			
+
+		case SouthEast:
+
+			
+		case SouthWest:
+
+			
+
+		case NorthEast:
+
+			
+
 		}
-	return false;
-  }
+		return isLegal;
+	}
 
 
   /**
