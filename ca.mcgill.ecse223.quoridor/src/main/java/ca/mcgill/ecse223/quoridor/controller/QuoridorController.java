@@ -417,8 +417,8 @@ public class QuoridorController {
 		}
 		int row = candidate.getTargetTile().getRow();
 		int col = candidate.getTargetTile().getColumn();
-		System.out.println("row:::" + row);
-		System.out.println("col:::" + col);
+//		System.out.println("row:::" + row);
+//		System.out.println("col:::" + col);
 		Tile newTile = null;
 
 		if (moveDirection.equals("right")) {
@@ -468,8 +468,8 @@ public class QuoridorController {
 		} else
 			throw new InvalidInputException("New target tile doesn't exist");
 
-		System.out.println("row:" + row);
-		System.out.println("col" + col);
+//		System.out.println("row:" + row);
+//		System.out.println("col" + col);
 	}
 
 	/**
@@ -508,39 +508,39 @@ public class QuoridorController {
 				.getWhiteWallsOnBoard();
 		List<Wall> blackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 				.getBlackWallsOnBoard();
-		System.out.println("testrow:" + row);
-		System.out.println("textcol:" + col);
+//		System.out.println("testrow:" + row);
+//		System.out.println("textcol:" + col);
 		for (int i = 0; i < whiteWallsOnBoard.size(); i++) {
 			if (row == whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
 				if (col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
 						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
 					isValid = false;
 				}
 			}
 
 		}
-		System.out.println("isvalid:" + isValid);
+		//System.out.println("isvalid:" + isValid);
 
 		for (int i = 0; i < blackWallsOnBoard.size(); i++) {
 			if (row == blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
 				if (col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
 						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
 					isValid = false;
 				}
 			}
 
 		}
-		System.out.println("isvalid:" + isValid);
+		//System.out.println("isvalid:" + isValid);
 		if (isValid) {
 
 			if (playerToMove == whitePlayer) {
@@ -553,7 +553,7 @@ public class QuoridorController {
 			throw new java.lang.UnsupportedOperationException("You can't drop the wall here.");
 		}
 
-		System.out.println(playerToMove);
+		//System.out.println(playerToMove);
 
 	}
 
@@ -1620,23 +1620,11 @@ public class QuoridorController {
 	// Step 4: If there is a wall/edge, check above/below or left/right of other
 	// pawn, depending on config.
 
+	
 	/**
-	 * Method for Iteration 4 to help identify if a given pawn has a pawn adjacent
-	 * to it, with no wall between them
-	 * 
-	 * @param isForBlack is it black players pawn we are looking at
-	 * @param row        the row in which we are looking for the other pawn
-	 * @param col        the column in which we are looking for the other pawn
-	 * @return List<Tile> list of tiles that the referenced pawn can legally move to
-	 *         according to the rules of quoridor
-	 */
-
-	/**
-	 * Method for Iteration 4 to help identify tiles that a pawn can move to
-	 * 
-	 * @param isForBlack is it black players pawn we are looking at
-	 * @return ArrayList<Tile> list of tiles that the referenced pawn can legally
-	 *         move to according to the rules of quoridor
+	 * New controller method to move pawn
+	 * @Author Shayne
+	 * @param dir
 	 */
 	public static List<Tile> possiblePawnMoves(boolean isForBlack) {
 		List<Tile> possibleTiles = new ArrayList<Tile>();
@@ -1713,15 +1701,30 @@ public class QuoridorController {
 						return possibleTiles;
 	}
 
+
+	public void typeofMove(MoveDirection dir) {
+		
+	}
+	
+	
 	/**
 	 * New controller method to move pawn
 	 * @Author Shayne
 	 * @param dir
 	 */
 	public void movePawn (MoveDirection dir) {
+		boolean tmp = false;
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		switch (dir) {
-		//TODO: 
-		//case 
+			 
+			case North:
+				
+			case South:
+				
+			case East:
+				
+			case West:			
+			
 		}
 	}
 
@@ -1731,9 +1734,25 @@ public class QuoridorController {
 	 * @param dir
 	 */
 	public void jumpPawn (MoveDirection dir) {
+
+		boolean tmp = false;
 		switch (dir) {
-		//TODO: 
-		//case 
+			 
+			case North:
+				
+			case South:
+				
+			case East:
+				
+			case West:
+				
+			case NorthEast:
+				
+			case NorthWest:
+				
+			case SouthEast:
+				
+			case SouthWest:
 		}
 	}
 

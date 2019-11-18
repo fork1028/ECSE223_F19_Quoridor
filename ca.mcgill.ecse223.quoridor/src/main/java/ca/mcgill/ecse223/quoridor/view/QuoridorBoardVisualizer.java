@@ -69,7 +69,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private static int dropWhiteDone=0;
 	private static List<Rectangle2D> whiteCovers=new ArrayList<Rectangle2D>();
 	private static List<Rectangle2D> covers=new ArrayList<Rectangle2D>();
-	private static int timesGrabClicked=0;
+	private static int timesWhiteGrabClicked=0;
+	private static int timesBlackGrabClicked=0;
 	private static Rectangle2D blackPawn;
 	private static Rectangle2D whitePawn;
 	private static int whiteTileCol=1;
@@ -376,7 +377,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	int k=0;
 	public void drawGrab(Graphics g) {
 		
-		timesGrabClicked++;
+
 		enabled=false;
 		Graphics2D g2d = (Graphics2D) g.create();
 		BasicStroke thinStroke = new BasicStroke(1);
@@ -386,15 +387,10 @@ public class QuoridorBoardVisualizer extends JPanel {
 		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		if(currentPlayer==whitePlayer) {
 			boolean dropFail=QuoridorGamePage.getDropFailed();
-			
-//			if(QuoridorGamePage.cancelIsClicked()==true) {
-//				indexCurrentWhiteWall=indexCurrentWhiteWall;
-//				repaint();
-//				timesGrabClicked--;
-//			}
+			timesWhiteGrabClicked++;
 			if(dropFail==true) {
 				indexCurrentWhiteWall=indexCurrentWhiteWall;
-				timesGrabClicked--;
+				timesWhiteGrabClicked--;
 			}
 			else {
 				indexCurrentWhiteWall++;
@@ -420,19 +416,16 @@ public class QuoridorBoardVisualizer extends JPanel {
 			g2d.draw(rec);
 			grabIsClicked=true;
 		}
-		else {
+		if(currentPlayer==blackPlayer) {
 			boolean dropFail=QuoridorGamePage.getDropFailed();
+			timesBlackGrabClicked++;
 			if(dropFail==true) {
 				indexCurrentBlackWall=indexCurrentBlackWall;
-				timesGrabClicked--;
+				timesBlackGrabClicked--;
 			}
-//			if(QuoridorGamePage.cancelIsClicked()==true) {
-//				indexCurrentBlackWall=indexCurrentBlackWall;
-//				repaint();
-//			}
 			else {
+				System.out.println("im hereeeeee");
 				indexCurrentBlackWall++;
-				
 			}
 			Rectangle2D rec=rectanglesForBlackWalls.get(indexCurrentBlackWall);
 			
@@ -455,21 +448,21 @@ public class QuoridorBoardVisualizer extends JPanel {
 
 		}
 		int k=0;
-		for(int i=0;i<timesGrabClicked;i++) {
-			if(i%2==0) {
+		for(int i=0;i<timesWhiteGrabClicked;i++) {
 				g2d.setColor(Color.LIGHT_GRAY);
-				g2d.fill(covers.get(i/2));
+				g2d.fill(covers.get(i));
 				g2d.setColor(Color.LIGHT_GRAY);
-				g2d.draw(covers.get(i/2));
-			}
-			else {
-				g2d.setColor(Color.LIGHT_GRAY);
-				g2d.fill(covers.get(i+9-k));
-				g2d.setColor(Color.LIGHT_GRAY);
-				g2d.draw(covers.get(i+9-k));
-				k++;
-			}
+				g2d.draw(covers.get(i));
+			
 		}	
+		for(int i=0;i<timesBlackGrabClicked;i++) {
+				g2d.setColor(Color.LIGHT_GRAY);
+				g2d.fill(covers.get(i+10));
+				g2d.setColor(Color.LIGHT_GRAY);
+				g2d.draw(covers.get(i+10));
+				k++;
+			
+		}
 
 		}
 		
@@ -640,7 +633,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		System.out.println("dropWhiteDone:"+dropWhiteDone);
 		System.out.println("dropBlackDone:"+dropBlackDone);
-			if(dropIsClicked==true) {
+			if(dropIsClicked==true&&indexCurrentWhiteWall!=-1) {
 				error="";
 				int k=dropWhiteDone;
 				int index=0;
@@ -681,26 +674,29 @@ public class QuoridorBoardVisualizer extends JPanel {
 				
 			}
 			int k=0;
-			for(int i=0;i<timesGrabClicked;i++) {
-					if(i%2==0) {
-						g2d.setColor(Color.LIGHT_GRAY);
-						g2d.fill(covers.get(i/2));
-						g2d.setColor(Color.LIGHT_GRAY);
-						g2d.draw(covers.get(i/2));
-					}
+			for(int i=0;i<timesWhiteGrabClicked;i++) {
+					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.fill(covers.get(i));
+					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.draw(covers.get(i));
 				
-					else {
-					
-					g2d.setColor(Color.LIGHT_GRAY);
-					g2d.fill(covers.get(i+9-k));
-					g2d.setColor(Color.LIGHT_GRAY);
-					g2d.draw(covers.get(i+9-k));
-					k++;
-				}
 			}	
+			for(int i=0;i<timesBlackGrabClicked;i++) {
+					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.fill(covers.get(i+10));
+					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.draw(covers.get(i+10));
+					k++;
+				
+			}
 	
 	}
 	
+	/**
+	 * method for moving the pawn on the board triggered by arrow keys
+	 * @author Xinyue Chen
+	 * @param g
+	 */
 	public void drawPawn(Graphics g) {
 		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
@@ -748,6 +744,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 							whiteTileCol=whiteTileCol;
 						}
 					}
+					
 					
 					x =whiteTileCol*(SQUAREWIDTH + SPACING)+105;
 					y =whiteTileRow*(SQUAREWIDTH + SPACING)-25;
@@ -806,11 +803,16 @@ public class QuoridorBoardVisualizer extends JPanel {
 					g2d.setColor(Color.CYAN);
 					g2d.draw(blackPawn);
 				}
-				
 			}
+			
 		
 	}
 	
+	/**
+	 * method for drawing the initial position of the pawns
+	 * @author Xinyue Chen
+	 * @param g
+	 */
 	public void drawPawnPos(Graphics g) {
 		
 		Graphics2D g2d = (Graphics2D) g.create();
@@ -830,6 +832,11 @@ public class QuoridorBoardVisualizer extends JPanel {
 		g2d.fill(whitePawn);
 	}
 	
+	/**
+	 * method for highliting the pawn if the user clicked on move pawn button
+	 * @author Xinyue Chen
+	 * @param g
+	 */
 	public void drawHighlight(Graphics g) {
 		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
@@ -864,6 +871,11 @@ public class QuoridorBoardVisualizer extends JPanel {
 		}
 	}
 	
+	/**
+	 * method for drawing updated dropped position of the pawns
+	 * @author Xinyue Chen
+	 * @param g
+	 */
 	public void drawDroppedPawn(Graphics g) {
 		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
@@ -887,7 +899,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 				g2d.fill(whitePawn);
 				whiteDroppedRow=whiteTileRow;
 				whiteDroppedCol=whiteTileCol;
-				System.out.println("drop pawn is here");
+				//System.out.println("drop pawn is here");
 			}
 			else {
 				int x =blackTileCol*(SQUAREWIDTH + SPACING)+105;
@@ -906,10 +918,14 @@ public class QuoridorBoardVisualizer extends JPanel {
 	}
 	
 
+	/**
+	 * helper methods below to receive/send messages to view
+	 * @author Xinyue Chen
+	 * @return
+	 */
 	public static TOWall getCurrentWall() {
 		return QuoridorController.getWhiteWalls().get(indexCurrentWhiteWall);
 	}
-
 
 	public static void setDir(String input) {
 		dir=input;
@@ -963,6 +979,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 		//doDrawingForWallsOnLoad(g);
 
 
+		drawDrop(g);
 		if(grabIsClicked==true) {
 			drawGrab(g);
 			grabIsClicked=false;
@@ -974,14 +991,12 @@ public class QuoridorBoardVisualizer extends JPanel {
 			else {
 				drawMove(g, QuoridorGamePage.getDirection());
 			}
-		
 			moveIsClicked=false;
 		}
 
 		if(rotateIsClicked==true) {
 			drawRotate(g);
 		}
-		drawDrop(g);
 		drawDroppedPawn(g);
 		drawPawnPos(g);
 		drawHighlight(g);
