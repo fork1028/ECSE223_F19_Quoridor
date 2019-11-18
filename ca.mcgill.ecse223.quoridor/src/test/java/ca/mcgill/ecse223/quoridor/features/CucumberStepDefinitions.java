@@ -1576,15 +1576,19 @@ public class CucumberStepDefinitions {
 		switch (side) {
 		case "up":
 			QuoridorController.movePawn(MoveDirection.North);
+			QuoridorController.jumpPawn(MoveDirection.North);
 			break;
 		case "down":
 			QuoridorController.movePawn(MoveDirection.South);
+			QuoridorController.jumpPawn(MoveDirection.South);
 			break;
 		case "left":
 			QuoridorController.movePawn(MoveDirection.West);
+			QuoridorController.jumpPawn(MoveDirection.West);
 			break;
 		case "right":
 			QuoridorController.movePawn(MoveDirection.East);
+			QuoridorController.jumpPawn(MoveDirection.East);
 			break;
 		}
 
