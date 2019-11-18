@@ -1655,16 +1655,69 @@ public class QuoridorController {
 	 * @param dir
 	 */
 	public static void jumpPawn (MoveDirection dir) {
+		PawnBehavior pawnBehavior=new PawnBehavior();
+		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
+		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Board board=QuoridorApplication.getQuoridor().getBoard();
+		pawnBehavior.setPlayer(currentPlayer);
+		pawnBehavior.setCurrentGame(game);
+		
 
 		switch (dir) {
 			 
 			case North:
+				if(currentPlayer==whitePlayer) {
+					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+					if(currentCol==oppoCol&&Math.abs(currentRow-oppoRow)==1) {
+						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()-2,pawnBehavior.getCurrentPawnColumn(),board);
+						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+					}
+				}
+				break;
 				
 			case South:
+				if(currentPlayer==whitePlayer) {
+					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+					if(currentCol==oppoCol&&Math.abs(currentRow-oppoRow)==1) {
+						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()+2,pawnBehavior.getCurrentPawnColumn(),board);
+						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+					}
+				}
+				break;
 				
 			case East:
+				if(currentPlayer==whitePlayer) {
+					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+					if(currentRow==oppoRow&&Math.abs(currentCol-oppoCol)==1) {
+						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()+2,board);
+						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+					}
+				}
+				break;
 				
 			case West:
+				if(currentPlayer==whitePlayer) {
+					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+					if(currentRow==oppoRow&&Math.abs(currentCol-oppoCol)==1) {
+						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()-2,board);
+						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+					}
+				}
+				break;
 				
 			case NorthEast:
 				
