@@ -1568,17 +1568,32 @@ public class QuoridorController {
 	// pawn, depending on config.
 
 	//THIS IS WHERE WE DECLARE THE 2 STATEMACHINES!
-	PawnBehavior whiteSM = new PawnBehavior();
-	PawnBehavior blackSM = new PawnBehavior();
-	
+    private static PawnBehavior whitePB;
+    private static PawnBehavior blackPB;
+
+    /**
+    * Setup method for pawn bahaviour state machines for black and white pawns
+    * @author Helen
+    * 
+     */
+    public static void pawnBehaviourSetUp() {           
+    whitePB = new PawnBehavior();
+    whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
+    whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+          
+    blackPB = new PawnBehavior();
+    blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
+    blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+    }
+
 	/**
 	 * New controller method to jump pawn
 	 * @Author Shayne
 	 * @param dir
 	 */
 	public void setupWhiteStateMachine(Player whitePlayer) {
-		whiteSM.setPlayer(whitePlayer);
-		whiteSM.setCurrentGame(whitePlayer.getGameAsWhite());	
+		whitePB.setPlayer(whitePlayer);
+		whitePB.setCurrentGame(whitePlayer.getGameAsWhite());	
 	}
 	
 	/**
@@ -1587,17 +1602,84 @@ public class QuoridorController {
 	 * @param dir
 	 */
 	public void setupBlackStateMachine(Player blackPlayer) {
-		blackSM.setPlayer(blackPlayer);
-		blackSM.setCurrentGame(blackPlayer.getGameAsBlack());	
+		blackPB.setPlayer(blackPlayer);
+		blackPB.setCurrentGame(blackPlayer.getGameAsBlack());	
 	}
 
 	/**
-	 * New controller method to jump pawn
-	 * @Author Shayne
-	 * @param dir
+	 * Controller method to be called initially that redirects to either move pawn or jump pawn depending on the appropriate situation
+	 * 
+	 * @Author Shayne Leitamn, 260688512
+	 * 
+	 * @param dir	Direction of the move being attempted
+	 * @return void
 	 */
 	public void typeofMove(MoveDirection dir) {
 		
+		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		boolean isForBlack = (currentPlayer == blackPlayer);
+		int curRow = 0;
+		int curCol = 0;
+		int opRow = 0;
+		int opCol = 0;
+		
+		if (isForBlack) {
+			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		} else {
+			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		}
+		
+		switch (dir) {
+
+		case North:
+			if (curCol == opCol && curRow == opCol + 1) {
+				jumpPawn(dir, isForBlack);
+			} else {
+				movePawn(dir, isForBlack);
+			}
+			break;
+		case South:
+			if (curCol == opCol && curRow + 1 == opCol) {
+				jumpPawn(dir, isForBlack);
+			} else {
+				movePawn(dir, isForBlack);
+			}
+			break;
+		case East:
+			if (curCol + 1 == opCol && curRow == opCol) {
+				jumpPawn(dir, isForBlack);
+			} else {
+				movePawn(dir, isForBlack);
+			}
+			break;
+		case West:
+			if (curCol == opCol + 1 && curRow == opCol) {
+				jumpPawn(dir, isForBlack);
+			} else {
+				movePawn(dir, isForBlack);
+			}
+			break;
+		case NorthEast:
+			jumpPawn(dir, isForBlack);
+			break;
+		case NorthWest:
+			jumpPawn(dir, isForBlack);
+			break;
+		case SouthEast:
+			jumpPawn(dir, isForBlack);
+			break;
+		case SouthWest:
+			jumpPawn(dir, isForBlack);
+			break;
+		}
 	}
 	
 	
@@ -1606,30 +1688,22 @@ public class QuoridorController {
 	 * @Author Shayne
 	 * @param dir
 	 */
-	public static void movePawn (MoveDirection dir) {
-		PawnBehavior pawnBehavior=new PawnBehavior();
-		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
-		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		Board board=QuoridorApplication.getQuoridor().getBoard();
-		pawnBehavior.setPlayer(currentPlayer);
-		pawnBehavior.setCurrentGame(game);
+	public static void movePawn (MoveDirection dir, boolean isForBlack) {
+		
+		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		//To do: run the pawn behavior method associated with the direction. If it returns true, then:
+		//Get the tile to be updated. Create a new move, update player pos, update current game, update game pos
 
 		switch (dir) {
 		//TODO: 
 		  case North:
-			  if(pawnBehavior.getCurrentPawnRow()!=1) {
-			  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()-1,pawnBehavior.getCurrentPawnColumn(),board);
-			  //pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-			  if(currentPlayer==whitePlayer) {
-				  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+			  if (isForBlack) {
+				  blackPB.moveUp();
+			  } else {
+				  whitePB.moveUp();
 			  }
-			  else {
-				  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-			  }
-			  switchCurrentPlayer();
-			  }
+			  
+			  
 			  break;
 		  case South:
 			  if(pawnBehavior.getCurrentPawnRow()!=9) {
@@ -1679,7 +1753,7 @@ public class QuoridorController {
 	 * @Author Shayne
 	 * @param dir
 	 */
-	public static void jumpPawn (MoveDirection dir) {
+	public static void jumpPawn (MoveDirection dir, boolean isForBlack) {
 		PawnBehavior pawnBehavior=new PawnBehavior();
 		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
 		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
