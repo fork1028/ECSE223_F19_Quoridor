@@ -487,6 +487,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		refreshData();
 	}
 
+	/**
+	 * method for calling the controller method to update the model if the user clicked on drop button
+	 * @author Xinyue Chen
+	 * @param evt
+	 * @throws UnsupportedOperationException
+	 * @throws InvalidInputException
+	 */
 	private void dropIsClicked(java.awt.event.ActionEvent evt) throws UnsupportedOperationException, InvalidInputException {
 		    Player player = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		    Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
@@ -547,6 +554,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private void dropPawnIsClicked(java.awt.event.ActionEvent evt) {
 		movePawnIsClicked=false;
 		dropPawnIsClicked=true;
+		dropFail=false;
 		dropPawnBtnIsClicked=true;
 		if(dropPawnBtnIsClicked==true) {
 			QuoridorController.switchCurrentPlayer();
@@ -597,6 +605,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		
 	}
 
+	/**
+	 * method for drawing updated pawns/walls triggered by arrow keys
+	 * @author Xinyue Chen
+	 *
+	 */
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
@@ -700,6 +713,12 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 		
 	}
+	
+	/**
+	 * helper methods below to receive/send messages to view
+	 * @author Xinyue Chen
+	 * @return
+	 */
 	
 	public static boolean getDropFailed() {
 		return dropFail;
