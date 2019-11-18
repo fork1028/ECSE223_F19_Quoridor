@@ -1567,10 +1567,33 @@ public class QuoridorController {
 	// Step 4: If there is a wall/edge, check above/below or left/right of other
 	// pawn, depending on config.
 
+	/**
+	 * New controller method to jump pawn
+	 * @Author Shayne
+	 * @param dir
+	 */
+	public void createWhiteStateMachine(Player whitePlayer) {
+		PawnBehavior whiteSM = new PawnBehavior();
+		whiteSM.setPlayer(whitePlayer);
+		whiteSM.setCurrentGame(whitePlayer.getGameAsWhite());	
+	}
 	
-	
+	/**
+	 * New controller method to jump pawn
+	 * @Author Shayne
+	 * @param dir
+	 */
+	public void createBlackStateMachine(Player blackPlayer) {
+		PawnBehavior blackSM = new PawnBehavior();
+		blackSM.setPlayer(blackPlayer);
+		blackSM.setCurrentGame(blackPlayer.getGameAsBlack());	
+	}
 
-
+	/**
+	 * New controller method to jump pawn
+	 * @Author Shayne
+	 * @param dir
+	 */
 	public void typeofMove(MoveDirection dir) {
 		
 	}
