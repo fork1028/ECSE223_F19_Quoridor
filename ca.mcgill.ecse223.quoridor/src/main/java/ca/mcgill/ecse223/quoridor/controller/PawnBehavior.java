@@ -1117,44 +1117,45 @@ public class PawnBehavior
   }
 
 
-  /**
-   * Returns the current row number of the pawn
-   */
+	/**
+	 * Method to give the row number of the current pawn
+	 *
+	 * @return int integer representing the row number the current pawn is located on
+	 * @author Shayne Leitman,260688512
+	 */
   // line 133 "../../../../../PawnStateMachine.ump"
-  public int getCurrentPawnRow(){
-	  Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-	  Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-	  Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-	  if(currentPlayer==whitePlayer) {
-		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-	  }
-	  else {
-		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-	  }
-    
-  }
+	public int getCurrentPawnRow() {
+		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
+			return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+		} else {
+			return getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		}
+	}
 
 
-  /**
-   * Returns the current column number of the pawn
-   */
+	/**
+	 * Method to give the column number of the current pawn
+	 *
+	 * @return int integer representing the column number the current pawn is located on
+	 * @author Shayne Leitman,260688512
+	 */
   // line 135 "../../../../../PawnStateMachine.ump"
-  public int getCurrentPawnColumn(){
-	  Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-	  Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-	  Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-	  if(currentPlayer==whitePlayer) {
-		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-	  }
-	  else {
-		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-	  }
-  }
+	public int getCurrentPawnColumn() {
+		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
+			return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		} else {
+			return getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		}
+	}
 
 
-  /**
-   * Returns if it is legal to step in the given direction
-   */
+	/**
+	 * Method to check if a step is legal or not
+	 * 
+	 * @param dir      Direction of the move attempting to be made
+	 * @return Boolean Whether or not the move attempting to be made is allowed or not
+	 * @author Shayne Leitman,260688512
+	 */
   // line 137 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
 
@@ -1273,10 +1274,13 @@ public class PawnBehavior
   }
 
 
-  /**
-   * Returns if it is legal to jump in the given direction
-   */
-
+	/**
+	 * Method to check if a jump move is legal or not
+	 * 
+	 * @param dir      Direction of the jump move attempting to be made
+	 * @return Boolean Whether or not the jump move attempting to be made is allowed or not
+	 * @author Shayne Leitman,260688512
+	 */
   // line 91 "../../../../../PawnStateMachine.ump"
 	public boolean isLegalJump(MoveDirection dir) {
 		// Assume legal until we prove it false
