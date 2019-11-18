@@ -28,6 +28,8 @@ public class QuoridorController {
 	private static boolean boardWasInitiated = false;
 
 	private static boolean nextPlayerToSetUsername = false;
+	private static PawnBehavior whitePB;
+	private static PawnBehavior blackPB;
 
 	/**
 	 * This method initializes a game that is ready to start. The game is
@@ -146,7 +148,7 @@ public class QuoridorController {
 	public static boolean setUserToPlayer(String username, boolean forBlackPlayer) throws InvalidInputException {
 		try {
 			User user = getUserByUsername(username);
-			//NOTE: sets Up/Down (vertical) playing mode on default
+			// NOTE: sets Up/Down (vertical) playing mode on default
 			Player player = forBlackPlayer ? new Player(null, user, 1, Direction.Vertical) // black
 					: new Player(null, user, 9, Direction.Vertical); // white
 			return forBlackPlayer ? QuoridorApplication.getQuoridor().getCurrentGame().setBlackPlayer(player)
@@ -224,22 +226,21 @@ public class QuoridorController {
 		try {
 			Player white = quoridor.getCurrentGame().getWhitePlayer();
 
-
 			// white initial position
 			Tile whiteStart = (white.getDestination().getDirection().equals(Direction.Horizontal))
 					? quoridor.getBoard().getTile(36)
-							: quoridor.getBoard().getTile(4);
+					: quoridor.getBoard().getTile(4);
 
-					PlayerPosition whitePos = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), whiteStart);
+			PlayerPosition whitePos = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), whiteStart);
 
-					// black initial position
-					Tile blackStart = (white.getDestination().getDirection().equals(Direction.Horizontal))
-							? quoridor.getBoard().getTile(41)
-									: quoridor.getBoard().getTile(76);
-							PlayerPosition blackPos = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), blackStart);
+			// black initial position
+			Tile blackStart = (white.getDestination().getDirection().equals(Direction.Horizontal))
+					? quoridor.getBoard().getTile(41)
+					: quoridor.getBoard().getTile(76);
+			PlayerPosition blackPos = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), blackStart);
 
-							GamePosition gamePosition = new GamePosition(0, whitePos, blackPos, white, quoridor.getCurrentGame());
-							quoridor.getCurrentGame().setCurrentPosition(gamePosition);
+			GamePosition gamePosition = new GamePosition(0, whitePos, blackPos, white, quoridor.getCurrentGame());
+			quoridor.getCurrentGame().setCurrentPosition(gamePosition);
 
 		} catch (RuntimeException e) {
 			throw new InvalidInputException("Unable to add white player as next player to move");
@@ -528,7 +529,7 @@ public class QuoridorController {
 			}
 
 		}
-		//System.out.println("isvalid:" + isValid);
+		// System.out.println("isvalid:" + isValid);
 
 		for (int i = 0; i < blackWallsOnBoard.size(); i++) {
 			if (row == blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
@@ -544,7 +545,7 @@ public class QuoridorController {
 			}
 
 		}
-		//System.out.println("isvalid:" + isValid);
+		// System.out.println("isvalid:" + isValid);
 		if (isValid) {
 
 			if (playerToMove == whitePlayer) {
@@ -557,7 +558,7 @@ public class QuoridorController {
 			throw new java.lang.UnsupportedOperationException("You can't drop the wall here.");
 		}
 
-		//System.out.println(playerToMove);
+		// System.out.println(playerToMove);
 
 	}
 
@@ -1082,12 +1083,14 @@ public class QuoridorController {
 	/**
 	 * 11. Validate Position
 	 * 
-	 * This method (along with the helper methods it calls) validates a potential pawn or wall move position.
+	 * This method (along with the helper methods it calls) validates a potential
+	 * pawn or wall move position.
 	 * 
-	 * @param row       row of the move position
-	 * @param col       column of the move position
-	 * @param dir       direction of the move position -- "horizontal", "vertical", or "pawn"
-	 * @return boolean  true if valid position, false if invalid position
+	 * @param row row of the move position
+	 * @param col column of the move position
+	 * @param dir direction of the move position -- "horizontal", "vertical", or
+	 *            "pawn"
+	 * @return boolean true if valid position, false if invalid position
 	 * @author Sami Junior Kahil, 260834568
 	 */
 	public static boolean validatePosition(int row, int col, String dir) {
@@ -1100,11 +1103,12 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method is called if validating position of pawn. Only checks if pawn is within bounds of the board.
+	 * This method is called if validating position of pawn. Only checks if pawn is
+	 * within bounds of the board.
 	 * 
-	 * @param row       row of move position 
-	 * @param col       column of move position
-	 * @return boolean  false if outside of boundary, true otherwise
+	 * @param row row of move position
+	 * @param col column of move position
+	 * @return boolean false if outside of boundary, true otherwise
 	 */
 	private static boolean validatePawnPosition(int row, int col) {
 		if (row <= 0 || row >= 10 || col <= 0 || col >= 10) {
@@ -1114,10 +1118,11 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method (along with validateWallOverlapPosition) is called if validating position of wall. Checks boundary of wall on board.
+	 * This method (along with validateWallOverlapPosition) is called if validating
+	 * position of wall. Checks boundary of wall on board.
 	 * 
-	 * @param row      row of wall position
-	 * @param col      column of wall position
+	 * @param row row of wall position
+	 * @param col column of wall position
 	 * @return boolean false if outside of boundary, true otherwise
 	 */
 	private static boolean validateWallBoundaryPosition(int row, int col) {
@@ -1128,16 +1133,19 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method is called with validateWallBoundaryPosition to check if there are any overlaps on the board.
+	 * This method is called with validateWallBoundaryPosition to check if there are
+	 * any overlaps on the board.
 	 * 
-	 * @param row         row of wall position
-	 * @param col         column of wall position
-	 * @param direction   direction of wall
-	 * @return boolean    false if overlap, true otherwise
+	 * @param row       row of wall position
+	 * @param col       column of wall position
+	 * @param direction direction of wall
+	 * @return boolean false if overlap, true otherwise
 	 */
-	private static boolean validateWallOverlapPosition(int row, int col, Direction direction) {		
-		List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
-		List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+	private static boolean validateWallOverlapPosition(int row, int col, Direction direction) {
+		List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+				.getBlackWallsOnBoard();
+		List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+				.getWhiteWallsOnBoard();
 
 		List<Wall> allWallsOnBoard = new ArrayList<Wall>();
 		allWallsOnBoard.addAll(blackWalls);
@@ -1158,14 +1166,16 @@ public class QuoridorController {
 				return false;
 			}
 
-			if (direction.equals( Direction.Vertical )) {
-				if ((currRow == row - 1 || currRow == row + 1) && currCol == col && currDir.equals( Direction.Vertical )) {
+			if (direction.equals(Direction.Vertical)) {
+				if ((currRow == row - 1 || currRow == row + 1) && currCol == col
+						&& currDir.equals(Direction.Vertical)) {
 					return false;
 				}
 			}
 
-			if (direction.equals( Direction.Horizontal )) {
-				if (currRow == row && (currCol == col - 1 || currCol == col + 1) && currDir.equals( Direction.Horizontal )) {
+			if (direction.equals(Direction.Horizontal)) {
+				if (currRow == row && (currCol == col - 1 || currCol == col + 1)
+						&& currDir.equals(Direction.Horizontal)) {
 					return false;
 				}
 			}
@@ -1261,7 +1271,8 @@ public class QuoridorController {
 	public static void switchCurrentPlayer() {
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+				.getPlayerToMove();
 
 		if (currentPlayer.equals(whitePlayer)) {
 			QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setPlayerToMove(blackPlayer);
@@ -1311,7 +1322,7 @@ public class QuoridorController {
 			row = forBlackPawn
 					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
 							.getTile().getRow()
-							: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
 							.getTile().getRow();
 
 		} catch (RuntimeException e) {
@@ -1334,7 +1345,7 @@ public class QuoridorController {
 			col = forBlackPawn
 					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
 							.getTile().getColumn()
-							: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
 							.getTile().getColumn();
 
 		} catch (RuntimeException e) {
@@ -1395,7 +1406,7 @@ public class QuoridorController {
 			return isForBlack
 					? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 							.numberOfBlackWallsInStock()
-							: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 							.numberOfWhiteWallsInStock();
 		} catch (RuntimeException e) {
 			// if error, because game has not started
@@ -1441,7 +1452,7 @@ public class QuoridorController {
 		try {
 			remainingTime = forBlackPlayer
 					? QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime()
-							: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+					: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
 
 		} catch (RuntimeException e) {
 			// do nothing, the game has not started yet
@@ -1506,7 +1517,7 @@ public class QuoridorController {
 		try {
 			return isForBlack
 					? (QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().setRemainingTime(time))
-							: (QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().setRemainingTime(time));
+					: (QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().setRemainingTime(time));
 		} catch (RuntimeException e) {
 			// if fail, return false
 			return false;
@@ -1567,165 +1578,287 @@ public class QuoridorController {
 	// Step 4: If there is a wall/edge, check above/below or left/right of other
 	// pawn, depending on config.
 
-	
-	
-
-
 	public void typeofMove(MoveDirection dir) {
-		
+
 	}
-	
-	
+
 	/**
 	 * New controller method to move pawn
+	 * 
 	 * @Author Shayne
 	 * @param dir
 	 */
-	public static void movePawn (MoveDirection dir) {
-		PawnBehavior pawnBehavior=new PawnBehavior();
-		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
-		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		Board board=QuoridorApplication.getQuoridor().getBoard();
+	public static void movePawn(MoveDirection dir) {
+		PawnBehavior pawnBehavior = new PawnBehavior();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+				.getPlayerToMove();
+		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Board board = QuoridorApplication.getQuoridor().getBoard();
 		pawnBehavior.setPlayer(currentPlayer);
 		pawnBehavior.setCurrentGame(game);
 
 		switch (dir) {
-		//TODO: 
-		  case North:
-			  if(pawnBehavior.getCurrentPawnRow()!=1) {
-			  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()-1,pawnBehavior.getCurrentPawnColumn(),board);
-			  //pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-			  if(currentPlayer==whitePlayer) {
-				  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-			  }
-			  else {
-				  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-			  }
-			  switchCurrentPlayer();
-			  }
-			  break;
-		  case South:
-			  if(pawnBehavior.getCurrentPawnRow()!=9) {
-				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()+1,pawnBehavior.getCurrentPawnColumn(),board);
-				 // pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  if(currentPlayer==whitePlayer) {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  }
-				  else {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-				  }
-				  switchCurrentPlayer();
-				  }
-				  break;
-		  case West:
-			  if(pawnBehavior.getCurrentPawnColumn()!=1) {
-				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()-1,board);
-				 // pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  if(currentPlayer==whitePlayer) {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  }
-				  else {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-				  }
-				  switchCurrentPlayer();
-				  }
-				  break;
-		  case East:
-			  if(pawnBehavior.getCurrentPawnColumn()!=9) {
-				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()+1,board);
-				  //pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  if(currentPlayer==whitePlayer) {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  }
-				  else {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-				  }
-				  switchCurrentPlayer();
-				  }
-				  break;
+		// TODO:
+		case North:
+			if (pawnBehavior.getCurrentPawnRow() != 1) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() - 1, pawnBehavior.getCurrentPawnColumn(), board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
+		case South:
+			if (pawnBehavior.getCurrentPawnRow() != 9) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() + 1, pawnBehavior.getCurrentPawnColumn(), board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
+		case West:
+			if (pawnBehavior.getCurrentPawnColumn() != 1) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() - 1, board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
+		case East:
+			if (pawnBehavior.getCurrentPawnColumn() != 9) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() + 1, board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
+
+		}
+	}
+	
+	/**
+	 * TEST New controller method to move pawn
+	 * 
+	 * @Author Shayne, Helen
+	 * @param dir
+	 */
+	public static void movePawnNew(MoveDirection dir) {
+		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
+		
+		switch (dir) {
+		case North:
+			pb.moveUp();
+			if (pawnBehavior.getCurrentPawnRow() != 1) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() - 1, pawnBehavior.getCurrentPawnColumn(), board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
+		case South:
+			if (pawnBehavior.getCurrentPawnRow() != 9) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() + 1, pawnBehavior.getCurrentPawnColumn(), board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
+		case West:
+			if (pawnBehavior.getCurrentPawnColumn() != 1) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() - 1, board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
+		case East:
+			if (pawnBehavior.getCurrentPawnColumn() != 9) {
+				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() + 1, board);
+				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				if (currentPlayer == whitePlayer) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
+				} else {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+							.setTile(tile);
+				}
+				switchCurrentPlayer();
+			}
+			break;
 
 		}
 	}
 
 	/**
+	 * Setup method for pawn bahaviour state machines for black and white pawns
+	 * @author Helen
+	 * 
+	 */
+	public static void pawnBehaviourSetUp() {		
+		whitePB = new PawnBehavior();
+		whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
+		whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+		
+		blackPB = new PawnBehavior();
+		blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
+		blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+	}
+	
+	/**
+	 * Getter for pawn behavior state machine
+	 * @param forBlackPawn true to get blackPB, false to get whitePB
+	 * @author Helen
+	 */
+	public static PawnBehavior getPB(boolean forBlackPawn) {		
+		return (forBlackPawn) ? blackPB : whitePB;
+	}
+
+
+	/**
 	 * New controller method to jump pawn
+	 * 
 	 * @Author Shayne
 	 * @param dir
 	 */
-	public static void jumpPawn (MoveDirection dir) {
-		PawnBehavior pawnBehavior=new PawnBehavior();
-		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
-		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		Board board=QuoridorApplication.getQuoridor().getBoard();
+	public static void jumpPawn(MoveDirection dir) {
+		PawnBehavior pawnBehavior = new PawnBehavior();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+				.getPlayerToMove();
+		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Board board = QuoridorApplication.getQuoridor().getBoard();
 		pawnBehavior.setPlayer(currentPlayer);
 		pawnBehavior.setCurrentGame(game);
-		
 
 		switch (dir) {
-			 
-			case North:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentCol==oppoCol&&Math.abs(currentRow-oppoRow)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()-2,pawnBehavior.getCurrentPawnColumn(),board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
+
+		case North:
+			if (currentPlayer == whitePlayer) {
+				int currentRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getRow();
+				int currentCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getColumn();
+				int oppoRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getRow();
+				int oppoCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getColumn();
+				if (currentCol == oppoCol && Math.abs(currentRow - oppoRow) == 1) {
+					Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() - 2, pawnBehavior.getCurrentPawnColumn(),
+							board);
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
 				}
-				break;
-				
-			case South:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentCol==oppoCol&&Math.abs(currentRow-oppoRow)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()+2,pawnBehavior.getCurrentPawnColumn(),board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
+			}
+			break;
+
+		case South:
+			if (currentPlayer == whitePlayer) {
+				int currentRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getRow();
+				int currentCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getColumn();
+				int oppoRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getRow();
+				int oppoCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getColumn();
+				if (currentCol == oppoCol && Math.abs(currentRow - oppoRow) == 1) {
+					Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() + 2, pawnBehavior.getCurrentPawnColumn(),
+							board);
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
 				}
-				break;
-				
-			case East:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentRow==oppoRow&&Math.abs(currentCol-oppoCol)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()+2,board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
+			}
+			break;
+
+		case East:
+			if (currentPlayer == whitePlayer) {
+				int currentRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getRow();
+				int currentCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getColumn();
+				int oppoRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getRow();
+				int oppoCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getColumn();
+				if (currentRow == oppoRow && Math.abs(currentCol - oppoCol) == 1) {
+					Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() + 2,
+							board);
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
 				}
-				break;
-				
-			case West:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentRow==oppoRow&&Math.abs(currentCol-oppoCol)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()-2,board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
+			}
+			break;
+
+		case West:
+			if (currentPlayer == whitePlayer) {
+				int currentRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getRow();
+				int currentCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+						.getWhitePosition().getTile().getColumn();
+				int oppoRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getRow();
+				int oppoCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+						.getTile().getColumn();
+				if (currentRow == oppoRow && Math.abs(currentCol - oppoCol) == 1) {
+					Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() - 2,
+							board);
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+							.setTile(tile);
 				}
-				break;
-				
-			case NorthEast:
-				
-			case NorthWest:
-				
-			case SouthEast:
-				
-			case SouthWest:
+			}
+			break;
+
+		case NorthEast:
+
+		case NorthWest:
+
+		case SouthEast:
+
+		case SouthWest:
 		}
 	}
 
