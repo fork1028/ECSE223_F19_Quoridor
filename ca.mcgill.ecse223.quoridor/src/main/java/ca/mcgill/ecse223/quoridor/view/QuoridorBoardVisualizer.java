@@ -745,6 +745,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 						}
 					}
 					
+					
 					x =whiteTileCol*(SQUAREWIDTH + SPACING)+105;
 					y =whiteTileRow*(SQUAREWIDTH + SPACING)-25;
 					w = SQUAREWIDTH;
@@ -802,8 +803,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 					g2d.setColor(Color.CYAN);
 					g2d.draw(blackPawn);
 				}
-				
 			}
+			
 		
 	}
 	
@@ -898,7 +899,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 				g2d.fill(whitePawn);
 				whiteDroppedRow=whiteTileRow;
 				whiteDroppedCol=whiteTileCol;
-				System.out.println("drop pawn is here");
+				//System.out.println("drop pawn is here");
 			}
 			else {
 				int x =blackTileCol*(SQUAREWIDTH + SPACING)+105;

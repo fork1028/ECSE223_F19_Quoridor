@@ -76,6 +76,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	// Pawn
 	private JButton movePawn; 
 	private JButton dropPawn;
+	private JButton moveUpRight;
+	private JButton moveDownRight;
+	private JButton moveUpLeft;
+	private JButton moveDownLeft;
 
 	// save game
 	private JButton saveGame;
@@ -113,6 +117,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static boolean moveIsClicked=false;
 	private static boolean dropPawnIsClicked=false;
 	private static boolean dropPawnBtnIsClicked=false;
+	private static boolean moveUpRightIsClicked=false;
+	private static boolean moveDownRightIsClicked=false;
+	private static boolean moveUpLeftIsClicked=false;
+	private static boolean moveDownLeftIsClicked=false;
+	
 	
 	
 
@@ -192,6 +201,15 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		movePawn.setText("MOVE PAWN");
 		dropPawn=new JButton();
 		dropPawn.setText("DROP PAWN");
+		moveUpRight=new JButton();
+		moveUpRight.setText("MOVE UP RIGHT");
+		moveUpLeft=new JButton();
+		moveUpLeft.setText("MOVE UP LEFT");
+		moveDownRight=new JButton();
+		moveDownRight.setText("MOVE DOWN RIGHT");
+		moveDownLeft=new JButton();
+		moveDownLeft.setText("MOVE DOWN LEFT");
+		
 
 		// save and pause game
 		saveGame = new JButton();
@@ -265,6 +283,30 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			public void actionPerformed(ActionEvent evt) {
 
 				movePawnIsClicked(evt);
+			}
+		});
+		moveUpRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				moveUpRightIsClicked(evt);
+			}
+		});
+		moveUpLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				moveUpLeftIsClicked(evt);
+			}
+		});
+		moveDownRight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				moveDownRightIsClicked(evt);
+			}
+		});
+		moveDownLeft.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+
+				moveDownLeftIsClicked(evt);
 			}
 		});
 		dropPawn.addActionListener(new ActionListener() {
@@ -376,7 +418,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall).addComponent(cancel))
-								.addGroup(layout.createSequentialGroup().addComponent(movePawn).addComponent(dropPawn)))
+								.addGroup(layout.createSequentialGroup().addComponent(movePawn).addComponent(dropPawn))
+								.addGroup(layout.createSequentialGroup().addComponent(moveUpLeft).addComponent(moveUpRight).addComponent(moveDownLeft).addComponent(moveDownRight)))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -411,7 +454,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall).addComponent(cancel))
-								.addGroup(layout.createParallelGroup().addComponent(movePawn).addComponent(dropPawn)))
+								.addGroup(layout.createParallelGroup().addComponent(movePawn).addComponent(dropPawn))
+								.addGroup(layout.createParallelGroup().addComponent(moveUpLeft).addComponent(moveUpRight).addComponent(moveDownLeft).addComponent(moveDownRight)))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
@@ -560,6 +604,26 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			QuoridorController.switchCurrentPlayer();
 		}
 		dropPawnBtnIsClicked=false;
+		repaint();
+	}
+	
+	private void moveUpRightIsClicked(java.awt.event.ActionEvent evt) {
+		moveUpRightIsClicked=true;
+		repaint();
+	}
+	
+	private void moveUpLeftIsClicked(java.awt.event.ActionEvent evt) {
+		moveUpLeftIsClicked=true;
+		repaint();
+	}
+	
+	private void moveDownLeftIsClicked(java.awt.event.ActionEvent evt) {
+		moveDownLeftIsClicked=true;
+		repaint();
+	}
+	
+	private void moveDownRightIsClicked(java.awt.event.ActionEvent evt) {
+		moveDownRightIsClicked=true;
 		repaint();
 	}
 
@@ -767,6 +831,19 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 	public static void setDropPawnIsClicked(boolean input) {
 		dropPawnIsClicked=false;
+	}
+	
+	public static boolean getMoveDownRightIsClicked() {
+		return moveDownRightIsClicked;
+	}
+	public static boolean getMoveUpRightIsClicked() {
+		return moveUpRightIsClicked;
+	}
+	public static boolean getMoveDownLeftIsClicked() {
+		return moveDownLeftIsClicked;
+	}
+	public static boolean getMoveUpLeftIsClicked() {
+		return moveUpLeftIsClicked;
 	}
 
 	@Override
