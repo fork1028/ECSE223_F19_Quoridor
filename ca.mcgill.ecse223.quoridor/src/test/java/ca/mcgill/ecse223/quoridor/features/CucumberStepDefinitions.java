@@ -1485,7 +1485,6 @@ public class CucumberStepDefinitions {
 
 	}
 
-
 	/**
 	 * Part of given (pre-condition) for MovePawn - move ONE tile
 	 * @author Helen
@@ -1628,8 +1627,6 @@ public class CucumberStepDefinitions {
 
 				assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove(), assertedPlayer);
 	}
-
-
 
 	// ************	END OF JUMPPAWN ****************
 

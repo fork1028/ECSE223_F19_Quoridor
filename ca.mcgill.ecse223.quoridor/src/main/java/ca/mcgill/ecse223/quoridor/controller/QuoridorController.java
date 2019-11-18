@@ -20,6 +20,10 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
 
+/**
+ * @author user
+ *
+ */
 public class QuoridorController {
 	private static boolean boardWasInitiated = false;
 
@@ -1078,12 +1082,12 @@ public class QuoridorController {
 	/**
 	 * 11. Validate Position
 	 * 
-	 * This method (along with the methods it calls) validates a potential pawn or wall move position.
+	 * This method (along with the helper methods it calls) validates a potential pawn or wall move position.
 	 * 
 	 * @param row       row of the move position
-	 * @param col       col of the move position
+	 * @param col       column of the move position
 	 * @param dir       direction of the move position -- "horizontal", "vertical", or "pawn"
-	 * @return boolean -- true if valid position, false if invalid position
+	 * @return boolean  true if valid position, false if invalid position
 	 * @author Sami Junior Kahil, 260834568
 	 */
 	public static boolean validatePosition(int row, int col, String dir) {
@@ -1095,6 +1099,13 @@ public class QuoridorController {
 		}
 	}
 
+	/**
+	 * This method is called if validating position of pawn. Only checks if pawn is within bounds of the board.
+	 * 
+	 * @param row       row of move position 
+	 * @param col       column of move position
+	 * @return boolean  false if outside of boundary, true otherwise
+	 */
 	private static boolean validatePawnPosition(int row, int col) {
 		if (row <= 0 || row >= 10 || col <= 0 || col >= 10) {
 			return false;
@@ -1102,6 +1113,13 @@ public class QuoridorController {
 		return true;
 	}
 
+	/**
+	 * This method (along with validateWallOverlapPosition) is called if validating position of wall. Checks boundary of wall on board.
+	 * 
+	 * @param row      row of wall position
+	 * @param col      column of wall position
+	 * @return boolean false if outside of boundary, true otherwise
+	 */
 	private static boolean validateWallBoundaryPosition(int row, int col) {
 		if (row == 9 || col == 9)
 			return false;
@@ -1109,6 +1127,14 @@ public class QuoridorController {
 			return true;
 	}
 
+	/**
+	 * This method is called with validateWallBoundaryPosition to check if there are any overlaps on the board.
+	 * 
+	 * @param row         row of wall position
+	 * @param col         column of wall position
+	 * @param direction   direction of wall
+	 * @return boolean    false if overlap, true otherwise
+	 */
 	private static boolean validateWallOverlapPosition(int row, int col, Direction direction) {		
 		List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
 		List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
@@ -1228,10 +1254,8 @@ public class QuoridorController {
 	/**
 	 * 12. Switch Current Player
 	 * 
-	 * This method switches the current player and updates each player's timer.
+	 * This method switches the current player with the next player.
 	 * 
-	 * @throws UnsupportedOperationException
-	 * @return true if successful, false otherwise
 	 * @author Sami Junior Kahil, 260834568
 	 */
 	public static void switchCurrentPlayer() {
@@ -1468,83 +1492,6 @@ public class QuoridorController {
 
 	public static boolean setPauseGame() {
 		return false;
-	}
-
-	/**
-	 * Helper method to set timer for each player and keeps track of the timers.
-	 * 
-	 * @author Sami Junior Kahil, 260834568
-	 */
-	private static void setTimers() {
-		Timer whitePlayerTimer = new Timer();
-		Timer blackPlayerTimer = new Timer();
-		Timer checker = new Timer();
-
-		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-
-		TimerTask ttWhitePlayer = new TimerTask() {
-			@Override
-			public void run() {
-				int remainingTime = getTimeToSeconds(whitePlayer.getRemainingTime());
-				for (int i = 0; i <= remainingTime; i++) {
-					whitePlayer.setRemainingTime(getIntToTime(0, remainingTime - i));
-				}
-			};
-		};
-
-		whitePlayerTimer.scheduleAtFixedRate(ttWhitePlayer, 0, 1000);
-		try {
-			whitePlayerTimer.wait();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-
-		TimerTask ttBlackPlayer = new TimerTask() {
-			@Override
-			public void run() {
-				int remainingTime = getTimeToSeconds(blackPlayer.getRemainingTime());
-				for (int i = 0; i <= remainingTime; i++) {
-					blackPlayer.setRemainingTime(getIntToTime(0, remainingTime - i));
-				}
-			};
-		};
-
-		blackPlayerTimer.scheduleAtFixedRate(ttBlackPlayer, 0, 1000);
-		try {
-			blackPlayerTimer.wait();
-		} catch (InterruptedException e1) {
-			e1.printStackTrace();
-		}
-
-		TimerTask check = new TimerTask() {
-			@Override
-			public void run() {
-				GameStatus currentStatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
-				Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
-						.getPlayerToMove();
-
-				while (currentStatus == GameStatus.Running) {
-					if (currentPlayer == QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer()) {
-						whitePlayerTimer.notify();
-						try {
-							blackPlayerTimer.wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					} else {
-						blackPlayerTimer.notify();
-						try {
-							whitePlayerTimer.wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			};
-		};
-
-		checker.scheduleAtFixedRate(check, 0, 100);
 	}
 
 	/**
