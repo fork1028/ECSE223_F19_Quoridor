@@ -1731,10 +1731,69 @@ public class QuoridorController {
 	 * @Author Shayne
 	 * @param dir
 	 */
-	public void movePawn (MoveDirection dir) {
+	public static void movePawn (MoveDirection dir) {
+		PawnBehavior pawnBehavior=new PawnBehavior();
+		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
+		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Board board=QuoridorApplication.getQuoridor().getBoard();
+		pawnBehavior.setPlayer(currentPlayer);
+		pawnBehavior.setCurrentGame(game);
 		switch (dir) {
 		//TODO: 
-		//case 
+		  case North:
+			  if(pawnBehavior.getCurrentPawnRow()!=1) {
+			  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()-1,pawnBehavior.getCurrentPawnColumn(),board);
+			  //pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+			  if(currentPlayer==whitePlayer) {
+				  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+			  }
+			  else {
+				  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
+			  }
+			  switchCurrentPlayer();
+			  }
+			  break;
+		  case South:
+			  if(pawnBehavior.getCurrentPawnRow()!=9) {
+				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()+1,pawnBehavior.getCurrentPawnColumn(),board);
+				 // pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				  if(currentPlayer==whitePlayer) {
+					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				  }
+				  else {
+					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
+				  }
+				  switchCurrentPlayer();
+				  }
+				  break;
+		  case West:
+			  if(pawnBehavior.getCurrentPawnColumn()!=1) {
+				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()-1,board);
+				 // pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				  if(currentPlayer==whitePlayer) {
+					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				  }
+				  else {
+					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
+				  }
+				  switchCurrentPlayer();
+				  }
+				  break;
+		  case East:
+			  if(pawnBehavior.getCurrentPawnColumn()!=9) {
+				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()+1,board);
+				  //pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				  if(currentPlayer==whitePlayer) {
+					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
+				  }
+				  else {
+					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
+				  }
+				  switchCurrentPlayer();
+				  }
+				  break;
 		}
 	}
 	
@@ -1743,7 +1802,7 @@ public class QuoridorController {
 	 * @Author Shayne
 	 * @param dir
 	 */
-	public void jumpPawn (MoveDirection dir) {
+	public static void jumpPawn (MoveDirection dir) {
 		switch (dir) {
 		//TODO: 
 		//case 

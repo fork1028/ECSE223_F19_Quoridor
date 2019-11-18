@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
+import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.*;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -1539,7 +1540,7 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * Part of given (pre-condition) for MovePawn and JumpPawn when move is BLOCKED
-	 * @author Xinyue Chen
+	 * @author Helen, Xinyue Chen
 	 * @param direction "vertical" or "horizontal"
 	 * @param wrow row of wall that is blocking move
 	 * @param wcol column of wall that is blocking move
@@ -1598,10 +1599,17 @@ public class CucumberStepDefinitions {
 		//call CONTROLLER method to move or jump pawn
 		switch (side) {
 		case "up":
-			//QuoridorController.movePawn(MoveDirection.North);
+			QuoridorController.movePawn(MoveDirection.North);
+			break;
 		case "down":
+			QuoridorController.movePawn(MoveDirection.South);
+			break;
 		case "left":
+			QuoridorController.movePawn(MoveDirection.West);
+			break;
 		case "right":
+			QuoridorController.movePawn(MoveDirection.East);
+			break;
 		}
 		
 
@@ -1628,14 +1636,15 @@ public class CucumberStepDefinitions {
 	@And("Player's new position shall be {int}:{int}")
 	public void playersNewPositionShallBeNrowNcol(int nrow, int ncol) {
 		// assert the new position for the player that JUST had their turn
-		PlayerPosition position = QuoridorController.isBlackTurn() ?
-					// this means WHITE just played, so we need to check WHITE position
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
-					// else check Black position
-				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+		PlayerPosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+//				QuoridorController.isBlackTurn() ?
+//					// this means WHITE just played, so we need to check WHITE position
+//				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+//					// else check Black position
+//				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
 
-		assertEquals(position.getTile().getRow(), nrow);
-		assertEquals(position.getTile().getColumn(), ncol);
+		assertEquals(nrow,position.getTile().getRow());
+		assertEquals(ncol,position.getTile().getColumn());
 				
 	}
 
@@ -1646,6 +1655,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The next player to move shall become {string}")
 	public void theNextPlayerToMoveShallBecomeNplayer(String color) {
+		//QuoridorController.switchCurrentPlayer();
 		Player assertedPlayer = (color.contentEquals("black"))
 				? QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer()
 				: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
@@ -1655,7 +1665,7 @@ public class CucumberStepDefinitions {
 
 	
 	
-	// ************	END OF JUMPPAWN ****************
+	// ************	END OF MOVEPAWN AND JUMPPAWN ****************
 
 	// ***********************************************
 	// Clean up

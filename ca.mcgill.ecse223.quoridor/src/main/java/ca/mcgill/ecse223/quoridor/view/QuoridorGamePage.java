@@ -49,6 +49,7 @@ import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
+import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
 
 public class QuoridorGamePage extends JFrame implements KeyListener{
 
@@ -698,6 +699,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				if(movePawnIsClicked==true) {
 					QuoridorBoardVisualizer.setMoveClicked(true);
 					direction="up";
+					MoveDirection dir=MoveDirection.North;
+					QuoridorController.movePawn(dir);
+					
 				}
 				
 				repaint();
@@ -722,6 +726,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 						e1.printStackTrace();
 					}
 				}
+				if(movePawnIsClicked==true) {
+					QuoridorBoardVisualizer.setMoveClicked(true);
+					direction="down";
+					MoveDirection dir=MoveDirection.South;
+					QuoridorController.movePawn(dir);
+					
+				}
 				refreshData();
 				repaint();
 				
@@ -744,6 +755,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					}
 					
 				
+				}
+				if(movePawnIsClicked==true) {
+					QuoridorBoardVisualizer.setMoveClicked(true);
+					direction="left";
+					MoveDirection dir=MoveDirection.West;
+					QuoridorController.movePawn(dir);
+					
 				}
 				repaint();
 				
@@ -768,6 +786,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 						e1.printStackTrace();
 					}
 					QuoridorBoardVisualizer.setMoveClicked(true);
+					
+				}
+				if(movePawnIsClicked==true) {
+					QuoridorBoardVisualizer.setMoveClicked(true);
+					direction="right";
+					MoveDirection dir=MoveDirection.East;
+					QuoridorController.movePawn(dir);
 					
 				}
 				repaint();

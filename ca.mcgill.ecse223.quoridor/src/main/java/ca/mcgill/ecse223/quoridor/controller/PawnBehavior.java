@@ -4,6 +4,7 @@
 package ca.mcgill.ecse223.quoridor.controller;
 import java.util.ArrayList;
 
+import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 
 // line 5 "../../../../../PawnStateMachine.ump"
@@ -1119,34 +1120,44 @@ public class PawnBehavior
   /**
    * Returns the current row number of the pawn
    */
-  // line 85 "../../../../../PawnStateMachine.ump"
+  // line 133 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnRow(){
-    if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
-    	return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-    } else {
-    	return getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-    }
+	  Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+	  Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+	  Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+	  if(currentPlayer==whitePlayer) {
+		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+	  }
+	  else {
+		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+	  }
+    
   }
 
 
   /**
    * Returns the current column number of the pawn
    */
-  // line 87 "../../../../../PawnStateMachine.ump"
+  // line 135 "../../../../../PawnStateMachine.ump"
   public int getCurrentPawnColumn(){
-	if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
-		return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-	} else {
-	    return getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-	}
+	  Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+	  Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+	  Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+	  if(currentPlayer==whitePlayer) {
+		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+	  }
+	  else {
+		  return QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+	  }
   }
 
 
   /**
    * Returns if it is legal to step in the given direction
    */
-  // line 89 "../../../../../PawnStateMachine.ump"
+  // line 137 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
+
 	  
 	  //Assume legal until we prove it false
 	  Boolean isLegal = true;
@@ -1265,6 +1276,7 @@ public class PawnBehavior
   /**
    * Returns if it is legal to jump in the given direction
    */
+
   // line 91 "../../../../../PawnStateMachine.ump"
 	public boolean isLegalJump(MoveDirection dir) {
 		// Assume legal until we prove it false
@@ -1726,6 +1738,7 @@ public class PawnBehavior
 	}
 
 
+
   /**
    * Action to be called when an illegal move is attempted
    */
@@ -1739,7 +1752,7 @@ public class PawnBehavior
   //------------------------
   
   // line 146 "../../../../../PawnStateMachine.ump"
-  enum MoveDirection 
+  public enum MoveDirection 
   {
     East, South, West, North, NorthWest, NorthEast, SouthWest, SouthEast;
   }
