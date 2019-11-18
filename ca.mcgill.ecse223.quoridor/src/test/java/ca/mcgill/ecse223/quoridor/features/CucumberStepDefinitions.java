@@ -1612,29 +1612,20 @@ public class CucumberStepDefinitions {
 	@And("Player's new position shall be {int}:{int}")
 	public void playersNewPositionShallBeNrowNcol(int nrow, int ncol) {
 		// assert the new position for the player that JUST had their turn
-<<<<<<< HEAD
+
 		PlayerPosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
 //				QuoridorController.isBlackTurn() ?
 //					// this means WHITE just played, so we need to check WHITE position
 //				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
 //					// else check Black position
 //				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
-=======
-		PlayerPosition position = QuoridorController.isBlackTurn() ?
-				// this means WHITE just played, so we need to check WHITE position
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
-				// else check Black position
-				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
->>>>>>> branch 'master' of https://github.com/McGill-ECSE223-Fall2019/ecse223-project--group-13.git
 
-<<<<<<< HEAD
+
+
 		assertEquals(nrow,position.getTile().getRow());
 		assertEquals(ncol,position.getTile().getColumn());
 				
-=======
-		assertEquals(position.getTile().getRow(), nrow);
-		assertEquals(position.getTile().getColumn(), ncol);
->>>>>>> branch 'master' of https://github.com/McGill-ECSE223-Fall2019/ecse223-project--group-13.git
+
 	}
 
 	/**
@@ -1652,13 +1643,11 @@ public class CucumberStepDefinitions {
 				assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove(), assertedPlayer);
 	}
 
-<<<<<<< HEAD
+
 	
 	
 	// ************	END OF MOVEPAWN AND JUMPPAWN ****************
-=======
-	// ************	END OF JUMPPAWN ****************
->>>>>>> branch 'master' of https://github.com/McGill-ECSE223-Fall2019/ecse223-project--group-13.git
+
 
 	// ***********************************************
 	// Clean up
