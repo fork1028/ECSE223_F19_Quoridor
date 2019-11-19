@@ -1916,6 +1916,31 @@ public class QuoridorController {
 			recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
 		}
 		
+		//SHAYNE ADDING THIS:
+		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		boolean isForBlack = (currentPlayer == blackPlayer);
+		int curRow = 0;
+		int curCol = 0;
+		int opRow = 0;
+		int opCol = 0;
+		
+		if (isForBlack) {
+			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+		} else {
+			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		}
+		
+		
+		
+		
+		
 		//1) run the pawn behavior method associated with the direction. It updates SM state and returns true if the move valid.
 		//also get the row offset and column offset for a successful move according to direction
 		int rowOffset = 0;
@@ -1924,19 +1949,35 @@ public class QuoridorController {
 		switch (dir) {
 			case North:
 				isLegalMove = pb.moveUp();
-				rowOffset = -1;
+				if (curCol == opCol && curRow == opCol + 1) {
+					rowOffset = -2;
+				} else {
+					rowOffset = -1;
+				}
 				break;
 			case South:
 				isLegalMove = pb.moveDown();
-				rowOffset = 1;
+				if (curCol == opCol && curRow == opCol + 1) {
+					rowOffset = 2;
+				} else {
+					rowOffset = 1;
+				}
 				break;
 			case West:
 				isLegalMove = pb.moveLeft();
-				colOffset = -1;
+				if (curCol == opCol && curRow == opCol + 1) {
+					colOffset = -2;
+				} else {
+					colOffset = -1;
+				}
 				break;
 			case East:
 				isLegalMove = pb.moveRight();
-				colOffset = 1;
+				if (curCol == opCol && curRow == opCol + 1) {
+					colOffset = 2;
+				} else {
+					colOffset = 1;
+				}
 				break;
 			case NorthWest:
 				isLegalMove = pb.moveUpLeft();
