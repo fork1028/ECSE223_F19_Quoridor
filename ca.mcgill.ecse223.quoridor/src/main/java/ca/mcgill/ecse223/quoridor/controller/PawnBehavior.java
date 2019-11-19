@@ -92,21 +92,43 @@ public class PawnBehavior
     switch (aPawnSMSMPawnNSPawnNS)
     {
       case Setup:
-        if (getPlayer().getGameAsWhite().equals(getCurrentGame()))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        if (getPlayer().getGameAsBlack().equals(getCurrentGame()))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
+//        if (getPlayer().getGameAsWhite().equals(getCurrentGame()))
+//        {
+//          exitPawnSMSMPawnNSPawnNS();
+//          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+//          wasEventProcessed = true;
+//          break;
+//        }
+//        if (getPlayer().getGameAsBlack().equals(getCurrentGame()))
+//        {
+//          exitPawnSMSMPawnNSPawnNS();
+//          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+//          wasEventProcessed = true;
+//          break;
+//        }
+//        break;
+    	  if (getCurrentPawnRow()==1) {
+    		  exitPawnSMSMPawnNSPawnNS();
+              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+              wasEventProcessed = true;
+    	  } else if (getCurrentPawnRow()==2) {
+    		  exitPawnSMSMPawnNSPawnNS();
+              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+              wasEventProcessed = true;
+    	  } else if (getCurrentPawnRow()==8) {
+    		  exitPawnSMSMPawnNSPawnNS();
+              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+              wasEventProcessed = true;
+    	  } else if (getCurrentPawnRow()==9) {
+    		  exitPawnSMSMPawnNSPawnNS();
+              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+              wasEventProcessed = true;
+    	  } else {
+    		  exitPawnSMSMPawnNSPawnNS();
+              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+              wasEventProcessed = true;
+    	  }
+    	  break;
       default:
         // Other states do respond to this event
     }
@@ -114,10 +136,32 @@ public class PawnBehavior
     switch (aPawnSMSMPawnEWPawnEW)
     {
       case Setup:
-        exitPawnSMSMPawnEWPawnEW();
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-        wasEventProcessed = true;
-        break;
+//        exitPawnSMSMPawnEWPawnEW();
+//        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+//        wasEventProcessed = true;
+//        break;
+    	  if (getCurrentPawnColumn()==1) {
+    		  exitPawnSMSMPawnEWPawnEW();
+    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+              wasEventProcessed = true;
+    	  } else if (getCurrentPawnColumn()==2) {
+    		  exitPawnSMSMPawnEWPawnEW();
+    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+              wasEventProcessed = true;
+    	  } else if (getCurrentPawnColumn()==8) {
+    		  exitPawnSMSMPawnEWPawnEW();
+    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+              wasEventProcessed = true;
+    	  } else if (getCurrentPawnColumn()==9) {
+    		  exitPawnSMSMPawnEWPawnEW();
+    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+              wasEventProcessed = true;
+    	  } else {
+    		  exitPawnSMSMPawnEWPawnEW();
+    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+              wasEventProcessed = true;
+    	  }
+    	  break;
       default:
         // Other states do respond to this event
     }
@@ -1159,7 +1203,6 @@ public class PawnBehavior
   // line 137 "../../../../../PawnStateMachine.ump"
   public boolean isLegalStep(MoveDirection dir){
 
-	  
 	  //Assume legal until we prove it false
 	  Boolean isLegal = true;
 	  
@@ -1171,11 +1214,11 @@ public class PawnBehavior
 	  int wallRow = 0;
 	  int wallCol = 0;
 		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
-			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+			otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+			otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 		} else {
-		    otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-		    otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		    otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+		    otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
 		}
 		
 		//Now make a list of all the walls on the board!
@@ -1188,6 +1231,8 @@ public class PawnBehavior
 		}
 	 
 	//Now, depending on the direction, check first against the pawn being in the way, and then if a wall is in the way!
+		//also for gherkin tests that directly check isLegalStep, we will also check if board edges are in the way
+		//note that this isn't necessary when using the State machine because edge cases are already directly covered
 	 switch (dir) {
 	    case North:
 	    	if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
@@ -1295,11 +1340,11 @@ public class PawnBehavior
 		int wallRow = 0;
 		int wallCol = 0;
 		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
-			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-		} else {
 			otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
 			otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+		} else {
+			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
 		}
 
 		// Now make a list of all the walls on the board!
@@ -1748,8 +1793,9 @@ public class PawnBehavior
    */
   // line 142 "../../../../../PawnStateMachine.ump"
   public void illegalMove(){
-    
+	 
   }
+  
   
   //------------------------
   // DEVELOPER CODE - PROVIDED AS-IS
