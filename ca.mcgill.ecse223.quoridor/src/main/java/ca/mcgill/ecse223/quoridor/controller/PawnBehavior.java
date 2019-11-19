@@ -1233,8 +1233,12 @@ public class PawnBehavior
 	//Now, depending on the direction, check first against the pawn being in the way, and then if a wall is in the way!
 		//also for gherkin tests that directly check isLegalStep, we will also check if board edges are in the way
 		//note that this isn't necessary when using the State machine because edge cases are already directly covered
+		//implicitly by the cases (e.g. when we try to move North from a NorthEdge, directly goes to illegalMove without even checking isLegalStep
 	 switch (dir) {
 	    case North:
+	    	if (curPawnRow == 1) { //for gherkin only
+	    		return false;
+	    	}
 	    	if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
 	    		isLegal = false;
 	    		return isLegal;
@@ -1255,6 +1259,9 @@ public class PawnBehavior
 	    	}
 	    	break;
 	    case South:
+	    	if (curPawnRow == 9) { //for gherkin only
+	    		return false;
+	    	}
 	    	if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
 	    		isLegal = false;
 	    		return isLegal;
@@ -1275,6 +1282,9 @@ public class PawnBehavior
 	    	}
 	    	break;
 	    case East:
+	    	if (curPawnCol == 9) { //for gherkin only
+	    		return false;
+	    	}
 	    	if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
 	    		isLegal = false;
 	    		return isLegal;
@@ -1295,6 +1305,9 @@ public class PawnBehavior
 	    	}
 	    	break;
 	    case West:
+	    	if (curPawnCol == 1) { //for gherkin only
+	    		return false;
+	    	}
 	    	if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
 	    		isLegal = false;
 	    		return isLegal;
@@ -1358,6 +1371,9 @@ public class PawnBehavior
 
 		switch (dir) {
 		case North:
+			if (curPawnRow <= 2) { //for gherkin only
+	    		return false;
+	    	}
 			if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
@@ -1387,6 +1403,9 @@ public class PawnBehavior
 				return isLegal;
 			}
 		case South:
+			if (curPawnRow >= 8) { //for gherkin only
+	    		return false;
+	    	}
 			if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
@@ -1416,6 +1435,9 @@ public class PawnBehavior
 				return isLegal;
 			}
 		case East:
+			if (curPawnCol >= 8) { //for gherkin only
+	    		return false;
+	    	}
 			if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
@@ -1446,6 +1468,9 @@ public class PawnBehavior
 			}
 			
 		case West:
+			if (curPawnCol <= 2) { //for gherkin only
+	    		return false;
+	    	}
 			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
@@ -1476,6 +1501,9 @@ public class PawnBehavior
 			}
 			
 		case NorthWest:
+			if (curPawnRow == 1 || curPawnCol == 1) { //for gherkin only
+	    		return false;
+	    	}
 			//First look at the case of opponent to the West
 			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
 				for (Wall wall : wallList) {
@@ -1554,6 +1582,9 @@ public class PawnBehavior
 			return isLegal;
 
 		case SouthEast:
+			if (curPawnRow == 9 || curPawnCol == 9) { //for gherkin only
+	    		return false;
+	    	}
 			if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
@@ -1628,6 +1659,9 @@ public class PawnBehavior
 			return isLegal;
 			
 		case SouthWest:
+			if (curPawnRow == 9 || curPawnCol == 1) { //for gherkin only
+	    		return false;
+	    	}
 			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
@@ -1706,6 +1740,9 @@ public class PawnBehavior
 			
 
 		case NorthEast:
+			if (curPawnRow == 1 || curPawnCol == 9) { //for gherkin only
+	    		return false;
+	    	}
 			if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
