@@ -1631,7 +1631,7 @@ public class CucumberStepDefinitions {
 	@When("Player {string} initiates to move {string}")
 	public void playerColorInitiatesToMoveSide(String color, String side) {
 		// call CONTROLLER method to move or jump pawn
-		QuoridorController.movePawnNew(QuoridorController.stringSideToDirection(side));
+		QuoridorController.movePawnTest(QuoridorController.stringSideToDirection(side));
 		//TODO: jump pawn case
 //		switch (side) {
 //		case "up":

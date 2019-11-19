@@ -64,6 +64,7 @@ public class QuoridorController {
 		initializeBoard();
 		// update status of game
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Running);
+		pawnBehaviourSetUp();
 	}
 
 	/**
@@ -1577,35 +1578,28 @@ public class QuoridorController {
     * 
      */
     public static void pawnBehaviourSetUp() {           
-    whitePB = new PawnBehavior();
-    whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
-    whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
-          
-    blackPB = new PawnBehavior();
-    blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
-    blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+	    whitePB = new PawnBehavior();
+	    whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
+	    whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+	    whitePB.startGame();
+	          
+	    blackPB = new PawnBehavior();
+	    blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
+	    blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+	    blackPB.startGame();
     }
-
-	/**
-	 * New controller method to jump pawn
-	 * @Author Shayne
-	 * @param dir
+    
+    /**
+	 * Getter for pawn behavior state machine
+	 * @param forBlackPawn true to get blackPB, false to get whitePB
+	 * @author Helen
 	 */
-	public void setupWhiteStateMachine(Player whitePlayer) {
-		whitePB.setPlayer(whitePlayer);
-		whitePB.setCurrentGame(whitePlayer.getGameAsWhite());	
+	public static PawnBehavior getPB(boolean forBlackPawn) {		
+		return (forBlackPawn) ? blackPB : whitePB;
 	}
 	
-	/**
-	 * New controller method to jump pawn
-	 * @Author Shayne
-	 * @param dir
-	 */
-	public void setupBlackStateMachine(Player blackPlayer) {
-		blackPB.setPlayer(blackPlayer);
-		blackPB.setCurrentGame(blackPlayer.getGameAsBlack());	
-	}
 
+	
 	/**
 	 * Controller method to be called initially that redirects to either move pawn or jump pawn depending on the appropriate situation
 	 * 
@@ -1853,6 +1847,93 @@ public class QuoridorController {
 				
 			case SouthWest:
 		}
+	}
+	
+	/**
+	 * Helper method to convert string "side" of a pawnMove or pawnJump to a MoveDirection.
+	 * Used for gherkin scenarios.
+	 * @param side String
+	 * @return
+	 */
+	public static MoveDirection stringSideToDirection(String side) {
+		MoveDirection dir;
+		switch (side) {
+		case "up":
+			dir = MoveDirection.North;
+			break;
+		case "down":
+			dir= MoveDirection.South;
+			break;
+		case "left":
+			dir= MoveDirection.West;
+			break;
+		case "right":
+			dir= MoveDirection.East;
+			break;
+		case "upleft":
+			dir= MoveDirection.NorthWest;
+			break;
+		case "downleft":
+			dir= MoveDirection.SouthWest;
+			break;
+		case "upright":
+			dir= MoveDirection.NorthEast;
+			break;
+		case "downright":
+		default:
+			dir= MoveDirection.SouthEast;
+			break;
+		}
+		
+		return dir;
+	}
+	
+	
+	/**
+	 * TEST New controller method to move pawn - will be removed later
+	 * 
+	 * @Author Helen
+	 * @param dir
+	 */
+	public static void movePawnTest(MoveDirection dir) {
+		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
+		
+		//first check legal
+		if (!pb.isLegalStep(dir)) {
+			return; //if not legal, simply return. It is still that player's turn.
+		}
+		
+		//if legal, make the move
+		switch (dir) {
+		case North:
+			pb.moveUp();
+			break;
+		case South:
+			pb.moveDown();
+			break;
+		case West:
+			pb.moveLeft();
+			break;
+		case East:
+			pb.moveRight();
+			break;
+		case NorthWest:
+			pb.moveUpLeft();
+			break;
+		case SouthWest:
+			pb.moveDownLeft();
+			break;
+		case NorthEast:
+			pb.moveUpRight();
+			break;
+		case SouthEast:
+			pb.moveDownRight();
+			break;
+
+		}
+		
+		//switch to next player
+		switchCurrentPlayer();
 	}
 
 }
