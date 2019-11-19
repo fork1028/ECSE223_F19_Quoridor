@@ -1893,7 +1893,7 @@ public class QuoridorController {
 
 	/**
 	 * New controller method to move pawn
-	 * @Author Shayne
+	 * @Author Shayne, helen
 	 * @param dir
 	 * @throws InvalidInputException 
 	 */
@@ -1910,22 +1910,14 @@ public class QuoridorController {
 		GamePosition curGamePos = curGame.getCurrentPosition();
 		
 		//get last move. if this is the first move, allow it to stay null;
-		
 		Move recentMove = null;
 		if (curGame.hasMoves()) {
 			recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
 		}
 		
-		//SHAYNE ADDING THIS:
-		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		boolean isForBlack = (currentPlayer == blackPlayer);
-		int curRow = 0;
-		int curCol = 0;
-		int opRow = 0;
-		int opCol = 0;
-		
-		if (isForBlack) {
+		//current player and opponent pawn locations
+		int curRow, curCol, opRow , opCol;
+		if (isBlackTurn()) {
 			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
 			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
 			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
@@ -1936,10 +1928,6 @@ public class QuoridorController {
 			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
 			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
 		}
-		
-		
-		
-		
 		
 		//1) run the pawn behavior method associated with the direction. It updates SM state and returns true if the move valid.
 		//also get the row offset and column offset for a successful move according to direction
@@ -1957,7 +1945,7 @@ public class QuoridorController {
 				break;
 			case South:
 				isLegalMove = pb.moveDown();
-				if (curCol == opCol && curRow == opCol + 1) {
+				if (curCol == opCol && curRow == opCol - 1) {
 					rowOffset = 2;
 				} else {
 					rowOffset = 1;
@@ -1965,7 +1953,7 @@ public class QuoridorController {
 				break;
 			case West:
 				isLegalMove = pb.moveLeft();
-				if (curCol == opCol && curRow == opCol + 1) {
+				if (curRow == opRow && curCol == opCol + 1) {
 					colOffset = -2;
 				} else {
 					colOffset = -1;
@@ -1973,7 +1961,7 @@ public class QuoridorController {
 				break;
 			case East:
 				isLegalMove = pb.moveRight();
-				if (curCol == opCol && curRow == opCol + 1) {
+				if (curRow == opRow && curCol == opCol - 1) {
 					colOffset = 2;
 				} else {
 					colOffset = 1;

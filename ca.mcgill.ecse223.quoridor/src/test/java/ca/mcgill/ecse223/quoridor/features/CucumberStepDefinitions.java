@@ -1514,7 +1514,7 @@ public class CucumberStepDefinitions {
 	 */
 	@And("There are no {string} walls {string} from the player")
 	public void thereAreNoDirWallsSideFromThePlayer(String direction, String side) {
-		// FOR NOW, THERE SHOULD BE NO WALLS HERE ANYWAY
+		// FOR NOW, THERE SHOULD BE NO WALLS HERE ANYWAY, so an empty method is ok :)
 		// TODO:check if there are walls at that side of player
 
 		// TODO:if yes, temporarily remove it for this test
@@ -1532,7 +1532,7 @@ public class CucumberStepDefinitions {
 	public void thereAreNoDirWallsSideFromThePlayerNearBy(String direction, String side) {
 		// same function as the "There are no <dir> walls <side> from the player" in
 		// MOVE pawn)
-		thereAreNoDirWallsSideFromThePlayer(direction, side); // reuse step def
+		thereAreNoDirWallsSideFromThePlayer(direction, side);
 	}
 
 	/**
@@ -1631,7 +1631,9 @@ public class CucumberStepDefinitions {
 	public void playerColorInitiatesToMoveSide(String color, String side) {
 		//start state machine here to take new tile positions into account
 		QuoridorController.pawnBehaviourSetUp(); 
-		//we won't call the controller method to actually move here, we will call it in next step to assert the move's return status at same time :)
+		
+		//we won't call the controller method to actually move here, we will call it in next step to assert the move's 
+		//result status at same time :)
 	}
 
 	/**
@@ -1644,20 +1646,10 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) {
-		//we need to assert the status (illegal or success)of that move
 		boolean boolStatus = (status.equals("success"))? true: false; //convert to boolean
-
+		
 		//get the current player's pawn state machine
 		PawnBehavior pb = QuoridorController.getPB(QuoridorController.isBlackTurn());
-		
-		//test if isLegalStep works
-		//TODO: combine isLegalMove and isLegal Step test
-	//	boolean isLegal = pb.isLegalStep(QuoridorController.stringSideToDirection(side));
-		boolean isLegal = pb.isLegalStep(QuoridorController.stringSideToDirection(side));
-		assertEquals( boolStatus, isLegal);
-		
-		//TODO: assert the move status from pB instead, this covers jumps and steps
-		//we need to assert the status (illegal or success)of that move
 		
 		//call the actual CONTROLLER method to move or jump pawn, and assert the move status
 		try {
@@ -1667,7 +1659,6 @@ public class CucumberStepDefinitions {
 			fail();
 		}
 		
-	
 	}
 
 	/**
