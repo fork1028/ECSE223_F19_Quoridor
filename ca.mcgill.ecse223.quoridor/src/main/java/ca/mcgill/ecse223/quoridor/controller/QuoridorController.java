@@ -1617,7 +1617,6 @@ public class QuoridorController {
 	public void typeofMove(MoveDirection dir) {
 		
 		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		boolean isForBlack = (currentPlayer == blackPlayer);
 		int curRow = 0;
@@ -1691,58 +1690,86 @@ public class QuoridorController {
 	public static void movePawn (MoveDirection dir, boolean isForBlack) {
 		
 		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		PlayerPosition curPPos = null;
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition curGamePos = curGame.getCurrentPosition();
+		Move recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
+		if (isForBlack) {
+			curPPos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+		} else {
+			curPPos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+		}
+		Tile newTile = null;
+		int newRow = 0;
+		int newCol = 0;
 		//To do: run the pawn behavior method associated with the direction. If it returns true, then:
 		//Get the tile to be updated. Create a new move, update player pos, update current game, update game pos
 
 		switch (dir) {
-		//TODO: 
+		
 		  case North:
-			  if (isForBlack) {
-				  blackPB.moveUp();
-			  } else {
-				  whitePB.moveUp();
-			  }
+			if (isForBlack) {
+				if (blackPB.moveUp()) {
+					newCol = curPPos.getTile().getColumn();
+					newRow = curPPos.getTile().getRow() - 1;
+					for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+						if (tile.getRow() == newRow && tile.getColumn() == newCol) {
+							newTile = tile;
+						}
+					}
+					
+					curPPos.setTile(newTile);
+					StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves() + 1) % 2), curPlayer, newTile, curGame);
+					recentMove.setNextMove(newMove);
+					newMove.setPrevMove(recentMove);
+					curGame.addMove(newMove);
+					GamePosition newGamePos = new GamePosition(curGame.numberOfPositions() + 1, curGame.getCurrentPosition().getWhitePosition(), curPPos, curGame.getWhitePlayer(), curGame);
+					for (Wall wall : curGamePos.getBlackWallsInStock()) {
+						newGamePos.addBlackWallsInStock(wall);
+					}
+					for (Wall wall : curGamePos.getWhiteWallsInStock()) {
+						newGamePos.addWhiteWallsInStock(wall);
+					}
+					for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
+						newGamePos.addBlackWallsOnBoard(wall);
+					}
+					for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
+						newGamePos.addWhiteWallsOnBoard(wall);
+					}
+					curGame.addPosition(newGamePos);
+					curGame.setCurrentPosition(newGamePos);
+					
+					
+				} else {
+					// MOVE FAILED. ILLEGAL MOVE!
+				}
+			} else {
+				if (whitePB.moveUp()) {
+					newCol = curPPos.getTile().getColumn();
+					newRow = curPPos.getTile().getRow() - 1;
+					for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+						if (tile.getRow() == newRow && tile.getColumn() == newCol) {
+							newTile = tile;
+						}
+					}
+
+					
+					
+				} else {
+					// MOVE FAILED. ILLEGAL MOVE!
+				}
+			}
 			  
 			  
 			  break;
 		  case South:
-			  if(pawnBehavior.getCurrentPawnRow()!=9) {
-				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()+1,pawnBehavior.getCurrentPawnColumn(),board);
-				 // pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  if(currentPlayer==whitePlayer) {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  }
-				  else {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-				  }
-				  switchCurrentPlayer();
-				  }
+			  
 				  break;
 		  case West:
-			  if(pawnBehavior.getCurrentPawnColumn()!=1) {
-				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()-1,board);
-				 // pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  if(currentPlayer==whitePlayer) {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  }
-				  else {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-				  }
-				  switchCurrentPlayer();
-				  }
+			  
 				  break;
 		  case East:
-			  if(pawnBehavior.getCurrentPawnColumn()!=9) {
-				  Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()+1,board);
-				  //pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  if(currentPlayer==whitePlayer) {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				  }
-				  else {
-					  QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().setTile(tile);
-				  }
-				  switchCurrentPlayer();
-				  }
+			  
 				  break;
 
 		}

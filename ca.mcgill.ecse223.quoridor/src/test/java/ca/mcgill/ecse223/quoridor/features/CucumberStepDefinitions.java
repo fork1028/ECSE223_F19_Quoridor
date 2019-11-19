@@ -1446,7 +1446,7 @@ public class CucumberStepDefinitions {
 				}
 				return; //done
 			}
-		};
+		}
 
 		//if the correct tile wasn't found, or there was an error
 		fail();
