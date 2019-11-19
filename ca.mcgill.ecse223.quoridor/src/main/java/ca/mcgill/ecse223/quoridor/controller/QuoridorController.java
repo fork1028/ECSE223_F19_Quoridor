@@ -426,8 +426,8 @@ public class QuoridorController {
 		}
 		int row = candidate.getTargetTile().getRow();
 		int col = candidate.getTargetTile().getColumn();
-//		System.out.println("row:::" + row);
-//		System.out.println("col:::" + col);
+		//		System.out.println("row:::" + row);
+		//		System.out.println("col:::" + col);
 		Tile newTile = null;
 
 		if (moveDirection.equals("right")) {
@@ -477,8 +477,8 @@ public class QuoridorController {
 		} else
 			throw new InvalidInputException("New target tile doesn't exist");
 
-//		System.out.println("row:" + row);
-//		System.out.println("col" + col);
+		//		System.out.println("row:" + row);
+		//		System.out.println("col" + col);
 	}
 
 	/**
@@ -517,17 +517,17 @@ public class QuoridorController {
 				.getWhiteWallsOnBoard();
 		List<Wall> blackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 				.getBlackWallsOnBoard();
-//		System.out.println("testrow:" + row);
-//		System.out.println("textcol:" + col);
+		//		System.out.println("testrow:" + row);
+		//		System.out.println("textcol:" + col);
 		for (int i = 0; i < whiteWallsOnBoard.size(); i++) {
 			if (row == whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
 				if (col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
 						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
 					isValid = false;
 				}
 			}
@@ -540,10 +540,10 @@ public class QuoridorController {
 				if (col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
 						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
 					isValid = false;
 				}
 			}
@@ -1573,7 +1573,6 @@ public class QuoridorController {
 	// pawn, depending on config.
 
 
-
     /**
     * Setup method for pawn bahaviour state machines for black and white pawns. Must be called on startGame
     * @author Helen
@@ -1591,7 +1590,6 @@ public class QuoridorController {
 	    blackPB.startGame();
     }
     
-
 	/**
 	 * Controller method to move or jump the current player's pawn
 	 * @Author Shayne, Helen
@@ -1636,14 +1634,14 @@ public class QuoridorController {
 		int colOffset = 0;
 		boolean isLegalMove = false; //default false
 		switch (dir) {
-			case North:
-				isLegalMove = pb.moveUp();
-				if (curCol == opCol && curRow == opRow + 1) {
-					rowOffset = -2;
-				} else {
-					rowOffset = -1;
-				}
-				break;
+		case North:
+			isLegalMove = pb.moveUp();
+			if (curCol == opCol && curRow == opRow + 1) {
+				rowOffset = -2;
+			} else {
+				rowOffset = -1;
+			}
+			break;
 			case South:
 				isLegalMove = pb.moveDown();
 				if (curCol == opCol && curRow == opRow - 1) {
@@ -1756,7 +1754,7 @@ public class QuoridorController {
 		//NOTE : do NOT need to call switchCurrentPlayer because by creating new CurrentGame and Current Game Position, we already set a new player to move :)
 		return true;
 	}
-	
+
 	/**
 	 * Helper method to convert string "side" of a pawnMove or pawnJump to a MoveDirection.
 	 * Used for gherkin scenarios.
@@ -1792,7 +1790,7 @@ public class QuoridorController {
 			dir= MoveDirection.SouthEast;
 			break;
 		}
-		
+
 		return dir;
 	}
 	
@@ -1805,7 +1803,7 @@ public class QuoridorController {
 		return (forBlackPawn) ? blackPB : whitePB;
 	}
 
-	
+
 	/**
 	 * Helper method only for gherkin tests for pawn moves to test which player attempted a move
 	 * @return
