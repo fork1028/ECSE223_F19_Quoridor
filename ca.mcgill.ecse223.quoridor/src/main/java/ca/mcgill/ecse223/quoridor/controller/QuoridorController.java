@@ -26,9 +26,9 @@ import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
  */
 public class QuoridorController {
 	private static boolean boardWasInitiated = false;
-
 	private static boolean nextPlayerToSetUsername = false;
-
+	private static boolean moveWasMade = false; //variable to test gherkin test for move and jump only
+	
 	/**
 	 * This method initializes a game that is ready to start. The game is
 	 * initialized from the view, after all validation.
@@ -1709,6 +1709,7 @@ public class QuoridorController {
 					for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
 						if (tile.getRow() == newRow && tile.getColumn() == newCol) {
 							newTile = tile;
+							break;
 						}
 					}
 					
@@ -1744,6 +1745,7 @@ public class QuoridorController {
 					for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
 						if (tile.getRow() == newRow && tile.getColumn() == newCol) {
 							newTile = tile;
+							break;
 						}
 					}
 
@@ -1934,6 +1936,151 @@ public class QuoridorController {
 		
 		//switch to next player
 		switchCurrentPlayer();
+	}
+	
+
+	/**
+	 * New controller method to move pawn
+	 * @Author Shayne
+	 * @param dir
+	 * @throws InvalidInputException 
+	 */
+	public static boolean movePawnCopy(MoveDirection dir) throws InvalidInputException {
+		
+		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
+
+		//current game objects
+		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		PlayerPosition curPPos = (isBlackTurn()) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition curGamePos = curGame.getCurrentPosition();
+		
+		//get last move. if this is the first move, allow it to stay null;
+		
+		Move recentMove = null;
+		if (curGame.hasMoves()) {
+			recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
+		}
+		
+		//1) run the pawn behavior method associated with the direction. It updates SM state and returns true if the move valid.
+		//also get the row offset and column offset for a successful move according to direction
+		int rowOffset = 0;
+		int colOffset = 0;
+		boolean isLegalMove = false; //default false
+		switch (dir) {
+			case North:
+				isLegalMove = pb.moveUp();
+				rowOffset = -1;
+				break;
+			case South:
+				isLegalMove = pb.moveDown();
+				rowOffset = 1;
+				break;
+			case West:
+				isLegalMove = pb.moveLeft();
+				colOffset = -1;
+				break;
+			case East:
+				isLegalMove = pb.moveRight();
+				colOffset = 1;
+				break;
+			case NorthWest:
+				isLegalMove = pb.moveUpLeft();
+				rowOffset = -1;
+				colOffset = -1;
+				break;
+			case SouthWest:
+				isLegalMove = pb.moveDownLeft();
+				rowOffset = 1;
+				colOffset = -1;
+				break;
+			case NorthEast:
+				isLegalMove = pb.moveUpRight();
+				rowOffset = -1;
+				colOffset = 1;
+				break;
+			case SouthEast:
+				isLegalMove = pb.moveDownRight();
+				rowOffset = 1;
+				colOffset = 1;
+				break;
+		}
+		
+		//if it was invalid, simply return from this method. The move was illegal, and it is still that player's turn :)
+		if (!isLegalMove) {
+			moveWasMade = false; //note this is only for gherkin tests to be able to check which player attempted a move
+			return isLegalMove;
+		}
+		
+		//2) If it returns true, then we create a new StepMove:
+					
+		//a) find the tile associated with new move
+		Tile newTile = null;
+		int newCol = curPPos.getTile().getColumn() + colOffset;
+		int newRow = curPPos.getTile().getRow() + rowOffset;
+		
+		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+			if (tile.getRow() == newRow && tile.getColumn() == newCol) {
+				newTile = tile;
+				break;
+			}
+		}
+			//if did not find correct tile, something went wrong, return error
+		if (newTile == null) {
+			throw new InvalidInputException("Unable to find the tile for a new pawn move!");
+		}
+		
+		//b) create new PlayerPositions for BOTH players - important to not overwrite old positions!
+		PlayerPosition newPos = new PlayerPosition(curPlayer, newTile);
+		PlayerPosition opponentPos = (isBlackTurn())
+				? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
+						: new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile());
+		
+		//c) create a new pawn move
+		//TODO: check that the stepMove id is correct. did we start from moveID= 0 or from 1 at initial?
+		StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves() + 1) % 2), curPlayer, newTile, curGame);
+		
+		if (recentMove !=null) { //if this is NOT the first move
+			recentMove.setNextMove(newMove);
+			newMove.setPrevMove(recentMove);
+		}
+		curGame.addMove(newMove);
+		
+		//d) create a new GamePosition, add all walls, set new game position for game
+		//TODO: also check that the gamePos id is correct. did we start from ID= 0 or from 1 at initial?
+		GamePosition newGamePos = (isBlackTurn()) 
+				? new GamePosition(curGame.numberOfPositions() + 1, opponentPos, newPos, curGame.getWhitePlayer(), curGame)
+				: new GamePosition(curGame.numberOfPositions() + 1, newPos, opponentPos, curGame.getBlackPlayer(), curGame);
+		
+		for (Wall wall : curGamePos.getBlackWallsInStock()) {
+			newGamePos.addBlackWallsInStock(wall);
+		}
+		for (Wall wall : curGamePos.getWhiteWallsInStock()) {
+			newGamePos.addWhiteWallsInStock(wall);
+		}
+		for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
+			newGamePos.addBlackWallsOnBoard(wall);
+		}
+		for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
+			newGamePos.addWhiteWallsOnBoard(wall);
+		}
+		
+		curGame.addPosition(newGamePos);
+		curGame.setCurrentPosition(newGamePos);
+		
+		moveWasMade = true; //note this is only for gherkin tests to be able to check which player attempted a move
+		//NOTE : do NOT need to call switchCurrentPlayer because by creating new CurrentGame and Current Game Position, we already set a new player to move :)
+		return true;
+	}
+	
+	/**
+	 * Helper method only for gherkin tests for pawn moves to test which player attempted a move
+	 * @return
+	 */
+	public static boolean getTestMoveWasMade() {
+		return moveWasMade;
 	}
 
 }

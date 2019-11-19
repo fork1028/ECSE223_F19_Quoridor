@@ -169,6 +169,10 @@ public class PawnBehavior
     return wasEventProcessed;
   }
 
+  /**
+   * State machine to move a player up by 1 tile, or jump over opponent
+   * @return True if move successful; false if illegal move
+   */
   public boolean moveUp()
   {
     boolean wasEventProcessed = false;
@@ -181,7 +185,7 @@ public class PawnBehavior
         // line 18 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-        wasEventProcessed = true;
+        //wasEventProcessed = true;
         break;
       case NorthBorder:
         if (isLegalStep(MoveDirection.North))
@@ -313,7 +317,7 @@ public class PawnBehavior
         // line 54 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-        wasEventProcessed = true;
+        //wasEventProcessed = true;
         break;
       case SouthBorder:
         if (isLegalStep(MoveDirection.South))
@@ -344,7 +348,7 @@ public class PawnBehavior
         // line 21 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-        wasEventProcessed = true;
+       // wasEventProcessed = true;
         break;
       case NorthBorder:
         if ((isLegalJump(MoveDirection.NorthEast)))
@@ -400,7 +404,7 @@ public class PawnBehavior
         // line 80 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-        wasEventProcessed = true;
+       // wasEventProcessed = true;
         break;
       case EastBorder:
         if ((isLegalJump(MoveDirection.NorthEast)))
@@ -465,7 +469,7 @@ public class PawnBehavior
         // line 22 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-        wasEventProcessed = true;
+        //wasEventProcessed = true;
         break;
       case NorthBorder:
         if ((isLegalJump(MoveDirection.NorthWest)))
@@ -555,7 +559,7 @@ public class PawnBehavior
         // line 116 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-        wasEventProcessed = true;
+       // wasEventProcessed = true;
         break;
       case WestBorder:
         if ((isLegalJump(MoveDirection.NorthWest)))
@@ -621,7 +625,7 @@ public class PawnBehavior
         // line 57 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-        wasEventProcessed = true;
+      //  wasEventProcessed = true;
         break;
       case SouthBorder:
         if ((isLegalJump(MoveDirection.SouthEast)))
@@ -643,7 +647,7 @@ public class PawnBehavior
         // line 82 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-        wasEventProcessed = true;
+     //   wasEventProcessed = true;
         break;
       case EastBorder:
         if ((isLegalJump(MoveDirection.SouthEast)))
@@ -742,7 +746,7 @@ public class PawnBehavior
         // line 58 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-        wasEventProcessed = true;
+    //    wasEventProcessed = true;
         break;
       case SouthBorder:
         if ((isLegalJump(MoveDirection.SouthWest)))
@@ -798,7 +802,7 @@ public class PawnBehavior
         // line 118 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-        wasEventProcessed = true;
+     //   wasEventProcessed = true;
         break;
       case WestBorder:
         if ((isLegalJump(MoveDirection.SouthWest)))
@@ -829,7 +833,7 @@ public class PawnBehavior
         // line 77 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-        wasEventProcessed = true;
+      //  wasEventProcessed = true;
         break;
       case EastBorder:
         if (isLegalStep(MoveDirection.East))
@@ -961,7 +965,7 @@ public class PawnBehavior
         // line 112 "../../../../../PawnStateMachine.ump"
         illegalMove();
         setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-        wasEventProcessed = true;
+  //      wasEventProcessed = true;
         break;
       case WestBorder:
         if (isLegalStep(MoveDirection.West))

@@ -63,7 +63,6 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
-		QuoridorController.pawnBehaviourSetUp();
 	}
 
 	@And("^It is my turn to move$")
@@ -1630,28 +1629,9 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Player {string} initiates to move {string}")
 	public void playerColorInitiatesToMoveSide(String color, String side) {
-		// call CONTROLLER method to move or jump pawn
-		QuoridorController.movePawnTest(QuoridorController.stringSideToDirection(side));
-		//TODO: jump pawn case
-//		switch (side) {
-//		case "up":
-//			QuoridorController.movePawn(MoveDirection.North);
-//			QuoridorController.jumpPawn(MoveDirection.North);
-//			break;
-//		case "down":
-//			QuoridorController.movePawn(MoveDirection.South);
-//			QuoridorController.jumpPawn(MoveDirection.South);
-//			break;
-//		case "left":
-//			QuoridorController.movePawn(MoveDirection.West);
-//			QuoridorController.jumpPawn(MoveDirection.West);
-//			break;
-//		case "right":
-//			QuoridorController.movePawn(MoveDirection.East);
-//			QuoridorController.jumpPawn(MoveDirection.East);
-//			break;
-//		}
-
+		//start state machine here to take new tile positions into account
+		QuoridorController.pawnBehaviourSetUp(); 
+		//we won't call the controller method to actually move here, we will call it in next step to assert the move's return status at same time :)
 	}
 
 	/**
@@ -1666,19 +1646,27 @@ public class CucumberStepDefinitions {
 	public void theMoveSideShallBeStatus(String side, String status) {
 		//we need to assert the status (illegal or success)of that move
 		boolean boolStatus = (status.equals("success"))? true: false; //convert to boolean
+
+		//get the current player's pawn state machine
+		PawnBehavior pb = QuoridorController.getPB(QuoridorController.isBlackTurn());
 		
-		//get the appropriate pawn state machine
-		PawnBehavior pb; 
-		//if was supposed to be illegal, it is still supposed to be that player's turn
-		if (!boolStatus) {
-			pb = QuoridorController.getPB(QuoridorController.isBlackTurn());
-		} else {
-			//if legal, then the move has been played, and the next player's turn is here, so get previous player's SM
-			pb = QuoridorController.getPB(!QuoridorController.isBlackTurn());
-		}
-		
+		//test if isLegalStep works
+		//TODO: combine isLegalMove and isLegal Step test
+	//	boolean isLegal = pb.isLegalStep(QuoridorController.stringSideToDirection(side));
 		boolean isLegal = pb.isLegalStep(QuoridorController.stringSideToDirection(side));
 		assertEquals( boolStatus, isLegal);
+		
+		//TODO: assert the move status from pB instead, this covers jumps and steps
+		//we need to assert the status (illegal or success)of that move
+		
+		//call the actual CONTROLLER method to move or jump pawn, and assert the move status
+		try {
+			boolean result = QuoridorController.movePawnCopy(QuoridorController.stringSideToDirection(side));
+			assertEquals (boolStatus, result);
+		} catch (InvalidInputException e) {
+			fail();
+		}
+		
 	
 	}
 
@@ -1691,17 +1679,26 @@ public class CucumberStepDefinitions {
 	 */
 	@And("Player's new position shall be {int}:{int}")
 	public void playersNewPositionShallBeNrowNcol(int nrow, int ncol) {
-		// assert the new position for the player that JUST had their turn
-
-		//PlayerPosition position = QuoridorController.isBlackTurn() ?
-//					// this means WHITE just played, so we need to check WHITE position
-				//QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+		// assert the new position for the player that just attempted a move
+		
+		//if a move was made, player to check was the LAST player
+		PlayerPosition position;
+		if (QuoridorController.getTestMoveWasMade()) {
+			position = QuoridorController.isBlackTurn() ?
+					// this means WHITE just played, so we need to check WHITE position
+				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
 					// else check Black position
-			//	: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
-
-	//	assertEquals(nrow, position.getTile().getRow());
-		//assertEquals(ncol, position.getTile().getColumn());
-
+				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+		} else {
+			//if a move was NOT made, player to check is same as current player to move
+			position = QuoridorController.isBlackTurn() ?
+				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+		}
+		
+		assertEquals(nrow, position.getTile().getRow());
+		assertEquals(ncol, position.getTile().getColumn());
+		
 	}
 
 	/**
