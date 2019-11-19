@@ -121,9 +121,9 @@ class PawnBehavior {
 					moveLeft [isLegalStep(MoveDirection.West)] -> WestEdge;
 					moveRight [isLegalStep(MoveDirection.East)||(isLegalJump(MoveDirection.East))] -> EWMiddle;
 					moveUpRight [(isLegalJump(MoveDirection.NorthEast))] -> EWMiddle;
-					moveUpLeft [(isLegalJump(MoveDirection.NorthWest))] -> SouthEdge;
+					moveUpLeft [(isLegalJump(MoveDirection.NorthWest))] -> WestEdge;
 					moveDownRight [(isLegalJump(MoveDirection.SouthEast))] -> EWMiddle;
-					moveDownLeft [(isLegalJump(MoveDirection.SouthWest))] -> SouthEdge;
+					moveDownLeft [(isLegalJump(MoveDirection.SouthWest))] -> WestEdge;
 				}
 			}
 		}

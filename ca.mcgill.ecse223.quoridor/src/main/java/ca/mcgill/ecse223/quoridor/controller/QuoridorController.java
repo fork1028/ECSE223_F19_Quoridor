@@ -1638,7 +1638,7 @@ public class QuoridorController {
 		switch (dir) {
 			case North:
 				isLegalMove = pb.moveUp();
-				if (curCol == opCol && curRow == opCol + 1) {
+				if (curCol == opCol && curRow == opRow + 1) {
 					rowOffset = -2;
 				} else {
 					rowOffset = -1;
@@ -1646,7 +1646,7 @@ public class QuoridorController {
 				break;
 			case South:
 				isLegalMove = pb.moveDown();
-				if (curCol == opCol && curRow == opCol - 1) {
+				if (curCol == opCol && curRow == opRow - 1) {
 					rowOffset = 2;
 				} else {
 					rowOffset = 1;
