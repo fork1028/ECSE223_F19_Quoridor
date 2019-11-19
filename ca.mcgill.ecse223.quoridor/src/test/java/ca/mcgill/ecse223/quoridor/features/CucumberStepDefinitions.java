@@ -63,6 +63,7 @@ public class CucumberStepDefinitions {
 		initQuoridorAndBoard();
 		ArrayList<Player> createUsersAndPlayers = createUsersAndPlayers("user1", "user2");
 		createAndStartGame(createUsersAndPlayers);
+		QuoridorController.pawnBehaviourSetUp();
 	}
 
 	@And("^It is my turn to move$")
@@ -1630,24 +1631,26 @@ public class CucumberStepDefinitions {
 	@When("Player {string} initiates to move {string}")
 	public void playerColorInitiatesToMoveSide(String color, String side) {
 		// call CONTROLLER method to move or jump pawn
-		switch (side) {
-		case "up":
-			QuoridorController.movePawn(MoveDirection.North);
-			QuoridorController.jumpPawn(MoveDirection.North);
-			break;
-		case "down":
-			QuoridorController.movePawn(MoveDirection.South);
-			QuoridorController.jumpPawn(MoveDirection.South);
-			break;
-		case "left":
-			QuoridorController.movePawn(MoveDirection.West);
-			QuoridorController.jumpPawn(MoveDirection.West);
-			break;
-		case "right":
-			QuoridorController.movePawn(MoveDirection.East);
-			QuoridorController.jumpPawn(MoveDirection.East);
-			break;
-		}
+		QuoridorController.movePawnNew(QuoridorController.stringSideToDirection(side));
+		//TODO: jump pawn case
+//		switch (side) {
+//		case "up":
+//			QuoridorController.movePawn(MoveDirection.North);
+//			QuoridorController.jumpPawn(MoveDirection.North);
+//			break;
+//		case "down":
+//			QuoridorController.movePawn(MoveDirection.South);
+//			QuoridorController.jumpPawn(MoveDirection.South);
+//			break;
+//		case "left":
+//			QuoridorController.movePawn(MoveDirection.West);
+//			QuoridorController.jumpPawn(MoveDirection.West);
+//			break;
+//		case "right":
+//			QuoridorController.movePawn(MoveDirection.East);
+//			QuoridorController.jumpPawn(MoveDirection.East);
+//			break;
+//		}
 
 	}
 
@@ -1661,7 +1664,22 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) {
-		// TODO: assert the status (illegal or success)of that move
+		//we need to assert the status (illegal or success)of that move
+		boolean boolStatus = (status.equals("success"))? true: false; //convert to boolean
+		
+		//get the appropriate pawn state machine
+		PawnBehavior pb; 
+		//if was supposed to be illegal, it is still supposed to be that player's turn
+		if (!boolStatus) {
+			pb = QuoridorController.getPB(QuoridorController.isBlackTurn());
+		} else {
+			//if legal, then the move has been played, and the next player's turn is here, so get previous player's SM
+			pb = QuoridorController.getPB(!QuoridorController.isBlackTurn());
+		}
+		
+		boolean isLegal = pb.isLegalStep(QuoridorController.stringSideToDirection(side));
+		assertEquals( boolStatus, isLegal);
+	
 	}
 
 	/**
@@ -1675,14 +1693,14 @@ public class CucumberStepDefinitions {
 	public void playersNewPositionShallBeNrowNcol(int nrow, int ncol) {
 		// assert the new position for the player that JUST had their turn
 
-		PlayerPosition position = QuoridorController.isBlackTurn() ?
+		//PlayerPosition position = QuoridorController.isBlackTurn() ?
 //					// this means WHITE just played, so we need to check WHITE position
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+				//QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
 					// else check Black position
-				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+			//	: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
 
-		assertEquals(nrow, position.getTile().getRow());
-		assertEquals(ncol, position.getTile().getColumn());
+	//	assertEquals(nrow, position.getTile().getRow());
+		//assertEquals(ncol, position.getTile().getColumn());
 
 	}
 
@@ -1694,13 +1712,12 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The next player to move shall become {string}")
 	public void theNextPlayerToMoveShallBecomeNplayer(String color) {
-		// QuoridorController.switchCurrentPlayer();
-		Player assertedPlayer = (color.contentEquals("black"))
-				? QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer()
-				: QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		if (color.contentEquals("black")) {
+			assertTrue(QuoridorController.isBlackTurn());
+		} else if (color.contentEquals("white")) {
+			assertTrue (QuoridorController.isWhiteTurn());
+		}
 
-		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove(),
-				assertedPlayer);
 	}
 
 	// ************ END OF MOVEPAWN AND JUMPPAWN ****************

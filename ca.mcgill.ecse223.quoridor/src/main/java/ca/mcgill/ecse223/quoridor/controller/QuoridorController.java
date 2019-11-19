@@ -26,11 +26,38 @@ import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
  */
 public class QuoridorController {
 	private static boolean boardWasInitiated = false;
-
 	private static boolean nextPlayerToSetUsername = false;
+	
 	private static PawnBehavior whitePB;
 	private static PawnBehavior blackPB;
 
+	/**
+	 * Setup method for pawn bahaviour state machines for black and white pawns
+	 * @author Helen
+	 * 
+	 */
+	public static void pawnBehaviourSetUp() {		
+		whitePB = new PawnBehavior();
+		whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
+		whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+		whitePB.startGame();
+		
+		blackPB = new PawnBehavior();
+		blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
+		blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+		blackPB.startGame();
+	}
+	
+	/**
+	 * Getter for pawn behavior state machine
+	 * @param forBlackPawn true to get blackPB, false to get whitePB
+	 * @author Helen
+	 */
+	public static PawnBehavior getPB(boolean forBlackPawn) {		
+		return (forBlackPawn) ? blackPB : whitePB;
+	}
+	
+	
 	/**
 	 * This method initializes a game that is ready to start. The game is
 	 * initialized from the view, after all validation.
@@ -66,6 +93,7 @@ public class QuoridorController {
 		initializeBoard();
 		// update status of game
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Running);
+		pawnBehaviourSetUp();
 	}
 
 	/**
@@ -1668,93 +1696,49 @@ public class QuoridorController {
 	 * @param dir
 	 */
 	public static void movePawnNew(MoveDirection dir) {
+		
+		
 		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
 		
+		//first check legal
+		if (!pb.isLegalStep(dir)) {
+			return; //if not legal, simply return. It is still that player's turn.
+		}
+		
+		//if legal, make the move
 		switch (dir) {
 		case North:
 			pb.moveUp();
-			if (pawnBehavior.getCurrentPawnRow() != 1) {
-				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() - 1, pawnBehavior.getCurrentPawnColumn(), board);
-				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				if (currentPlayer == whitePlayer) {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
-							.setTile(tile);
-				} else {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-							.setTile(tile);
-				}
-				switchCurrentPlayer();
-			}
 			break;
 		case South:
-			if (pawnBehavior.getCurrentPawnRow() != 9) {
-				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow() + 1, pawnBehavior.getCurrentPawnColumn(), board);
-				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				if (currentPlayer == whitePlayer) {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
-							.setTile(tile);
-				} else {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-							.setTile(tile);
-				}
-				switchCurrentPlayer();
-			}
+			pb.moveDown();
 			break;
 		case West:
-			if (pawnBehavior.getCurrentPawnColumn() != 1) {
-				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() - 1, board);
-				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				if (currentPlayer == whitePlayer) {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
-							.setTile(tile);
-				} else {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-							.setTile(tile);
-				}
-				switchCurrentPlayer();
-			}
+			pb.moveLeft();
 			break;
 		case East:
-			if (pawnBehavior.getCurrentPawnColumn() != 9) {
-				Tile tile = new Tile(pawnBehavior.getCurrentPawnRow(), pawnBehavior.getCurrentPawnColumn() + 1, board);
-				// pawnBehavior.getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-				if (currentPlayer == whitePlayer) {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
-							.setTile(tile);
-				} else {
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-							.setTile(tile);
-				}
-				switchCurrentPlayer();
-			}
+			pb.moveRight();
+			break;
+		case NorthWest:
+			pb.moveUpLeft();
+			break;
+		case SouthWest:
+			pb.moveDownLeft();
+			break;
+		case NorthEast:
+			pb.moveUpRight();
+			break;
+		case SouthEast:
+			pb.moveDownRight();
 			break;
 
 		}
+		
+		//switch to next player
+		switchCurrentPlayer();
 	}
 
-	/**
-	 * Setup method for pawn bahaviour state machines for black and white pawns
-	 * @author Helen
-	 * 
-	 */
-	public static void pawnBehaviourSetUp() {		
-		whitePB = new PawnBehavior();
-		whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
-		whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
-		
-		blackPB = new PawnBehavior();
-		blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
-		blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
-	}
-	
-	/**
-	 * Getter for pawn behavior state machine
-	 * @param forBlackPawn true to get blackPB, false to get whitePB
-	 * @author Helen
-	 */
-	public static PawnBehavior getPB(boolean forBlackPawn) {		
-		return (forBlackPawn) ? blackPB : whitePB;
-	}
+
 
 
 	/**
@@ -1860,6 +1844,45 @@ public class QuoridorController {
 
 		case SouthWest:
 		}
+	}
+	
+	/**
+	 * Helper method to convert string "side" of a pawnMove or pawnJump to a MoveDirection.
+	 * Used for gherkin scenarios.
+	 * @param side String
+	 * @return
+	 */
+	public static MoveDirection stringSideToDirection(String side) {
+		MoveDirection dir;
+		switch (side) {
+		case "up":
+			dir = MoveDirection.North;
+			break;
+		case "down":
+			dir= MoveDirection.South;
+			break;
+		case "left":
+			dir= MoveDirection.West;
+			break;
+		case "right":
+			dir= MoveDirection.East;
+			break;
+		case "upleft":
+			dir= MoveDirection.NorthWest;
+			break;
+		case "downleft":
+			dir= MoveDirection.SouthWest;
+			break;
+		case "upright":
+			dir= MoveDirection.NorthEast;
+			break;
+		case "downright":
+		default:
+			dir= MoveDirection.SouthEast;
+			break;
+		}
+		
+		return dir;
 	}
 
 }
