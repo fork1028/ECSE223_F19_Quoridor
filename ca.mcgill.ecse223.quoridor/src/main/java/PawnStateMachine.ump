@@ -36,7 +36,7 @@ class PawnBehavior {
 					moveDown [isLegalStep(MoveDirection.South)&&(getCurrentPawnRow() == 7)] -> SouthBorder;
 					moveDown [(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 6)] -> SouthBorder;
 					moveDown [(isLegalJump(MoveDirection.South))&&(getCurrentPawnRow() == 7)] -> SouthEdge;
-					moveDown -> NSMiddle;
+					moveDown [isLegalStep(MoveDirection.South)||isLegalJump(MoveDireciton.South)] -> NSMiddle;
 					moveUp [isLegalStep(MoveDirection.North)&&(getCurrentPawnRow() == 3)] -> NorthBorder;
 					moveUp [(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 4)] -> NorthBorder;
 					moveUp [(isLegalJump(MoveDirection.North))&&(getCurrentPawnRow() == 3)] -> NorthEdge;
@@ -48,7 +48,7 @@ class PawnBehavior {
 					moveUpLeft [(isLegalJump(MoveDirection.NorthWest))] -> NSMiddle;
 					moveDownRight [(isLegalJump(MoveDirection.SouthEast))] -> NSMiddle;
 					moveDownLeft [(isLegalJump(MoveDirection.SouthWest))] -> NSMiddle;
-					moveUp -> NSMiddle;
+					moveUp [isLegalStep(MoveDirection.North)||isLegalJump(MoveDireciton.North)] -> NSMiddle;
 				}
 				SouthEdge {
 					moveDown -> / { illegalMove(); } SouthEdge;
@@ -94,7 +94,7 @@ class PawnBehavior {
 					moveLeft [isLegalStep(MoveDirection.West)&&(getCurrentPawnColumn() == 3)] -> WestBorder;
 					moveLeft [(isLegalJump(MoveDirection.West))&&(getCurrentPawnColumn() == 4)] -> WestBorder;
 					moveLeft [(isLegalJump(MoveDirection.West))&&(getCurrentPawnColumn() == 3)] -> WestEdge;
-					moveLeft -> EWMiddle;
+					moveLeft [isLegalStep(MoveDirection.West)||isLegalJump(MoveDireciton.West)] -> EWMiddle;
 					moveRight [isLegalStep(MoveDirection.East)&&(getCurrentPawnColumn() == 7)] -> EastBorder;
 					moveRight [(isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn() == 6)] -> EastBorder;
 					moveRight [(isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn() == 7)] -> EastEdge;
@@ -106,7 +106,7 @@ class PawnBehavior {
 					moveUpLeft [(isLegalJump(MoveDirection.NorthWest))] -> EWMiddle;
 					moveDownRight [(isLegalJump(MoveDirection.SouthEast))] -> EWMiddle;
 					moveDownLeft [(isLegalJump(MoveDirection.SouthWest))] -> EWMiddle;
-					moveRight -> EWMiddle;
+					moveRight [isLegalStep(MoveDirection.East)||isLegalJump(MoveDireciton.East)] -> EWMiddle;
 				}
 				WestEdge {
 					moveLeft -> / { illegalMove(); } WestEdge;
