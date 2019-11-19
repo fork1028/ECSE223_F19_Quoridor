@@ -1653,7 +1653,7 @@ public class CucumberStepDefinitions {
 		
 		//call the actual CONTROLLER method to move or jump pawn, and assert the move status
 		try {
-			boolean result = QuoridorController.movePawnCopy(QuoridorController.stringSideToDirection(side));
+			boolean result = QuoridorController.movePawn(QuoridorController.stringSideToDirection(side));
 			assertEquals (boolStatus, result);
 		} catch (InvalidInputException e) {
 			fail();

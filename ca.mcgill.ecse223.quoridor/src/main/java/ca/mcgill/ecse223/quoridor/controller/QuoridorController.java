@@ -7,8 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +26,12 @@ public class QuoridorController {
 	private static boolean boardWasInitiated = false;
 	private static boolean nextPlayerToSetUsername = false;
 	private static boolean moveWasMade = false; //variable to test gherkin test for move and jump only
+	
+	//THIS IS WHERE WE DECLARE THE 2 STATEMACHINES!
+    private static PawnBehavior whitePB;
+    private static PawnBehavior blackPB;
+
+
 	
 	/**
 	 * This method initializes a game that is ready to start. The game is
@@ -1568,12 +1572,10 @@ public class QuoridorController {
 	// Step 4: If there is a wall/edge, check above/below or left/right of other
 	// pawn, depending on config.
 
-	//THIS IS WHERE WE DECLARE THE 2 STATEMACHINES!
-    private static PawnBehavior whitePB;
-    private static PawnBehavior blackPB;
+
 
     /**
-    * Setup method for pawn bahaviour state machines for black and white pawns
+    * Setup method for pawn bahaviour state machines for black and white pawns. Must be called on startGame
     * @author Helen
     * 
      */
@@ -1589,315 +1591,14 @@ public class QuoridorController {
 	    blackPB.startGame();
     }
     
-    /**
-	 * Getter for pawn behavior state machine
-	 * @param forBlackPawn true to get blackPB, false to get whitePB
-	 * @author Helen
-	 */
-	public static PawnBehavior getPB(boolean forBlackPawn) {		
-		return (forBlackPawn) ? blackPB : whitePB;
-	}
-	
-
-	
-	/**
-	 * Controller method to be called initially that redirects to either move pawn or jump pawn depending on the appropriate situation
-	 * 
-	 * @Author Shayne Leitamn, 260688512
-	 * 
-	 * @param dir	Direction of the move being attempted
-	 * @return void
-	 */
-	public void typeofMove(MoveDirection dir) {
-		
-		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		boolean isForBlack = (currentPlayer == blackPlayer);
-		int curRow = 0;
-		int curCol = 0;
-		int opRow = 0;
-		int opCol = 0;
-		
-		if (isForBlack) {
-			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-		} else {
-			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-		}
-		
-		switch (dir) {
-
-		case North:
-			if (curCol == opCol && curRow == opCol + 1) {
-				jumpPawn(dir, isForBlack);
-			} else {
-				movePawn(dir, isForBlack);
-			}
-			break;
-		case South:
-			if (curCol == opCol && curRow + 1 == opCol) {
-				jumpPawn(dir, isForBlack);
-			} else {
-				movePawn(dir, isForBlack);
-			}
-			break;
-		case East:
-			if (curCol + 1 == opCol && curRow == opCol) {
-				jumpPawn(dir, isForBlack);
-			} else {
-				movePawn(dir, isForBlack);
-			}
-			break;
-		case West:
-			if (curCol == opCol + 1 && curRow == opCol) {
-				jumpPawn(dir, isForBlack);
-			} else {
-				movePawn(dir, isForBlack);
-			}
-			break;
-		case NorthEast:
-			jumpPawn(dir, isForBlack);
-			break;
-		case NorthWest:
-			jumpPawn(dir, isForBlack);
-			break;
-		case SouthEast:
-			jumpPawn(dir, isForBlack);
-			break;
-		case SouthWest:
-			jumpPawn(dir, isForBlack);
-			break;
-		}
-	}
-	
-	
-	/**
-	 * New controller method to move pawn
-	 * @Author Shayne
-	 * @param dir
-	 */
-	public static void movePawn (MoveDirection dir, boolean isForBlack) {
-		
-		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		PlayerPosition curPPos = null;
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		GamePosition curGamePos = curGame.getCurrentPosition();
-		Move recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
-		if (isForBlack) {
-			curPPos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
-		} else {
-			curPPos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
-		}
-		Tile newTile = null;
-		int newRow = 0;
-		int newCol = 0;
-		//To do: run the pawn behavior method associated with the direction. If it returns true, then:
-		//Get the tile to be updated. Create a new move, update player pos, update current game, update game pos
-
-		switch (dir) {
-		
-		  case North:
-			if (isForBlack) {
-				if (blackPB.moveUp()) {
-					newCol = curPPos.getTile().getColumn();
-					newRow = curPPos.getTile().getRow() - 1;
-					for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
-						if (tile.getRow() == newRow && tile.getColumn() == newCol) {
-							newTile = tile;
-							break;
-						}
-					}
-					
-					curPPos.setTile(newTile);
-					StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves() + 1) % 2), curPlayer, newTile, curGame);
-					recentMove.setNextMove(newMove);
-					newMove.setPrevMove(recentMove);
-					curGame.addMove(newMove);
-					GamePosition newGamePos = new GamePosition(curGame.numberOfPositions() + 1, curGame.getCurrentPosition().getWhitePosition(), curPPos, curGame.getWhitePlayer(), curGame);
-					for (Wall wall : curGamePos.getBlackWallsInStock()) {
-						newGamePos.addBlackWallsInStock(wall);
-					}
-					for (Wall wall : curGamePos.getWhiteWallsInStock()) {
-						newGamePos.addWhiteWallsInStock(wall);
-					}
-					for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
-						newGamePos.addBlackWallsOnBoard(wall);
-					}
-					for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
-						newGamePos.addWhiteWallsOnBoard(wall);
-					}
-					curGame.addPosition(newGamePos);
-					curGame.setCurrentPosition(newGamePos);
-					
-					
-				} else {
-					// MOVE FAILED. ILLEGAL MOVE!
-				}
-			} else {
-				if (whitePB.moveUp()) {
-					newCol = curPPos.getTile().getColumn();
-					newRow = curPPos.getTile().getRow() - 1;
-					for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
-						if (tile.getRow() == newRow && tile.getColumn() == newCol) {
-							newTile = tile;
-							break;
-						}
-					}
-
-					
-					
-				} else {
-					// MOVE FAILED. ILLEGAL MOVE!
-				}
-			}
-			  
-			  
-			  break;
-		  case South:
-			  
-				  break;
-		  case West:
-			  
-				  break;
-		  case East:
-			  
-				  break;
-
-		}
-	}
 
 	/**
-	 * New controller method to jump pawn
-	 * @Author Shayne
-	 * @param dir
-	 */
-	public static void jumpPawn (MoveDirection dir, boolean isForBlack) {
-		PawnBehavior pawnBehavior=new PawnBehavior();
-		Game game=QuoridorApplication.getQuoridor().getCurrentGame();
-		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		Board board=QuoridorApplication.getQuoridor().getBoard();
-		pawnBehavior.setPlayer(currentPlayer);
-		pawnBehavior.setCurrentGame(game);
-		
-
-		switch (dir) {
-			 
-			case North:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentCol==oppoCol&&Math.abs(currentRow-oppoRow)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()-2,pawnBehavior.getCurrentPawnColumn(),board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
-				}
-				break;
-				
-			case South:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentCol==oppoCol&&Math.abs(currentRow-oppoRow)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow()+2,pawnBehavior.getCurrentPawnColumn(),board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
-				}
-				break;
-				
-			case East:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentRow==oppoRow&&Math.abs(currentCol-oppoCol)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()+2,board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
-				}
-				break;
-				
-			case West:
-				if(currentPlayer==whitePlayer) {
-					int currentRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					int currentCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					int oppoRow=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					int oppoCol=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					if(currentRow==oppoRow&&Math.abs(currentCol-oppoCol)==1) {
-						Tile tile=new Tile(pawnBehavior.getCurrentPawnRow(),pawnBehavior.getCurrentPawnColumn()-2,board);
-						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().setTile(tile);
-					}
-				}
-				break;
-				
-			case NorthEast:
-				
-			case NorthWest:
-				
-			case SouthEast:
-				
-			case SouthWest:
-		}
-	}
-	
-	/**
-	 * Helper method to convert string "side" of a pawnMove or pawnJump to a MoveDirection.
-	 * Used for gherkin scenarios.
-	 * @param side String
-	 * @return
-	 */
-	public static MoveDirection stringSideToDirection(String side) {
-		MoveDirection dir;
-		switch (side) {
-		case "up":
-			dir = MoveDirection.North;
-			break;
-		case "down":
-			dir= MoveDirection.South;
-			break;
-		case "left":
-			dir= MoveDirection.West;
-			break;
-		case "right":
-			dir= MoveDirection.East;
-			break;
-		case "upleft":
-			dir= MoveDirection.NorthWest;
-			break;
-		case "downleft":
-			dir= MoveDirection.SouthWest;
-			break;
-		case "upright":
-			dir= MoveDirection.NorthEast;
-			break;
-		case "downright":
-		default:
-			dir= MoveDirection.SouthEast;
-			break;
-		}
-		
-		return dir;
-	}
-	
-
-	/**
-	 * New controller method to move pawn
-	 * @Author Shayne, helen
+	 * Controller method to move or jump the current player's pawn
+	 * @Author Shayne, Helen
 	 * @param dir
 	 * @throws InvalidInputException 
 	 */
-	public static boolean movePawnCopy(MoveDirection dir) throws InvalidInputException {
+	public static boolean movePawn(MoveDirection dir) throws InvalidInputException {
 		
 		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
 
@@ -2055,6 +1756,55 @@ public class QuoridorController {
 		//NOTE : do NOT need to call switchCurrentPlayer because by creating new CurrentGame and Current Game Position, we already set a new player to move :)
 		return true;
 	}
+	
+	/**
+	 * Helper method to convert string "side" of a pawnMove or pawnJump to a MoveDirection.
+	 * Used for gherkin scenarios.
+	 * @param side String
+	 * @return
+	 */
+	public static MoveDirection stringSideToDirection(String side) {
+		MoveDirection dir;
+		switch (side) {
+		case "up":
+			dir = MoveDirection.North;
+			break;
+		case "down":
+			dir= MoveDirection.South;
+			break;
+		case "left":
+			dir= MoveDirection.West;
+			break;
+		case "right":
+			dir= MoveDirection.East;
+			break;
+		case "upleft":
+			dir= MoveDirection.NorthWest;
+			break;
+		case "downleft":
+			dir= MoveDirection.SouthWest;
+			break;
+		case "upright":
+			dir= MoveDirection.NorthEast;
+			break;
+		case "downright":
+		default:
+			dir= MoveDirection.SouthEast;
+			break;
+		}
+		
+		return dir;
+	}
+	
+    /**
+	 * Helper Getter for pawn behavior state machine
+	 * @param forBlackPawn true to get blackPB, false to get whitePB
+	 * @author Helen
+	 */
+	public static PawnBehavior getPB(boolean forBlackPawn) {		
+		return (forBlackPawn) ? blackPB : whitePB;
+	}
+
 	
 	/**
 	 * Helper method only for gherkin tests for pawn moves to test which player attempted a move

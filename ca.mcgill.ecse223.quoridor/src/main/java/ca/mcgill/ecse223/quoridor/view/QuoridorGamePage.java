@@ -700,7 +700,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					QuoridorBoardVisualizer.setMoveClicked(true);
 					direction="up";
 					MoveDirection dir=MoveDirection.North;
-					QuoridorController.movePawn(dir);
+					//TODO: check this
+					try {
+						QuoridorController.movePawn(dir);
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
 				}
 				
@@ -730,7 +736,14 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					QuoridorBoardVisualizer.setMoveClicked(true);
 					direction="down";
 					MoveDirection dir=MoveDirection.South;
-					QuoridorController.movePawn(dir);
+					//TODO: check this
+					try {
+						QuoridorController.movePawn(dir);
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					
 					
 				}
 				refreshData();
@@ -760,7 +773,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					QuoridorBoardVisualizer.setMoveClicked(true);
 					direction="left";
 					MoveDirection dir=MoveDirection.West;
-					QuoridorController.movePawn(dir);
+					//TODO: check this
+					try {
+						QuoridorController.movePawn(dir);
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
 				}
 				repaint();
@@ -792,7 +811,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					QuoridorBoardVisualizer.setMoveClicked(true);
 					direction="right";
 					MoveDirection dir=MoveDirection.East;
-					QuoridorController.movePawn(dir);
+					//TODO: check this
+					try {
+						QuoridorController.movePawn(dir);
+					} catch (InvalidInputException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 					
 				}
 				repaint();

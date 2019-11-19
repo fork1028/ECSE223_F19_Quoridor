@@ -15,7 +15,6 @@ public class QuoridorApplication {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				new QuoridorStartGame().setVisible(true);
-				//new QuoridorGamePage().setVisible(true);
 				
 			}
 			
