@@ -197,6 +197,12 @@ public class PawnBehavior
         }
         break;
       case NSMiddle:
+    	if (!(isLegalStep(MoveDirection.North))&&!(isLegalJump(MoveDirection.North))) {
+      		exitPawnSMSMPawnNSPawnNS();
+        	illegalMove();
+        	setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+        	break;
+        }
         if (isLegalStep(MoveDirection.North)&&(getCurrentPawnRow()==3))
         {
           exitPawnSMSMPawnNSPawnNS();
@@ -226,7 +232,7 @@ public class PawnBehavior
         if (isLegalStep(MoveDirection.North))
         {
           exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
           wasEventProcessed = true;
           break;
         }
@@ -287,6 +293,12 @@ public class PawnBehavior
         }
         break;
       case NSMiddle:
+    	  if (!(isLegalStep(MoveDirection.South))&&!(isLegalJump(MoveDirection.South))) {
+            	exitPawnSMSMPawnNSPawnNS();
+              	illegalMove();
+              	setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+              	break;
+            }
         if (isLegalStep(MoveDirection.South)&&(getCurrentPawnRow()==7))
         {
           exitPawnSMSMPawnNSPawnNS();
@@ -845,6 +857,12 @@ public class PawnBehavior
         }
         break;
       case EWMiddle:
+    	  if (!(isLegalStep(MoveDirection.East))&&!(isLegalJump(MoveDirection.East))) {
+    		  exitPawnSMSMPawnEWPawnEW();
+            	illegalMove();
+            	setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+            	break;
+          }
         if (isLegalStep(MoveDirection.East)&&(getCurrentPawnColumn()==7))
         {
           exitPawnSMSMPawnEWPawnEW();
@@ -935,6 +953,12 @@ public class PawnBehavior
         }
         break;
       case EWMiddle:
+    	  if (!(isLegalStep(MoveDirection.West))&&!(isLegalJump(MoveDirection.West))) {
+    		  exitPawnSMSMPawnEWPawnEW();
+            	illegalMove();
+            	setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+            	break;
+          }
         if (isLegalStep(MoveDirection.West)&&(getCurrentPawnColumn()==3))
         {
           exitPawnSMSMPawnEWPawnEW();
@@ -1321,7 +1345,8 @@ public class PawnBehavior
 	    		if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
 	    			wallRow = wall.getMove().getTargetTile().getRow();
 	    			wallCol = wall.getMove().getTargetTile().getColumn();
-	    			if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
+	    			if ((curPawnRow == wallRow || curPawnRow == wallRow +1)
+	    					&& curPawnCol == wallCol + 1) {
 	    				isLegal = false;
 	    				return isLegal;
 	    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {

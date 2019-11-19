@@ -52,7 +52,7 @@ class PawnBehavior {
 				}
 				SouthEdge {
 					moveDown -> / { illegalMove(); } SouthEdge;
-					moveUp [isLegalStep(MoveDirection.North)] -> NorthBorder;
+					moveUp [isLegalStep(MoveDirection.North)] -> SouthBorder;
 					moveUp [(isLegalJump(MoveDirection.North))] -> NSMiddle;
 					moveDownRight -> / { illegalMove(); } SouthEdge;
 					moveDownLeft -> / { illegalMove(); } SouthEdge;

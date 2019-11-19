@@ -1890,54 +1890,6 @@ public class QuoridorController {
 		return dir;
 	}
 	
-	
-	/**
-	 * TEST New controller method to move pawn - will be removed later
-	 * 
-	 * @Author Helen
-	 * @param dir
-	 */
-	public static void movePawnTest(MoveDirection dir) {
-		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
-		
-		//first check legal
-		if (!pb.isLegalStep(dir)) {
-			return; //if not legal, simply return. It is still that player's turn.
-		}
-		
-		//if legal, make the move
-		switch (dir) {
-		case North:
-			pb.moveUp();
-			break;
-		case South:
-			pb.moveDown();
-			break;
-		case West:
-			pb.moveLeft();
-			break;
-		case East:
-			pb.moveRight();
-			break;
-		case NorthWest:
-			pb.moveUpLeft();
-			break;
-		case SouthWest:
-			pb.moveDownLeft();
-			break;
-		case NorthEast:
-			pb.moveUpRight();
-			break;
-		case SouthEast:
-			pb.moveDownRight();
-			break;
-
-		}
-		
-		//switch to next player
-		switchCurrentPlayer();
-	}
-	
 
 	/**
 	 * New controller method to move pawn
