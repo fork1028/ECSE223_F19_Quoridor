@@ -426,8 +426,8 @@ public class QuoridorController {
 		}
 		int row = candidate.getTargetTile().getRow();
 		int col = candidate.getTargetTile().getColumn();
-//		System.out.println("row:::" + row);
-//		System.out.println("col:::" + col);
+		//		System.out.println("row:::" + row);
+		//		System.out.println("col:::" + col);
 		Tile newTile = null;
 
 		if (moveDirection.equals("right")) {
@@ -477,8 +477,8 @@ public class QuoridorController {
 		} else
 			throw new InvalidInputException("New target tile doesn't exist");
 
-//		System.out.println("row:" + row);
-//		System.out.println("col" + col);
+		//		System.out.println("row:" + row);
+		//		System.out.println("col" + col);
 	}
 
 	/**
@@ -517,17 +517,17 @@ public class QuoridorController {
 				.getWhiteWallsOnBoard();
 		List<Wall> blackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 				.getBlackWallsOnBoard();
-//		System.out.println("testrow:" + row);
-//		System.out.println("textcol:" + col);
+		//		System.out.println("testrow:" + row);
+		//		System.out.println("textcol:" + col);
 		for (int i = 0; i < whiteWallsOnBoard.size(); i++) {
 			if (row == whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
 				if (col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
 						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
 					isValid = false;
 				}
 			}
@@ -540,10 +540,10 @@ public class QuoridorController {
 				if (col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
 						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
 					isValid = false;
 				}
 			}
@@ -1099,8 +1099,7 @@ public class QuoridorController {
 		if (dir.equals("pawn")) {
 			return validatePawnPosition(row, col);
 		} else {
-			Direction direction = (dir.equals("horizontal")) ? Direction.Horizontal : Direction.Vertical;
-			return validateWallBoundaryPosition(row, col) && validateWallOverlapPosition(row, col, direction);
+			return validateWallBoundaryPosition(row, col);
 		}
 	}
 
@@ -1133,48 +1132,29 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method is called with validateWallBoundaryPosition to check if there are any overlaps on the board.
+	 * This method is called to check if there are any overlaps on the board.
 	 * 
 	 * @param row         row of wall position
 	 * @param col         column of wall position
 	 * @param direction   direction of wall
 	 * @return boolean    false if overlap, true otherwise
 	 */
-	private static boolean validateWallOverlapPosition(int row, int col, Direction direction) {		
-		List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
-		List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
-
-		List<Wall> allWallsOnBoard = new ArrayList<Wall>();
-		allWallsOnBoard.addAll(blackWalls);
-		allWallsOnBoard.addAll(whiteWalls);
-
-		for (Wall w : allWallsOnBoard) {
-			System.out.println("Row is: " + w.getMove().getTargetTile().getRow());
-			System.out.println("Col is: " + w.getMove().getTargetTile().getColumn());
-			System.out.println("Direction is: " + w.getMove().getWallDirection().toString());
-		}
-
-		for (Wall currWall : allWallsOnBoard) {
-			int currRow = currWall.getMove().getTargetTile().getRow();
-			int currCol = currWall.getMove().getTargetTile().getColumn();
-			Direction currDir = currWall.getMove().getWallDirection();
-
-			if (currRow == row && currCol == col) {
+	public static boolean validateWallOverlapPosition(int row1, int col1, Direction direction1, int row2, int col2, Direction direction2) {		
+			if (row1 == row2 && col1 == col2) {
 				return false;
 			}
 
-			if (direction.equals( Direction.Vertical )) {
-				if ((currRow == row - 1 || currRow == row + 1) && currCol == col && currDir.equals( Direction.Vertical )) {
+			if (direction1.equals( Direction.Vertical )) {
+				if ((row1 == row2 - 1 || row1 == row2 + 1) && col1 == col2 && direction2.equals( Direction.Vertical )) {
 					return false;
 				}
 			}
 
-			if (direction.equals( Direction.Horizontal )) {
-				if (currRow == row && (currCol == col - 1 || currCol == col + 1) && currDir.equals( Direction.Horizontal )) {
+			if (direction1.equals( Direction.Horizontal )) {
+				if (row1 == row2 && (col1 == col2 - 1 || col1 == col2 + 1) && direction2.equals( Direction.Horizontal )) {
 					return false;
 				}
 			}
-		}
 
 		return true;
 	}
@@ -1573,7 +1553,6 @@ public class QuoridorController {
 	// pawn, depending on config.
 
 
-
     /**
     * Setup method for pawn bahaviour state machines for black and white pawns. Must be called on startGame
     * @author Helen
@@ -1591,7 +1570,6 @@ public class QuoridorController {
 	    blackPB.startGame();
     }
     
-
 	/**
 	 * Controller method to move or jump the current player's pawn
 	 * @Author Shayne, Helen
@@ -1636,14 +1614,14 @@ public class QuoridorController {
 		int colOffset = 0;
 		boolean isLegalMove = false; //default false
 		switch (dir) {
-			case North:
-				isLegalMove = pb.moveUp();
-				if (curCol == opCol && curRow == opRow + 1) {
-					rowOffset = -2;
-				} else {
-					rowOffset = -1;
-				}
-				break;
+		case North:
+			isLegalMove = pb.moveUp();
+			if (curCol == opCol && curRow == opRow + 1) {
+				rowOffset = -2;
+			} else {
+				rowOffset = -1;
+			}
+			break;
 			case South:
 				isLegalMove = pb.moveDown();
 				if (curCol == opCol && curRow == opRow - 1) {
@@ -1756,7 +1734,7 @@ public class QuoridorController {
 		//NOTE : do NOT need to call switchCurrentPlayer because by creating new CurrentGame and Current Game Position, we already set a new player to move :)
 		return true;
 	}
-	
+
 	/**
 	 * Helper method to convert string "side" of a pawnMove or pawnJump to a MoveDirection.
 	 * Used for gherkin scenarios.
@@ -1792,7 +1770,7 @@ public class QuoridorController {
 			dir= MoveDirection.SouthEast;
 			break;
 		}
-		
+
 		return dir;
 	}
 	
@@ -1805,7 +1783,7 @@ public class QuoridorController {
 		return (forBlackPawn) ? blackPB : whitePB;
 	}
 
-	
+
 	/**
 	 * Helper method only for gherkin tests for pawn moves to test which player attempted a move
 	 * @return
