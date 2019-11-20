@@ -73,16 +73,21 @@ public class QuoridorBoardVisualizer extends JPanel {
 	private static int timesBlackGrabClicked=0;
 	private static Rectangle2D blackPawn;
 	private static Rectangle2D whitePawn;
-	private static int whiteTileCol=1;
-	private static int whiteTileRow=5;
-	private static int blackTileCol=9;
-	private static int blackTileRow=5;
-	private static int whiteDroppedRow=5;
-	private static int whiteDroppedCol=1;
-	private static int blackDroppedRow=5;
-	private static int blackDroppedCol=9;
+	private static int whiteTileCol=5;
+	private static int whiteTileRow=1;
+	private static int blackTileCol=5;
+	private static int blackTileRow=9;
+	private static int whiteDroppedRow=1;
+	private static int whiteDroppedCol=5;
+	private static int blackDroppedRow=9;
+	private static int blackDroppedCol=5;
 	private static int calledDrawPos=0;
 	private static boolean checkDropClicked=false;
+	private static boolean dropPawnIsClicked=false;
+	private static boolean moveDownIsClicked=false;
+	private static boolean moveUpIsClicked=false;
+	private static boolean moveLeftIsClicked=false;
+	private static boolean moveRightIsClicked=false;
 	
 
 	public QuoridorBoardVisualizer() {
@@ -200,11 +205,11 @@ public class QuoridorBoardVisualizer extends JPanel {
 
 					if (blackRow == tile.getRow() && blackCol == tile.getColumn()) {
 						g2d.setColor(Color.BLACK);
-						g2d.fill(square);
+						//g2d.fill(square);
 						blackPawn=square;
 					} else if (whiteRow == tile.getRow() && whiteCol == tile.getColumn()) {
 						g2d.setColor(Color.WHITE);
-						g2d.fill(square);
+						//g2d.fill(square);
 						whitePawn=square;
 					}
 				}
@@ -631,8 +636,6 @@ public class QuoridorBoardVisualizer extends JPanel {
 		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		System.out.println("dropWhiteDone:"+dropWhiteDone);
-		System.out.println("dropBlackDone:"+dropBlackDone);
 			if(dropIsClicked==true&&indexCurrentWhiteWall!=-1) {
 				error="";
 				int k=dropWhiteDone;
@@ -708,103 +711,73 @@ public class QuoridorBoardVisualizer extends JPanel {
 		int y=0;
 		int w=0;
 		int h=0;
-			if(moveIsClicked==true) {
-				String dir=QuoridorGamePage.getDirection();
-				if(currentPlayer==whitePlayer) {
-					if(dir.equals("up")) {
-						if(whiteTileRow!=1) {
-							whiteTileRow=whiteTileRow-1;
-							error="";
-						}
-						else {
-							whiteTileRow=whiteTileRow;
-						}
-					}
-					if(dir.equals("down")) {
-						if(whiteTileRow!=9) {
-							whiteTileRow=whiteTileRow+1;
-							error="";
-						}
-						else {
-							whiteTileRow=whiteTileRow;
-						}
-					}
-					if(dir.equals("left")) {
-						if(whiteTileCol!=1) {whiteTileCol=whiteTileCol-1;
-						error="";}
-						else {
-							whiteTileCol=whiteTileCol;
-						}
-					}
-					if(dir.equals("right")) {
-						if(whiteTileCol!=9) { whiteTileCol=whiteTileCol+1;
-						error="";}
-
-						else {
-							whiteTileCol=whiteTileCol;
-						}
-					}
-					
-					
-					x =whiteTileCol*(SQUAREWIDTH + SPACING)+105;
-					y =whiteTileRow*(SQUAREWIDTH + SPACING)-25;
-					w = SQUAREWIDTH;
-					h = SQUAREWIDTH;
-					
-					whitePawn.setRect(x,y,w,h);
-					g2d.setColor(Color.GRAY);
-					g2d.fill(whitePawn);
-					g2d.setColor(Color.CYAN);
-					g2d.draw(whitePawn);
-				}
-				else {
-					if(dir.equals("up")) {
-						if(blackTileRow!=1) {
-							blackTileRow=blackTileRow-1;
-							error="";
-						}
-						else {
-							blackTileRow=blackTileRow;
-						}
-					}
-					if(dir.equals("down")) {
-						if(blackTileRow!=9) {
-							blackTileRow=blackTileRow+1;
-							error="";
-						}
-						else {
-							blackTileRow=blackTileRow;
-						}
-					}
-					if(dir.equals("left")) {
-						if(blackTileCol!=1) {blackTileCol=blackTileCol-1;
-						error="";}
-						else {
-							blackTileCol=blackTileCol;
-						}
-					}
-					if(dir.equals("right")) {
-						if(blackTileCol!=9) { blackTileCol=blackTileCol+1;
-						error="";}
-
-						else {
-							blackTileCol=blackTileCol;
-						}
-					}
-					
-					x =blackTileCol*(SQUAREWIDTH + SPACING)+105;
-					y =blackTileRow*(SQUAREWIDTH + SPACING)-25;
-					w = SQUAREWIDTH;
-					h = SQUAREWIDTH;
-					
-					blackPawn.setRect(x,y,w,h);
-					g2d.setColor(Color.GRAY);
-					g2d.fill(blackPawn);
-					g2d.setColor(Color.CYAN);
-					g2d.draw(blackPawn);
-				}
+		moveUpIsClicked=QuoridorGamePage.getMoveUpIsClicked();
+		moveLeftIsClicked=QuoridorGamePage.getMoveLeftIsClicked();
+		moveRightIsClicked=QuoridorGamePage.getMoveRightIsClicked();
+		moveDownIsClicked=QuoridorGamePage.getMoveDownIsClicked();
+		if(currentPlayer!=whitePlayer) {
+			if(moveDownIsClicked==true) {
+				whiteTileRow=whiteTileRow+1;
+				whiteDroppedRow=whiteTileRow;
+				QuoridorGamePage.setMoveDownIsClicked(false);
 			}
+			if(moveUpIsClicked==true) {
+				whiteTileRow=whiteTileRow-1;
+				whiteDroppedRow=whiteTileRow;
+				QuoridorGamePage.setMoveUpIsClicked(false);
+			}
+			if(moveLeftIsClicked==true) {
+				whiteTileCol=whiteTileCol-1;
+				whiteDroppedCol=whiteTileCol;
+				QuoridorGamePage.setMoveLeftIsClicked(false);
+			}
+			if(moveRightIsClicked==true) {
+				whiteTileCol=whiteTileCol+1;
+				whiteDroppedCol=whiteTileCol;
+				QuoridorGamePage.setMoveRightIsClicked(false);
+			}
+			System.out.println("whiteTileCol:"+whiteTileCol);
+			System.out.println("whiteTileRow:"+whiteTileRow);
+			x =whiteTileCol*(SQUAREWIDTH + SPACING)+105;
+			y =whiteTileRow*(SQUAREWIDTH + SPACING)-25;
+			w = SQUAREWIDTH;
+			h = SQUAREWIDTH;
+			whitePawn.setRect(x,y,w,h);
+			g2d.setColor(Color.WHITE);
+			g2d.fill(whitePawn);
+		}
+		else {
+				if(moveDownIsClicked==true) {
+					blackTileRow=blackTileRow+1;
+					blackDroppedRow=blackTileRow;
+					QuoridorGamePage.setMoveDownIsClicked(false);
+				}
+				if(moveUpIsClicked==true) {
+					blackTileRow=blackTileRow-1;
+					blackDroppedRow=blackTileRow;
+					QuoridorGamePage.setMoveUpIsClicked(false);
+				}
+				if(moveLeftIsClicked==true) {
+					blackTileCol=blackTileCol-1;
+					blackDroppedCol=blackTileCol;
+					QuoridorGamePage.setMoveLeftIsClicked(false);
+				}
+				if(moveRightIsClicked==true) {
+					blackTileCol=blackTileCol+1;
+					blackDroppedCol=blackTileCol;
+					QuoridorGamePage.setMoveRightIsClicked(false);
+				}
+				System.out.println("blackileCol:"+blackTileCol);
+				System.out.println("blackTileRow:"+blackTileRow);
+				x =blackTileCol*(SQUAREWIDTH + SPACING)+105;
+				y =blackTileRow*(SQUAREWIDTH + SPACING)-25;
+				w = SQUAREWIDTH;
+				h = SQUAREWIDTH;
+				blackPawn.setRect(x,y,w,h);
+				g2d.setColor(Color.BLACK);
+				g2d.fill(blackPawn);
 			
+		}
 		
 	}
 	
@@ -833,7 +806,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	}
 	
 	/**
-	 * method for highliting the pawn if the user clicked on move pawn button
+	 * method for highlighting the pawn if the user clicked on move pawn button
 	 * @author Xinyue Chen
 	 * @param g
 	 */
@@ -841,11 +814,11 @@ public class QuoridorBoardVisualizer extends JPanel {
 		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
 		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		boolean movePawnIsClicked=QuoridorGamePage.getMovePawnIsClicked();
+		boolean grabPawnIsClicked=QuoridorGamePage.getGrabPawnIsClicked();
 		Graphics2D g2d = (Graphics2D) g.create();
 		BasicStroke thinStroke = new BasicStroke(2);
 		g2d.setStroke(thinStroke);
-		if(movePawnIsClicked==true) {
+		if(grabPawnIsClicked==true) {
 			if(currentPlayer==whitePlayer) {
 				int x =whiteDroppedCol*(SQUAREWIDTH + SPACING)+105;
 				int y =whiteDroppedRow*(SQUAREWIDTH + SPACING)-25;
@@ -869,53 +842,9 @@ public class QuoridorBoardVisualizer extends JPanel {
 				g2d.fill(blackPawn);
 			}
 		}
+		QuoridorGamePage.setGrabPawnIsClicked(false);
 	}
 	
-	/**
-	 * method for drawing updated dropped position of the pawns
-	 * @author Xinyue Chen
-	 * @param g
-	 */
-	public void drawDroppedPawn(Graphics g) {
-		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
-		checkDropClicked=true;
-		Graphics2D g2d = (Graphics2D) g.create();
-		BasicStroke thinStroke = new BasicStroke(2);
-		g2d.setStroke(thinStroke);
-		boolean dropPawnIsClicked=QuoridorGamePage.getDropPawnIsClicked();
-		//System.out.println("dropPawnIsClicked:"+dropPawnIsClicked);
-		if(dropPawnIsClicked==true) {
-//			System.out.println("x:"+whitePawn.getX());
-//			System.out.println("y:"+whitePawn.getY());
-			if(currentPlayer!=whitePlayer) {
-				int x =whiteTileCol*(SQUAREWIDTH + SPACING)+105;
-				int y =whiteTileRow*(SQUAREWIDTH + SPACING)-25;
-				int w = SQUAREWIDTH;
-				int h = SQUAREWIDTH;
-				whitePawn.setRect(x,y,w,h);
-				g2d.setColor(Color.WHITE);
-				g2d.fill(whitePawn);
-				whiteDroppedRow=whiteTileRow;
-				whiteDroppedCol=whiteTileCol;
-				//System.out.println("drop pawn is here");
-			}
-			else {
-				int x =blackTileCol*(SQUAREWIDTH + SPACING)+105;
-				int y =blackTileRow*(SQUAREWIDTH + SPACING)-25;
-				int w = SQUAREWIDTH;
-				int h = SQUAREWIDTH;
-				blackPawn.setRect(x,y,w,h);
-				g2d.setColor(Color.WHITE);
-				g2d.fill(blackPawn);
-				blackDroppedRow=blackTileRow;
-				blackDroppedCol=blackTileCol;
-			}
-		}
-		QuoridorGamePage.setDropPawnIsClicked(false);
-		enabled=true;
-	}
 	
 
 	/**
@@ -984,20 +913,19 @@ public class QuoridorBoardVisualizer extends JPanel {
 			drawGrab(g);
 			grabIsClicked=false;
 		}
+		
+		//if(QuoridorGamePage.getGrabPawnIsClicked()==true) {
+			drawPawn(g);
 		if(moveIsClicked==true) {
-			if(QuoridorGamePage.getMovePawnIsClicked()==true) {
-				drawPawn(g);
-			}
-			else {
+			
 				drawMove(g, QuoridorGamePage.getDirection());
-			}
+			
 			moveIsClicked=false;
 		}
 
 		if(rotateIsClicked==true) {
 			drawRotate(g);
 		}
-		drawDroppedPawn(g);
 		drawPawnPos(g);
 		drawHighlight(g);
 
