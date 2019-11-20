@@ -1099,8 +1099,7 @@ public class QuoridorController {
 		if (dir.equals("pawn")) {
 			return validatePawnPosition(row, col);
 		} else {
-			Direction direction = (dir.equals("horizontal")) ? Direction.Horizontal : Direction.Vertical;
-			return validateWallBoundaryPosition(row, col) && validateWallOverlapPosition(row, col, direction);
+			return validateWallBoundaryPosition(row, col);
 		}
 	}
 
@@ -1133,48 +1132,29 @@ public class QuoridorController {
 	}
 
 	/**
-	 * This method is called with validateWallBoundaryPosition to check if there are any overlaps on the board.
+	 * This method is called to check if there are any overlaps on the board.
 	 * 
 	 * @param row         row of wall position
 	 * @param col         column of wall position
 	 * @param direction   direction of wall
 	 * @return boolean    false if overlap, true otherwise
 	 */
-	private static boolean validateWallOverlapPosition(int row, int col, Direction direction) {		
-		List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
-		List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
-
-		List<Wall> allWallsOnBoard = new ArrayList<Wall>();
-		allWallsOnBoard.addAll(blackWalls);
-		allWallsOnBoard.addAll(whiteWalls);
-
-		for (Wall w : allWallsOnBoard) {
-			System.out.println("Row is: " + w.getMove().getTargetTile().getRow());
-			System.out.println("Col is: " + w.getMove().getTargetTile().getColumn());
-			System.out.println("Direction is: " + w.getMove().getWallDirection().toString());
-		}
-
-		for (Wall currWall : allWallsOnBoard) {
-			int currRow = currWall.getMove().getTargetTile().getRow();
-			int currCol = currWall.getMove().getTargetTile().getColumn();
-			Direction currDir = currWall.getMove().getWallDirection();
-
-			if (currRow == row && currCol == col) {
+	public static boolean validateWallOverlapPosition(int row1, int col1, Direction direction1, int row2, int col2, Direction direction2) {		
+			if (row1 == row2 && col1 == col2) {
 				return false;
 			}
 
-			if (direction.equals( Direction.Vertical )) {
-				if ((currRow == row - 1 || currRow == row + 1) && currCol == col && currDir.equals( Direction.Vertical )) {
+			if (direction1.equals( Direction.Vertical )) {
+				if ((row1 == row2 - 1 || row1 == row2 + 1) && col1 == col2 && direction2.equals( Direction.Vertical )) {
 					return false;
 				}
 			}
 
-			if (direction.equals( Direction.Horizontal )) {
-				if (currRow == row && (currCol == col - 1 || currCol == col + 1) && currDir.equals( Direction.Horizontal )) {
+			if (direction1.equals( Direction.Horizontal )) {
+				if (row1 == row2 && (col1 == col2 - 1 || col1 == col2 + 1) && direction2.equals( Direction.Horizontal )) {
 					return false;
 				}
 			}
-		}
 
 		return true;
 	}
