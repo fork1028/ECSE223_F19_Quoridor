@@ -1211,7 +1211,7 @@ public class PawnBehavior
 	 * 
 	 * @param dir      Direction of the move attempting to be made
 	 * @return Boolean Whether or not the move attempting to be made is allowed or not
-	 * @author Shayne Leitman,260688512
+	 * @author Shayne, Helen
 	 */
 //line 137 "../../../../../PawnStateMachine.ump"
 public boolean isLegalStep(MoveDirection dir){
@@ -1351,7 +1351,7 @@ public boolean isLegalStep(MoveDirection dir){
 	 * 
 	 * @param dir      Direction of the jump move attempting to be made
 	 * @return Boolean Whether or not the jump move attempting to be made is allowed or not
-	 * @author Shayne Leitman,260688512
+	 * @author Shayne, Helen
 	 */
 //line 91 "../../../../../PawnStateMachine.ump"
 	public boolean isLegalJump(MoveDirection dir) {
