@@ -30,6 +30,8 @@ public class QuoridorController {
 	//THIS IS WHERE WE DECLARE THE 2 STATEMACHINES!
     private static PawnBehavior whitePB;
     private static PawnBehavior blackPB;
+    
+    private static GameStatus status;
 
 
 	
@@ -1792,8 +1794,26 @@ public class QuoridorController {
 		return moveWasMade;
 	}
 	
-	public void initiateGameResult() {
-		
+	/**
+	 * @author Xinyue Chen
+	 * @param currentPlayer
+	 * @return
+	 */
+	public static void initiateGameResult(PlayerPosition position) {
+		if(position.getTile().getRow()==1) {
+			status=GameStatus.BlackWon;
+		}
+		else {
+			status=GameStatus.Running;
+		}
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 * @return
+	 */
+	public static GameStatus getGameResult() {
+		return status;
 	}
 
 }

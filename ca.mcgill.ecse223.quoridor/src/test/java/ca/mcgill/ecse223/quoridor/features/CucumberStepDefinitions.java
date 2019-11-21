@@ -1796,7 +1796,8 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Checking of game result is initated")
 	public void checkingOfGameResultIsInitiated() {
-		
+		PlayerPosition position=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+		QuoridorController.initiateGameResult(position);
 	}
 	
 	/**
@@ -1805,7 +1806,19 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("Game result shall be {string}")
 	public void gameResultShallBeResult(String result) {
-		
+		GameStatus status=QuoridorController.getGameResult();
+		if(status==GameStatus.Running) {
+			result="pending";
+			assert(result.contentEquals("pending"));
+		}
+		if(status==GameStatus.BlackWon) {
+			result="blackWon";
+			assert(result.contentEquals("blackWon"));
+		}
+		if(status==GameStatus.WhiteWon) {
+			result="whiteWon";
+			assert(result.contentEquals("whiteWon"));
+		}
 	}
 	
 	/**
@@ -1813,6 +1826,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The game shall no longer be running")
 	public void theGameShallNoLongerBeRunning() {
+		GameStatus status=QuoridorController.getGameResult();
+		assert(status==GameStatus.BlackWon||status==GameStatus.WhiteWon);
 		
 	}
 	

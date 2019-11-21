@@ -47,6 +47,7 @@ import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
 import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Player;
+import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
@@ -685,6 +686,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		moveUpIsClicked=true;
 		try {
 			QuoridorController.movePawn(MoveDirection.North);
+			PlayerPosition position=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+			QuoridorController.initiateGameResult(position);
 		} catch (InvalidInputException e) {
 			error="Unable to move the pawn";
 			// TODO Auto-generated catch block
@@ -695,9 +698,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 	
 	private void moveDownIsClicked(java.awt.event.ActionEvent evt) {
+		moveDownIsClicked=true;
 		try {
+			
 			QuoridorController.movePawn(MoveDirection.South);
-			moveDownIsClicked=true;
+			
 		} catch (InvalidInputException e) {
 			// TODO Auto-generated catch block
 			error="Unable to move the pawn";
