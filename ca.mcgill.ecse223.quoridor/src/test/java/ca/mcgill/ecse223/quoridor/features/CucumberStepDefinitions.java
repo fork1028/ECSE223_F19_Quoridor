@@ -1709,6 +1709,167 @@ public class CucumberStepDefinitions {
 	}
 
 	// ************ END OF MOVEPAWN AND JUMPPAWN ****************
+	
+	// ************ START OF IDENTIFYGAMEWON ****************
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param player
+	 */
+	@Given("Player {string} has just completed his move")
+	public void playerHasJustCompletedHisMove(String player) {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param player
+	 * @param row
+	 * @param col
+	 */
+	@And("The new position of {string} is {int}:{int}")
+	public void theNewPositionOfPlayerIsRowCol(String player, int row, int col) {
+		
+		PlayerPosition position = null;
+		
+		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+			if (tile.getRow() == row && tile.getColumn() == col) {
+				// create a new playerPosition for this tile and the current player to move
+				position = new PlayerPosition(
+						QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove(),
+						tile);
+
+				// set the new PlayerPosition for the appropriate player in game
+				if (QuoridorController.isBlackTurn()) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setBlackPosition(position);
+				} else if (QuoridorController.isWhiteTurn()) {
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setWhitePosition(position);
+				}
+				return; // done
+			}
+		}
+		
+		assertEquals(row, position.getTile().getRow());
+		assertEquals(col, position.getTile().getColumn());
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param player
+	 */
+	@And("The clock of {string} is more than zero")
+	public void theClockOfPlayerIsMoreThanZero(String player) {
+		Time remainingTime;
+		Time time = QuoridorController.getIntToTime(1, 30);
+		if(player.equals("black")) {
+			QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().setRemainingTime(time);
+			remainingTime=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
+		}
+		else {
+			QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().setRemainingTime(time);
+			remainingTime=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+		}
+		assert(remainingTime.getSeconds()>0);
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@When("Checking of game result is initated")
+	public void checkingOfGameResultIsInitiated() {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param result
+	 */
+	@Then("Game result shall be {string}")
+	public void gameResultShallBeResult(String result) {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@And("The game shall no longer be running")
+	public void theGameShallNoLongerBeRunning() {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 * @param player
+	 */
+	@When("The clock of {string} counts down to zero")
+	public void theClockOfPlayerCountsDownToZero(String player) {
+		Time remainingTime;
+		Time time = QuoridorController.getIntToTime(0, 0);
+		if(player.equals("black")) {
+			QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().setRemainingTime(time);
+			remainingTime=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer().getRemainingTime();
+		}
+		else {
+			QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().setRemainingTime(time);
+			remainingTime=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
+		}
+		assert(remainingTime.getSeconds()==0);
+	}
+	
+	// ************ END OF IDENTIFYGAMEWON ****************
+	
+	// ************ START OF REPORTFINALRESULT ****************
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@When("The game is no longer running")
+	public void theGameIsNoLongerRunning() {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@Then("The final result shall be displayed")
+	public void theFinalResultShallBeDisplayed() {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@And("White's clock shall not be counting down")
+	public void whiteClockShallNotBeCountingDown() {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@And("Black's clock shall not be counting down")
+	public void blackClockShallNotBeCountingDown() {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@And("White shall be unable to move")
+	public void whiteShallBeUnableToMove() {
+		
+	}
+	
+	/**
+	 * @author Xinyue Chen
+	 */
+	@And("Black shall be unable to move")
+	public void blackShallBeUnableToMove() {
+		
+	}
+	
+	// ************ END OF REPORTFINALRESULT ****************
 
 	// ***********************************************
 	// Clean up

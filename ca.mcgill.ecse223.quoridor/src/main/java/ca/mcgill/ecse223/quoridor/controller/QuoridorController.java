@@ -1813,5 +1813,9 @@ public class QuoridorController {
 	public static boolean getTestMoveWasMade() {
 		return moveWasMade;
 	}
+	
+	public void initiateGameResult() {
+		
+	}
 
 }
