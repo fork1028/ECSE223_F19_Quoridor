@@ -10,1177 +10,1177 @@ import ca.mcgill.ecse223.quoridor.model.*;
 public class PawnBehavior
 {
 
-  //------------------------
-  // MEMBER VARIABLES
-  //------------------------
+	//------------------------
+	// MEMBER VARIABLES
+	//------------------------
 
-  //PawnBehavior State Machines
-  public enum PawnSM { SM }
-  public enum PawnSMSMPawnNS { Null, pawnNS }
-  public enum PawnSMSMPawnNSPawnNS { Null, Setup, NorthEdge, NorthBorder, NSMiddle, SouthEdge, SouthBorder }
-  public enum PawnSMSMPawnEW { Null, pawnEW }
-  public enum PawnSMSMPawnEWPawnEW { Null, Setup, EastEdge, EastBorder, EWMiddle, WestEdge, WestBorder }
-  private PawnSM pawnSM;
-  private PawnSMSMPawnNS pawnSMSMPawnNS;
-  private PawnSMSMPawnNSPawnNS pawnSMSMPawnNSPawnNS;
-  private PawnSMSMPawnEW pawnSMSMPawnEW;
-  private PawnSMSMPawnEWPawnEW pawnSMSMPawnEWPawnEW;
+	//PawnBehavior State Machines
+	public enum PawnSM { SM }
+	public enum PawnSMSMPawnNS { Null, pawnNS }
+	public enum PawnSMSMPawnNSPawnNS { Null, Setup, NorthEdge, NorthBorder, NSMiddle, SouthEdge, SouthBorder }
+	public enum PawnSMSMPawnEW { Null, pawnEW }
+	public enum PawnSMSMPawnEWPawnEW { Null, Setup, EastEdge, EastBorder, EWMiddle, WestEdge, WestBorder }
+	private PawnSM pawnSM;
+	private PawnSMSMPawnNS pawnSMSMPawnNS;
+	private PawnSMSMPawnNSPawnNS pawnSMSMPawnNSPawnNS;
+	private PawnSMSMPawnEW pawnSMSMPawnEW;
+	private PawnSMSMPawnEWPawnEW pawnSMSMPawnEWPawnEW;
 
-  //PawnBehavior Associations
-  private Game currentGame;
-  private Player player;
+	//PawnBehavior Associations
+	private Game currentGame;
+	private Player player;
 
-  //------------------------
-  // CONSTRUCTOR
-  //------------------------
+	//------------------------
+	// CONSTRUCTOR
+	//------------------------
 
-  public PawnBehavior()
-  {
-    setPawnSMSMPawnNS(PawnSMSMPawnNS.Null);
-    setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
-    setPawnSMSMPawnEW(PawnSMSMPawnEW.Null);
-    setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
-    setPawnSM(PawnSM.SM);
-  }
+	public PawnBehavior()
+	{
+		setPawnSMSMPawnNS(PawnSMSMPawnNS.Null);
+		setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
+		setPawnSMSMPawnEW(PawnSMSMPawnEW.Null);
+		setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
+		setPawnSM(PawnSM.SM);
+	}
 
-  //------------------------
-  // INTERFACE
-  //------------------------
+	//------------------------
+	// INTERFACE
+	//------------------------
 
-  public String getPawnSMFullName()
-  {
-    String answer = pawnSM.toString();
-    if (pawnSMSMPawnNS != PawnSMSMPawnNS.Null) { answer += "." + pawnSMSMPawnNS.toString(); }
-    if (pawnSMSMPawnNSPawnNS != PawnSMSMPawnNSPawnNS.Null) { answer += "." + pawnSMSMPawnNSPawnNS.toString(); }
-    if (pawnSMSMPawnEW != PawnSMSMPawnEW.Null) { answer += "." + pawnSMSMPawnEW.toString(); }
-    if (pawnSMSMPawnEWPawnEW != PawnSMSMPawnEWPawnEW.Null) { answer += "." + pawnSMSMPawnEWPawnEW.toString(); }
-    return answer;
-  }
+	public String getPawnSMFullName()
+	{
+		String answer = pawnSM.toString();
+		if (pawnSMSMPawnNS != PawnSMSMPawnNS.Null) { answer += "." + pawnSMSMPawnNS.toString(); }
+		if (pawnSMSMPawnNSPawnNS != PawnSMSMPawnNSPawnNS.Null) { answer += "." + pawnSMSMPawnNSPawnNS.toString(); }
+		if (pawnSMSMPawnEW != PawnSMSMPawnEW.Null) { answer += "." + pawnSMSMPawnEW.toString(); }
+		if (pawnSMSMPawnEWPawnEW != PawnSMSMPawnEWPawnEW.Null) { answer += "." + pawnSMSMPawnEWPawnEW.toString(); }
+		return answer;
+	}
 
-  public PawnSM getPawnSM()
-  {
-    return pawnSM;
-  }
+	public PawnSM getPawnSM()
+	{
+		return pawnSM;
+	}
 
-  public PawnSMSMPawnNS getPawnSMSMPawnNS()
-  {
-    return pawnSMSMPawnNS;
-  }
+	public PawnSMSMPawnNS getPawnSMSMPawnNS()
+	{
+		return pawnSMSMPawnNS;
+	}
 
-  public PawnSMSMPawnNSPawnNS getPawnSMSMPawnNSPawnNS()
-  {
-    return pawnSMSMPawnNSPawnNS;
-  }
+	public PawnSMSMPawnNSPawnNS getPawnSMSMPawnNSPawnNS()
+	{
+		return pawnSMSMPawnNSPawnNS;
+	}
 
-  public PawnSMSMPawnEW getPawnSMSMPawnEW()
-  {
-    return pawnSMSMPawnEW;
-  }
+	public PawnSMSMPawnEW getPawnSMSMPawnEW()
+	{
+		return pawnSMSMPawnEW;
+	}
 
-  public PawnSMSMPawnEWPawnEW getPawnSMSMPawnEWPawnEW()
-  {
-    return pawnSMSMPawnEWPawnEW;
-  }
+	public PawnSMSMPawnEWPawnEW getPawnSMSMPawnEWPawnEW()
+	{
+		return pawnSMSMPawnEWPawnEW;
+	}
 
-  public boolean startGame()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
-    PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
-    switch (aPawnSMSMPawnNSPawnNS)
-    {
-      case Setup:
-//        if (getPlayer().getGameAsWhite().equals(getCurrentGame()))
-//        {
-//          exitPawnSMSMPawnNSPawnNS();
-//          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-//          wasEventProcessed = true;
-//          break;
-//        }
-//        if (getPlayer().getGameAsBlack().equals(getCurrentGame()))
-//        {
-//          exitPawnSMSMPawnNSPawnNS();
-//          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-//          wasEventProcessed = true;
-//          break;
-//        }
-//        break;
-    	  if (getCurrentPawnRow()==1) {
-    		  exitPawnSMSMPawnNSPawnNS();
-              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-              wasEventProcessed = true;
-    	  } else if (getCurrentPawnRow()==2) {
-    		  exitPawnSMSMPawnNSPawnNS();
-              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-              wasEventProcessed = true;
-    	  } else if (getCurrentPawnRow()==8) {
-    		  exitPawnSMSMPawnNSPawnNS();
-              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-              wasEventProcessed = true;
-    	  } else if (getCurrentPawnRow()==9) {
-    		  exitPawnSMSMPawnNSPawnNS();
-              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-              wasEventProcessed = true;
-    	  } else {
-    		  exitPawnSMSMPawnNSPawnNS();
-              setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-              wasEventProcessed = true;
-    	  }
-    	  break;
-      default:
-        // Other states do respond to this event
-    }
+	public boolean startGame()
+	{
+		boolean wasEventProcessed = false;
 
-    switch (aPawnSMSMPawnEWPawnEW)
-    {
-      case Setup:
-//        exitPawnSMSMPawnEWPawnEW();
-//        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-//        wasEventProcessed = true;
-//        break;
-    	  if (getCurrentPawnColumn()==1) {
-    		  exitPawnSMSMPawnEWPawnEW();
-    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-              wasEventProcessed = true;
-    	  } else if (getCurrentPawnColumn()==2) {
-    		  exitPawnSMSMPawnEWPawnEW();
-    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-              wasEventProcessed = true;
-    	  } else if (getCurrentPawnColumn()==8) {
-    		  exitPawnSMSMPawnEWPawnEW();
-    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-              wasEventProcessed = true;
-    	  } else if (getCurrentPawnColumn()==9) {
-    		  exitPawnSMSMPawnEWPawnEW();
-    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-              wasEventProcessed = true;
-    	  } else {
-    		  exitPawnSMSMPawnEWPawnEW();
-    		  setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-              wasEventProcessed = true;
-    	  }
-    	  break;
-      default:
-        // Other states do respond to this event
-    }
+		PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
+		PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
+		switch (aPawnSMSMPawnNSPawnNS)
+		{
+		case Setup:
+			//        if (getPlayer().getGameAsWhite().equals(getCurrentGame()))
+			//        {
+			//          exitPawnSMSMPawnNSPawnNS();
+			//          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+			//          wasEventProcessed = true;
+			//          break;
+			//        }
+			//        if (getPlayer().getGameAsBlack().equals(getCurrentGame()))
+			//        {
+			//          exitPawnSMSMPawnNSPawnNS();
+			//          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+			//          wasEventProcessed = true;
+			//          break;
+			//        }
+			//        break;
+			if (getCurrentPawnRow()==1) {
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+				wasEventProcessed = true;
+			} else if (getCurrentPawnRow()==2) {
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+			} else if (getCurrentPawnRow()==8) {
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+			} else if (getCurrentPawnRow()==9) {
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+				wasEventProcessed = true;
+			} else {
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    return wasEventProcessed;
-  }
+		switch (aPawnSMSMPawnEWPawnEW)
+		{
+		case Setup:
+			//        exitPawnSMSMPawnEWPawnEW();
+			//        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+			//        wasEventProcessed = true;
+			//        break;
+			if (getCurrentPawnColumn()==1) {
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+				wasEventProcessed = true;
+			} else if (getCurrentPawnColumn()==2) {
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+			} else if (getCurrentPawnColumn()==8) {
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+			} else if (getCurrentPawnColumn()==9) {
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+				wasEventProcessed = true;
+			} else {
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-  public boolean moveUp()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
-    switch (aPawnSMSMPawnNSPawnNS)
-    {
-      case NorthEdge:
-        exitPawnSMSMPawnNSPawnNS();
-        // line 18 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-        //wasEventProcessed = true;
-        break;
-      case NorthBorder:
-        if (isLegalStep(MoveDirection.North))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NSMiddle:
-        if (isLegalStep(MoveDirection.North)&&(getCurrentPawnRow()==3))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.North))&&(getCurrentPawnRow()==4))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.North))&&(getCurrentPawnRow()==3))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalStep(MoveDirection.North)||isLegalJump(MoveDirection.North))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthEdge:
-        if (isLegalStep(MoveDirection.North))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.North)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthBorder:
-        if (isLegalStep(MoveDirection.North)||(isLegalJump(MoveDirection.North)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		return wasEventProcessed;
+	}
 
-    return wasEventProcessed;
-  }
+	public boolean moveUp()
+	{
+		boolean wasEventProcessed = false;
 
-  public boolean moveDown()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
-    switch (aPawnSMSMPawnNSPawnNS)
-    {
-      case NorthEdge:
-        if (isLegalStep(MoveDirection.South))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.South)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NorthBorder:
-        if (isLegalStep(MoveDirection.South)||(isLegalJump(MoveDirection.South)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NSMiddle:
-        if (isLegalStep(MoveDirection.South)&&(getCurrentPawnRow()==7))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.South))&&(getCurrentPawnRow()==6))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.South))&&(getCurrentPawnRow()==7))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalStep(MoveDirection.South)||isLegalJump(MoveDirection.South))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthEdge:
-        exitPawnSMSMPawnNSPawnNS();
-        // line 54 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-        //wasEventProcessed = true;
-        break;
-      case SouthBorder:
-        if (isLegalStep(MoveDirection.South))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
+		switch (aPawnSMSMPawnNSPawnNS)
+		{
+		case NorthEdge:
+			exitPawnSMSMPawnNSPawnNS();
+			// line 18 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+			//wasEventProcessed = true;
+			break;
+		case NorthBorder:
+			if (isLegalStep(MoveDirection.North))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NSMiddle:
+			if (isLegalStep(MoveDirection.North)&&(getCurrentPawnRow()==3))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.North))&&(getCurrentPawnRow()==4))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.North))&&(getCurrentPawnRow()==3))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			if (isLegalStep(MoveDirection.North)||isLegalJump(MoveDirection.North))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthEdge:
+			if (isLegalStep(MoveDirection.North))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.North)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthBorder:
+			if (isLegalStep(MoveDirection.North)||(isLegalJump(MoveDirection.North)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    return wasEventProcessed;
-  }
+		return wasEventProcessed;
+	}
 
-  public boolean moveUpRight()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
-    PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
-    switch (aPawnSMSMPawnNSPawnNS)
-    {
-      case NorthEdge:
-        exitPawnSMSMPawnNSPawnNS();
-        // line 21 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-        //wasEventProcessed = true;
-        break;
-      case NorthBorder:
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NSMiddle:
-        if ((isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnRow()==3))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthEdge:
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthBorder:
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+	public boolean moveDown()
+	{
+		boolean wasEventProcessed = false;
 
-    switch (aPawnSMSMPawnEWPawnEW)
-    {
-      case EastEdge:
-        exitPawnSMSMPawnEWPawnEW();
-        // line 80 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-        //wasEventProcessed = true;
-        break;
-      case EastBorder:
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EWMiddle:
-        if ((isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnColumn()==7))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestEdge:
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestBorder:
-        if ((isLegalJump(MoveDirection.NorthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
+		switch (aPawnSMSMPawnNSPawnNS)
+		{
+		case NorthEdge:
+			if (isLegalStep(MoveDirection.South))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.South)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NorthBorder:
+			if (isLegalStep(MoveDirection.South)||(isLegalJump(MoveDirection.South)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NSMiddle:
+			if (isLegalStep(MoveDirection.South)&&(getCurrentPawnRow()==7))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.South))&&(getCurrentPawnRow()==6))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.South))&&(getCurrentPawnRow()==7))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			if (isLegalStep(MoveDirection.South)||isLegalJump(MoveDirection.South))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthEdge:
+			exitPawnSMSMPawnNSPawnNS();
+			// line 54 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+			//wasEventProcessed = true;
+			break;
+		case SouthBorder:
+			if (isLegalStep(MoveDirection.South))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    return wasEventProcessed;
-  }
+		return wasEventProcessed;
+	}
 
-  public boolean moveUpLeft()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
-    PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
-    switch (aPawnSMSMPawnNSPawnNS)
-    {
-      case NorthEdge:
-        exitPawnSMSMPawnNSPawnNS();
-        // line 22 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-        //wasEventProcessed = true;
-        break;
-      case NorthBorder:
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NSMiddle:
-        if ((isLegalJump(MoveDirection.NorthWest))&&(getCurrentPawnRow()==3))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthEdge:
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthBorder:
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+	public boolean moveUpRight()
+	{
+		boolean wasEventProcessed = false;
 
-    switch (aPawnSMSMPawnEWPawnEW)
-    {
-      case EastEdge:
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EastBorder:
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EWMiddle:
-        if ((isLegalJump(MoveDirection.NorthWest))&&(getCurrentPawnColumn()==3))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestEdge:
-        exitPawnSMSMPawnEWPawnEW();
-        // line 116 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-        //wasEventProcessed = true;
-        break;
-      case WestBorder:
-        if ((isLegalJump(MoveDirection.NorthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
+		PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
+		switch (aPawnSMSMPawnNSPawnNS)
+		{
+		case NorthEdge:
+			exitPawnSMSMPawnNSPawnNS();
+			// line 21 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+			//wasEventProcessed = true;
+			break;
+		case NorthBorder:
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NSMiddle:
+			if ((isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnRow()==3))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthEdge:
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthBorder:
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    return wasEventProcessed;
-  }
+		switch (aPawnSMSMPawnEWPawnEW)
+		{
+		case EastEdge:
+			exitPawnSMSMPawnEWPawnEW();
+			// line 80 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+			//wasEventProcessed = true;
+			break;
+		case EastBorder:
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EWMiddle:
+			if ((isLegalJump(MoveDirection.NorthEast))&&(getCurrentPawnColumn()==7))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestEdge:
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestBorder:
+			if ((isLegalJump(MoveDirection.NorthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-  public boolean moveDownRight()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
-    PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
-    switch (aPawnSMSMPawnNSPawnNS)
-    {
-      case NorthEdge:
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NorthBorder:
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NSMiddle:
-        if ((isLegalJump(MoveDirection.SouthEast))&&(getCurrentPawnRow()==7))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthEdge:
-        exitPawnSMSMPawnNSPawnNS();
-        // line 57 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-        //wasEventProcessed = true;
-        break;
-      case SouthBorder:
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		return wasEventProcessed;
+	}
 
-    switch (aPawnSMSMPawnEWPawnEW)
-    {
-      case EastEdge:
-        exitPawnSMSMPawnEWPawnEW();
-        // line 82 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-        //wasEventProcessed = true;
-        break;
-      case EastBorder:
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EWMiddle:
-        if ((isLegalJump(MoveDirection.SouthEast))&&(getCurrentPawnColumn()==7))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestEdge:
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestBorder:
-        if ((isLegalJump(MoveDirection.SouthEast)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+	public boolean moveUpLeft()
+	{
+		boolean wasEventProcessed = false;
 
-    return wasEventProcessed;
-  }
+		PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
+		PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
+		switch (aPawnSMSMPawnNSPawnNS)
+		{
+		case NorthEdge:
+			exitPawnSMSMPawnNSPawnNS();
+			// line 22 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+			//wasEventProcessed = true;
+			break;
+		case NorthBorder:
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NSMiddle:
+			if ((isLegalJump(MoveDirection.NorthWest))&&(getCurrentPawnRow()==3))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthEdge:
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthBorder:
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-  public boolean moveDownLeft()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
-    PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
-    switch (aPawnSMSMPawnNSPawnNS)
-    {
-      case NorthEdge:
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NorthBorder:
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case NSMiddle:
-        if ((isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnRow()==7))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case SouthEdge:
-        exitPawnSMSMPawnNSPawnNS();
-        // line 58 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-        //wasEventProcessed = true;
-        break;
-      case SouthBorder:
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnNSPawnNS();
-          setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		switch (aPawnSMSMPawnEWPawnEW)
+		{
+		case EastEdge:
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EastBorder:
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EWMiddle:
+			if ((isLegalJump(MoveDirection.NorthWest))&&(getCurrentPawnColumn()==3))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestEdge:
+			exitPawnSMSMPawnEWPawnEW();
+			// line 116 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+			//wasEventProcessed = true;
+			break;
+		case WestBorder:
+			if ((isLegalJump(MoveDirection.NorthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    switch (aPawnSMSMPawnEWPawnEW)
-    {
-      case EastEdge:
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EastBorder:
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EWMiddle:
-        if ((isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnColumn()==3))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestEdge:
-        exitPawnSMSMPawnEWPawnEW();
-        // line 118 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-        //wasEventProcessed = true;
-        break;
-      case WestBorder:
-        if ((isLegalJump(MoveDirection.SouthWest)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		return wasEventProcessed;
+	}
 
-    return wasEventProcessed;
-  }
+	public boolean moveDownRight()
+	{
+		boolean wasEventProcessed = false;
 
-  public boolean moveRight()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
-    switch (aPawnSMSMPawnEWPawnEW)
-    {
-      case EastEdge:
-        exitPawnSMSMPawnEWPawnEW();
-        // line 77 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-        //wasEventProcessed = true;
-        break;
-      case EastBorder:
-        if (isLegalStep(MoveDirection.East))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EWMiddle:
-        if (isLegalStep(MoveDirection.East)&&(getCurrentPawnColumn()==7))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn()==6))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn()==7))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalStep(MoveDirection.East)||isLegalJump(MoveDirection.East))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestEdge:
-        if (isLegalStep(MoveDirection.East))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.East)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestBorder:
-        if (isLegalStep(MoveDirection.East)||(isLegalJump(MoveDirection.East)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
+		PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
+		switch (aPawnSMSMPawnNSPawnNS)
+		{
+		case NorthEdge:
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NorthBorder:
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NSMiddle:
+			if ((isLegalJump(MoveDirection.SouthEast))&&(getCurrentPawnRow()==7))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthEdge:
+			exitPawnSMSMPawnNSPawnNS();
+			// line 57 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+			//wasEventProcessed = true;
+			break;
+		case SouthBorder:
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    return wasEventProcessed;
-  }
+		switch (aPawnSMSMPawnEWPawnEW)
+		{
+		case EastEdge:
+			exitPawnSMSMPawnEWPawnEW();
+			// line 82 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+			//wasEventProcessed = true;
+			break;
+		case EastBorder:
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EWMiddle:
+			if ((isLegalJump(MoveDirection.SouthEast))&&(getCurrentPawnColumn()==7))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestEdge:
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestBorder:
+			if ((isLegalJump(MoveDirection.SouthEast)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-  public boolean moveLeft()
-  {
-    boolean wasEventProcessed = false;
-    
-    PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
-    switch (aPawnSMSMPawnEWPawnEW)
-    {
-      case EastEdge:
-        if (isLegalStep(MoveDirection.West))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.West)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EastBorder:
-        if (isLegalStep(MoveDirection.West)||(isLegalJump(MoveDirection.West)))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case EWMiddle:
-        if (isLegalStep(MoveDirection.West)&&(getCurrentPawnColumn()==3))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.West))&&(getCurrentPawnColumn()==4))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
-          wasEventProcessed = true;
-          break;
-        }
-        if ((isLegalJump(MoveDirection.West))&&(getCurrentPawnColumn()==3))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        if (isLegalStep(MoveDirection.West)||isLegalJump(MoveDirection.West))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      case WestEdge:
-        exitPawnSMSMPawnEWPawnEW();
-        // line 112 "../../../../../PawnStateMachine.ump"
-        illegalMove();
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-        //wasEventProcessed = true;
-        break;
-      case WestBorder:
-        if (isLegalStep(MoveDirection.West))
-        {
-          exitPawnSMSMPawnEWPawnEW();
-          setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
-          wasEventProcessed = true;
-          break;
-        }
-        break;
-      default:
-        // Other states do respond to this event
-    }
+		return wasEventProcessed;
+	}
 
-    return wasEventProcessed;
-  }
+	public boolean moveDownLeft()
+	{
+		boolean wasEventProcessed = false;
 
-  private void exitPawnSM()
-  {
-    switch(pawnSM)
-    {
-      case SM:
-        exitPawnSMSMPawnNS();
-        exitPawnSMSMPawnEW();
-        break;
-    }
-  }
+		PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS = pawnSMSMPawnNSPawnNS;
+		PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
+		switch (aPawnSMSMPawnNSPawnNS)
+		{
+		case NorthEdge:
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NorthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NorthBorder:
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case NSMiddle:
+			if ((isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnRow()==7))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.NSMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case SouthEdge:
+			exitPawnSMSMPawnNSPawnNS();
+			// line 58 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+			//wasEventProcessed = true;
+			break;
+		case SouthBorder:
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnNSPawnNS();
+				setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.SouthEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-  private void setPawnSM(PawnSM aPawnSM)
-  {
-    pawnSM = aPawnSM;
+		switch (aPawnSMSMPawnEWPawnEW)
+		{
+		case EastEdge:
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EastBorder:
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EWMiddle:
+			if ((isLegalJump(MoveDirection.SouthWest))&&(getCurrentPawnColumn()==3))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestEdge:
+			exitPawnSMSMPawnEWPawnEW();
+			// line 118 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+			//wasEventProcessed = true;
+			break;
+		case WestBorder:
+			if ((isLegalJump(MoveDirection.SouthWest)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    // entry actions and do activities
-    switch(pawnSM)
-    {
-      case SM:
-        if (pawnSMSMPawnNS == PawnSMSMPawnNS.Null) { setPawnSMSMPawnNS(PawnSMSMPawnNS.pawnNS); }
-        if (pawnSMSMPawnEW == PawnSMSMPawnEW.Null) { setPawnSMSMPawnEW(PawnSMSMPawnEW.pawnEW); }
-        break;
-    }
-  }
+		return wasEventProcessed;
+	}
 
-  private void exitPawnSMSMPawnNS()
-  {
-    switch(pawnSMSMPawnNS)
-    {
-      case pawnNS:
-        exitPawnSMSMPawnNSPawnNS();
-        setPawnSMSMPawnNS(PawnSMSMPawnNS.Null);
-        break;
-    }
-  }
+	public boolean moveRight()
+	{
+		boolean wasEventProcessed = false;
 
-  private void setPawnSMSMPawnNS(PawnSMSMPawnNS aPawnSMSMPawnNS)
-  {
-    pawnSMSMPawnNS = aPawnSMSMPawnNS;
-    if (pawnSM != PawnSM.SM && aPawnSMSMPawnNS != PawnSMSMPawnNS.Null) { setPawnSM(PawnSM.SM); }
+		PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
+		switch (aPawnSMSMPawnEWPawnEW)
+		{
+		case EastEdge:
+			exitPawnSMSMPawnEWPawnEW();
+			// line 77 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+			//wasEventProcessed = true;
+			break;
+		case EastBorder:
+			if (isLegalStep(MoveDirection.East))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EWMiddle:
+			if (isLegalStep(MoveDirection.East)&&(getCurrentPawnColumn()==7))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn()==6))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.East))&&(getCurrentPawnColumn()==7))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			if (isLegalStep(MoveDirection.East)||isLegalJump(MoveDirection.East))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestEdge:
+			if (isLegalStep(MoveDirection.East))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.East)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestBorder:
+			if (isLegalStep(MoveDirection.East)||(isLegalJump(MoveDirection.East)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-    // entry actions and do activities
-    switch(pawnSMSMPawnNS)
-    {
-      case pawnNS:
-        if (pawnSMSMPawnNSPawnNS == PawnSMSMPawnNSPawnNS.Null) { setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Setup); }
-        break;
-    }
-  }
+		return wasEventProcessed;
+	}
 
-  private void exitPawnSMSMPawnNSPawnNS()
-  {
-    switch(pawnSMSMPawnNSPawnNS)
-    {
-      case Setup:
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
-        break;
-      case NorthEdge:
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
-        break;
-      case NorthBorder:
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
-        break;
-      case NSMiddle:
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
-        break;
-      case SouthEdge:
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
-        break;
-      case SouthBorder:
-        setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
-        break;
-    }
-  }
+	public boolean moveLeft()
+	{
+		boolean wasEventProcessed = false;
 
-  private void setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS)
-  {
-    pawnSMSMPawnNSPawnNS = aPawnSMSMPawnNSPawnNS;
-    if (pawnSMSMPawnNS != PawnSMSMPawnNS.pawnNS && aPawnSMSMPawnNSPawnNS != PawnSMSMPawnNSPawnNS.Null) { setPawnSMSMPawnNS(PawnSMSMPawnNS.pawnNS); }
-  }
+		PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW = pawnSMSMPawnEWPawnEW;
+		switch (aPawnSMSMPawnEWPawnEW)
+		{
+		case EastEdge:
+			if (isLegalStep(MoveDirection.West))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EastBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.West)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EastBorder:
+			if (isLegalStep(MoveDirection.West)||(isLegalJump(MoveDirection.West)))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case EWMiddle:
+			if (isLegalStep(MoveDirection.West)&&(getCurrentPawnColumn()==3))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.West))&&(getCurrentPawnColumn()==4))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestBorder);
+				wasEventProcessed = true;
+				break;
+			}
+			if ((isLegalJump(MoveDirection.West))&&(getCurrentPawnColumn()==3))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			if (isLegalStep(MoveDirection.West)||isLegalJump(MoveDirection.West))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.EWMiddle);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		case WestEdge:
+			exitPawnSMSMPawnEWPawnEW();
+			// line 112 "../../../../../PawnStateMachine.ump"
+			illegalMove();
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+			//wasEventProcessed = true;
+			break;
+		case WestBorder:
+			if (isLegalStep(MoveDirection.West))
+			{
+				exitPawnSMSMPawnEWPawnEW();
+				setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.WestEdge);
+				wasEventProcessed = true;
+				break;
+			}
+			break;
+		default:
+			// Other states do respond to this event
+		}
 
-  private void exitPawnSMSMPawnEW()
-  {
-    switch(pawnSMSMPawnEW)
-    {
-      case pawnEW:
-        exitPawnSMSMPawnEWPawnEW();
-        setPawnSMSMPawnEW(PawnSMSMPawnEW.Null);
-        break;
-    }
-  }
+		return wasEventProcessed;
+	}
 
-  private void setPawnSMSMPawnEW(PawnSMSMPawnEW aPawnSMSMPawnEW)
-  {
-    pawnSMSMPawnEW = aPawnSMSMPawnEW;
-    if (pawnSM != PawnSM.SM && aPawnSMSMPawnEW != PawnSMSMPawnEW.Null) { setPawnSM(PawnSM.SM); }
+	private void exitPawnSM()
+	{
+		switch(pawnSM)
+		{
+		case SM:
+			exitPawnSMSMPawnNS();
+			exitPawnSMSMPawnEW();
+			break;
+		}
+	}
 
-    // entry actions and do activities
-    switch(pawnSMSMPawnEW)
-    {
-      case pawnEW:
-        if (pawnSMSMPawnEWPawnEW == PawnSMSMPawnEWPawnEW.Null) { setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Setup); }
-        break;
-    }
-  }
+	private void setPawnSM(PawnSM aPawnSM)
+	{
+		pawnSM = aPawnSM;
 
-  private void exitPawnSMSMPawnEWPawnEW()
-  {
-    switch(pawnSMSMPawnEWPawnEW)
-    {
-      case Setup:
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
-        break;
-      case EastEdge:
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
-        break;
-      case EastBorder:
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
-        break;
-      case EWMiddle:
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
-        break;
-      case WestEdge:
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
-        break;
-      case WestBorder:
-        setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
-        break;
-    }
-  }
+		// entry actions and do activities
+		switch(pawnSM)
+		{
+		case SM:
+			if (pawnSMSMPawnNS == PawnSMSMPawnNS.Null) { setPawnSMSMPawnNS(PawnSMSMPawnNS.pawnNS); }
+			if (pawnSMSMPawnEW == PawnSMSMPawnEW.Null) { setPawnSMSMPawnEW(PawnSMSMPawnEW.pawnEW); }
+			break;
+		}
+	}
 
-  private void setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW)
-  {
-    pawnSMSMPawnEWPawnEW = aPawnSMSMPawnEWPawnEW;
-    if (pawnSMSMPawnEW != PawnSMSMPawnEW.pawnEW && aPawnSMSMPawnEWPawnEW != PawnSMSMPawnEWPawnEW.Null) { setPawnSMSMPawnEW(PawnSMSMPawnEW.pawnEW); }
-  }
-  /* Code from template association_GetOne */
-  public Game getCurrentGame()
-  {
-    return currentGame;
-  }
+	private void exitPawnSMSMPawnNS()
+	{
+		switch(pawnSMSMPawnNS)
+		{
+		case pawnNS:
+			exitPawnSMSMPawnNSPawnNS();
+			setPawnSMSMPawnNS(PawnSMSMPawnNS.Null);
+			break;
+		}
+	}
 
-  public boolean hasCurrentGame()
-  {
-    boolean has = currentGame != null;
-    return has;
-  }
-  /* Code from template association_GetOne */
-  public Player getPlayer()
-  {
-    return player;
-  }
+	private void setPawnSMSMPawnNS(PawnSMSMPawnNS aPawnSMSMPawnNS)
+	{
+		pawnSMSMPawnNS = aPawnSMSMPawnNS;
+		if (pawnSM != PawnSM.SM && aPawnSMSMPawnNS != PawnSMSMPawnNS.Null) { setPawnSM(PawnSM.SM); }
 
-  public boolean hasPlayer()
-  {
-    boolean has = player != null;
-    return has;
-  }
-  /* Code from template association_SetUnidirectionalOptionalOne */
-  public boolean setCurrentGame(Game aNewCurrentGame)
-  {
-    boolean wasSet = false;
-    currentGame = aNewCurrentGame;
-    wasSet = true;
-    return wasSet;
-  }
-  /* Code from template association_SetUnidirectionalOptionalOne */
-  public boolean setPlayer(Player aNewPlayer)
-  {
-    boolean wasSet = false;
-    player = aNewPlayer;
-    wasSet = true;
-    return wasSet;
-  }
+		// entry actions and do activities
+		switch(pawnSMSMPawnNS)
+		{
+		case pawnNS:
+			if (pawnSMSMPawnNSPawnNS == PawnSMSMPawnNSPawnNS.Null) { setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Setup); }
+			break;
+		}
+	}
 
-  public void delete()
-  {
-    currentGame = null;
-    player = null;
-  }
+	private void exitPawnSMSMPawnNSPawnNS()
+	{
+		switch(pawnSMSMPawnNSPawnNS)
+		{
+		case Setup:
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
+			break;
+		case NorthEdge:
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
+			break;
+		case NorthBorder:
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
+			break;
+		case NSMiddle:
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
+			break;
+		case SouthEdge:
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
+			break;
+		case SouthBorder:
+			setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS.Null);
+			break;
+		}
+	}
 
+	private void setPawnSMSMPawnNSPawnNS(PawnSMSMPawnNSPawnNS aPawnSMSMPawnNSPawnNS)
+	{
+		pawnSMSMPawnNSPawnNS = aPawnSMSMPawnNSPawnNS;
+		if (pawnSMSMPawnNS != PawnSMSMPawnNS.pawnNS && aPawnSMSMPawnNSPawnNS != PawnSMSMPawnNSPawnNS.Null) { setPawnSMSMPawnNS(PawnSMSMPawnNS.pawnNS); }
+	}
 
+	private void exitPawnSMSMPawnEW()
+	{
+		switch(pawnSMSMPawnEW)
+		{
+		case pawnEW:
+			exitPawnSMSMPawnEWPawnEW();
+			setPawnSMSMPawnEW(PawnSMSMPawnEW.Null);
+			break;
+		}
+	}
+
+	private void setPawnSMSMPawnEW(PawnSMSMPawnEW aPawnSMSMPawnEW)
+	{
+		pawnSMSMPawnEW = aPawnSMSMPawnEW;
+		if (pawnSM != PawnSM.SM && aPawnSMSMPawnEW != PawnSMSMPawnEW.Null) { setPawnSM(PawnSM.SM); }
+
+		// entry actions and do activities
+		switch(pawnSMSMPawnEW)
+		{
+		case pawnEW:
+			if (pawnSMSMPawnEWPawnEW == PawnSMSMPawnEWPawnEW.Null) { setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Setup); }
+			break;
+		}
+	}
+
+	private void exitPawnSMSMPawnEWPawnEW()
+	{
+		switch(pawnSMSMPawnEWPawnEW)
+		{
+		case Setup:
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
+			break;
+		case EastEdge:
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
+			break;
+		case EastBorder:
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
+			break;
+		case EWMiddle:
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
+			break;
+		case WestEdge:
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
+			break;
+		case WestBorder:
+			setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW.Null);
+			break;
+		}
+	}
+
+	private void setPawnSMSMPawnEWPawnEW(PawnSMSMPawnEWPawnEW aPawnSMSMPawnEWPawnEW)
+	{
+		pawnSMSMPawnEWPawnEW = aPawnSMSMPawnEWPawnEW;
+		if (pawnSMSMPawnEW != PawnSMSMPawnEW.pawnEW && aPawnSMSMPawnEWPawnEW != PawnSMSMPawnEWPawnEW.Null) { setPawnSMSMPawnEW(PawnSMSMPawnEW.pawnEW); }
+	}
+	/* Code from template association_GetOne */
+	public Game getCurrentGame()
+	{
+		return currentGame;
+	}
+
+	public boolean hasCurrentGame()
+	{
+		boolean has = currentGame != null;
+		return has;
+	}
+	/* Code from template association_GetOne */
+	public Player getPlayer()
+	{
+		return player;
+	}
+
+	public boolean hasPlayer()
+	{
+		boolean has = player != null;
+		return has;
+	}
+	/* Code from template association_SetUnidirectionalOptionalOne */
+	public boolean setCurrentGame(Game aNewCurrentGame)
+	{
+		boolean wasSet = false;
+		currentGame = aNewCurrentGame;
+		wasSet = true;
+		return wasSet;
+	}
+	/* Code from template association_SetUnidirectionalOptionalOne */
+	public boolean setPlayer(Player aNewPlayer)
+	{
+		boolean wasSet = false;
+		player = aNewPlayer;
+		wasSet = true;
+		return wasSet;
+	}
+
+	public void delete()
+	{
+		currentGame = null;
+		player = null;
+	}
+
+	
 	/**
 	 * Method to give the row number of the current pawn
 	 *
 	 * @return int integer representing the row number the current pawn is located on
 	 * @author Shayne Leitman,260688512
 	 */
-//line 133 "../../../../../PawnStateMachine.ump"
+	//line 133 "../../../../../PawnStateMachine.ump"
 	public int getCurrentPawnRow() {
 		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
 			return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
@@ -1196,7 +1196,7 @@ public class PawnBehavior
 	 * @return int integer representing the column number the current pawn is located on
 	 * @author Shayne Leitman,260688512
 	 */
-//line 135 "../../../../../PawnStateMachine.ump"
+	//line 135 "../../../../../PawnStateMachine.ump"
 	public int getCurrentPawnColumn() {
 		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
 			return getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
@@ -1213,27 +1213,28 @@ public class PawnBehavior
 	 * @return Boolean Whether or not the move attempting to be made is allowed or not
 	 * @author Shayne, Helen
 	 */
-//line 137 "../../../../../PawnStateMachine.ump"
-public boolean isLegalStep(MoveDirection dir){
+	//line 137 "../../../../../PawnStateMachine.ump"
+	public boolean isLegalStep(MoveDirection dir){
 
-	  //Assume legal until we prove it false
-	  Boolean isLegal = true;
-	  
-	  int curPawnRow = getCurrentPawnRow();
-	  int curPawnCol = getCurrentPawnColumn();
-	  //Get other pawn info here!
-	  int otherPawnRow = 0;
-	  int otherPawnCol = 0;
-	  int wallRow = 0;
-	  int wallCol = 0;
+		//Assume legal until we prove it false
+		Boolean isLegal = true;
+
+		int curPawnRow = getCurrentPawnRow();
+		int curPawnCol = getCurrentPawnColumn();
+		//Get other pawn info here!
+		int otherPawnRow = 0;
+		int otherPawnCol = 0;
+		int wallRow = 0;
+		int wallCol = 0;
+
 		if (getCurrentGame().getBlackPlayer().equals(getPlayer())) {
 			otherPawnCol = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
 			otherPawnRow = getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
 		} else {
-		    otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-		    otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+			otherPawnCol = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+			otherPawnRow = getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
 		}
-		
+
 		//Now make a list of all the walls on the board!
 		ArrayList<Wall> wallList = new ArrayList<Wall>();
 		for (Wall wall : getCurrentGame().getCurrentPosition().getBlackWallsOnBoard()) {
@@ -1242,109 +1243,108 @@ public boolean isLegalStep(MoveDirection dir){
 		for (Wall wall : getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard()) {
 			wallList.add(wall);
 		}
-	 
-	//Now, depending on the direction, check first against the pawn being in the way, and then if a wall is in the way!
+
+		//Now, depending on the direction, check first against the pawn being in the way, and then if a wall is in the way!
 		//also for gherkin tests that directly check isLegalStep, we will also check if board edges are in the way
 		//note that this isn't necessary when using the State machine because edge cases are already directly covered
 		//implicitly by the cases (e.g. when we try to move North from a NorthEdge, directly goes to illegalMove without even checking isLegalStep
-	 switch (dir) {
-	    case North:
-	    	if (curPawnRow == 1) { //for gherkin only
-	    		return false;
-	    	}
-	    	if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
-	    		isLegal = false;
-	    		return isLegal;
-	    	}
-	    	
-	    	for (Wall wall : wallList) {
-	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
-	    			wallRow = wall.getMove().getTargetTile().getRow();
-	    			wallCol = wall.getMove().getTargetTile().getColumn();
-	    			if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			}
-	    		}
-	    	}
-	    	break;
-	    case South:
-	    	if (curPawnRow == 9) { //for gherkin only
-	    		return false;
-	    	}
-	    	if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
-	    		isLegal = false;
-	    		return isLegal;
-	    	}
-	    	
-	    	for (Wall wall : wallList) {
-	    		if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
-	    			wallRow = wall.getMove().getTargetTile().getRow();
-	    			wallCol = wall.getMove().getTargetTile().getColumn();
-	    			if (curPawnRow == wallRow && curPawnCol == wallCol) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			}
-	    		}
-	    	}
-	    	break;
-	    case East:
-	    	if (curPawnCol == 9) { //for gherkin only
-	    		return false;
-	    	}
-	    	if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
-	    		isLegal = false;
-	    		return isLegal;
-	    	}
-	    	
-	    	for (Wall wall : wallList) {
-	    		if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
-	    			wallRow = wall.getMove().getTargetTile().getRow();
-	    			wallCol = wall.getMove().getTargetTile().getColumn();
-	    			if (curPawnRow == wallRow && curPawnCol == wallCol) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			}
-	    		}
-	    	}
-	    	break;
-	    case West:
-	    	if (curPawnCol == 1) { //for gherkin only
-	    		return false;
-	    	}
-	    	if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
-	    		isLegal = false;
-	    		return isLegal;
-	    	}
-	    	
-	    	for (Wall wall : wallList) {
-	    		if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
-	    			wallRow = wall.getMove().getTargetTile().getRow();
-	    			wallCol = wall.getMove().getTargetTile().getColumn();
-	    			if ((curPawnRow == wallRow || curPawnRow == wallRow +1)
-	    					&& curPawnCol == wallCol + 1) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
-	    				isLegal = false;
-	    				return isLegal;
-	    			}
-	    		}
-	    	}
-	    	break;
-	    }
-	return isLegal;
-}
+		switch (dir) {
+		case North:
+			if (curPawnRow == 1) { //for gherkin only
+				return false;
+			}
+			if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
+				isLegal = false;
+				return isLegal;
+			}
 
+			for (Wall wall : wallList) {
+				if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
+					wallRow = wall.getMove().getTargetTile().getRow();
+					wallCol = wall.getMove().getTargetTile().getColumn();
+					if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+						isLegal = false;
+						return isLegal;
+					} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+						isLegal = false;
+						return isLegal;
+					}
+				}
+			}
+			break;
+		case South:
+			if (curPawnRow == 9) { //for gherkin only
+				return false;
+			}
+			if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
+				isLegal = false;
+				return isLegal;
+			}
+
+			for (Wall wall : wallList) {
+				if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
+					wallRow = wall.getMove().getTargetTile().getRow();
+					wallCol = wall.getMove().getTargetTile().getColumn();
+					if (curPawnRow == wallRow && curPawnCol == wallCol) {
+						isLegal = false;
+						return isLegal;
+					} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
+						isLegal = false;
+						return isLegal;
+					}
+				}
+			}
+			break;
+		case East:
+			if (curPawnCol == 9) { //for gherkin only
+				return false;
+			}
+			if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
+				isLegal = false;
+				return isLegal;
+			}
+
+			for (Wall wall : wallList) {
+				if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+					wallRow = wall.getMove().getTargetTile().getRow();
+					wallCol = wall.getMove().getTargetTile().getColumn();
+					if (curPawnRow == wallRow && curPawnCol == wallCol) {
+						isLegal = false;
+						return isLegal;
+					} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+						isLegal = false;
+						return isLegal;
+					}
+				}
+			}
+			break;
+		case West:
+			if (curPawnCol == 1) { //for gherkin only
+				return false;
+			}
+			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
+				isLegal = false;
+				return isLegal;
+			}
+
+			for (Wall wall : wallList) {
+				if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
+					wallRow = wall.getMove().getTargetTile().getRow();
+					wallCol = wall.getMove().getTargetTile().getColumn();
+					if ((curPawnRow == wallRow || curPawnRow == wallRow +1)
+							&& curPawnCol == wallCol + 1) {
+						isLegal = false;
+						return isLegal;
+					} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+						isLegal = false;
+						return isLegal;
+					}
+				}
+			}
+			break;
+		}
+		return isLegal;
+	}
 
 	/**
 	 * Method to check if a jump move is legal or not
@@ -1353,7 +1353,7 @@ public boolean isLegalStep(MoveDirection dir){
 	 * @return Boolean Whether or not the jump move attempting to be made is allowed or not
 	 * @author Shayne, Helen
 	 */
-//line 91 "../../../../../PawnStateMachine.ump"
+	//line 91 "../../../../../PawnStateMachine.ump"
 	public boolean isLegalJump(MoveDirection dir) {
 		// Assume legal until we prove it false
 		Boolean isLegal = true;
@@ -1386,8 +1386,8 @@ public boolean isLegalStep(MoveDirection dir){
 		switch (dir) {
 		case North:
 			if (curPawnRow <= 2) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
@@ -1403,12 +1403,12 @@ public boolean isLegalStep(MoveDirection dir){
 							isLegal = false;
 							return isLegal;
 						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				return isLegal;
@@ -1418,8 +1418,8 @@ public boolean isLegalStep(MoveDirection dir){
 			}
 		case South:
 			if (curPawnRow >= 8) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
@@ -1435,12 +1435,12 @@ public boolean isLegalStep(MoveDirection dir){
 							isLegal = false;
 							return isLegal;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				return isLegal;
@@ -1450,29 +1450,29 @@ public boolean isLegalStep(MoveDirection dir){
 			}
 		case East:
 			if (curPawnCol >= 8) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
 						wallCol = wall.getMove().getTargetTile().getColumn();
-		    			if (curPawnRow == wallRow && curPawnCol + 1 == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol + 1 == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnCol == 8) {
+						if (curPawnRow == wallRow && curPawnCol + 1 == wallCol) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol + 1 == wallCol) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnCol == 8) {
 							isLegal = false;
 							return isLegal;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				return isLegal;
@@ -1480,32 +1480,32 @@ public boolean isLegalStep(MoveDirection dir){
 				isLegal = false;
 				return isLegal;
 			}
-			
+
 		case West:
 			if (curPawnCol <= 2) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
 						wallCol = wall.getMove().getTargetTile().getColumn();
-		    			if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnCol == 2) {
+						if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnCol == 2) {
 							isLegal = false;
 							return isLegal;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				return isLegal;
@@ -1513,59 +1513,59 @@ public boolean isLegalStep(MoveDirection dir){
 				isLegal = false;
 				return isLegal;
 			}
-			
+
 		case NorthWest:
 			if (curPawnRow == 1 || curPawnCol == 1) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			//First look at the case of opponent to the West
 			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
-				
+
 				if (curPawnCol == 2) {
-  				temp = true;
+					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
 						wallCol = wall.getMove().getTargetTile().getColumn();
-		    			if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
-		    				temp = true;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
-		    				temp = true;
-		    			} else if (curPawnCol == 2) {
-		    				temp = true;
+						if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
+							temp = true;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
+							temp = true;
+						} else if (curPawnCol == 2) {
+							temp = true;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
-				
+
 				if (temp) {
 					for (Wall wall : wallList) {
-							wallRow = wall.getMove().getTargetTile().getRow();
-							wallCol = wall.getMove().getTargetTile().getColumn();
-			    			if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
-			    				isLegal= false;
-			    				return isLegal;
-			    			}
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+						if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+							isLegal= false;
+							return isLegal;
 						}
+					}
 				} else {
 					isLegal = false;
 					return isLegal;
 				}
-				
+
 				// Next, look at case of opponent to the North
 			} else if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
-				
+
 				if (curPawnRow == 2) {
-  				temp = true;
+					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
@@ -1602,19 +1602,19 @@ public boolean isLegalStep(MoveDirection dir){
 				isLegal = false;
 				return isLegal;
 			}
-			
+
 			return isLegal;
 
 		case SouthEast:
 			if (curPawnRow == 9 || curPawnCol == 9) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
-				
+
 				if (curPawnRow == 8) {
-  				temp = true;
+					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
@@ -1626,50 +1626,50 @@ public boolean isLegalStep(MoveDirection dir){
 						} else if (curPawnRow == 8) {
 							temp = true;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				if (temp) {
 					for (Wall wall : wallList) {
-							wallRow = wall.getMove().getTargetTile().getRow();
-							wallCol = wall.getMove().getTargetTile().getColumn();
-			    			if (curPawnRow == wallRow && curPawnCol == wallCol) {
-			    				isLegal= false;
-			    				return isLegal;
-			    			}
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+						if (curPawnRow == wallRow && curPawnCol == wallCol) {
+							isLegal= false;
+							return isLegal;
 						}
+					}
 				} else {
 					isLegal = false;
 					return isLegal;
 				}
 			} else if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
-				
+
 				if (curPawnCol == 8) {
-  				temp = true;
+					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
 						wallCol = wall.getMove().getTargetTile().getColumn();
-		    			if (curPawnRow == wallRow && curPawnCol + 1 == wallCol) {
-		    				temp = true;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol + 1 == wallCol) {
-		    				temp = true;
-		    			} else if (curPawnCol == 8) {
-		    				temp = true;
+						if (curPawnRow == wallRow && curPawnCol + 1 == wallCol) {
+							temp = true;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol + 1 == wallCol) {
+							temp = true;
+						} else if (curPawnCol == 8) {
+							temp = true;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				if (temp) {
@@ -1691,58 +1691,58 @@ public boolean isLegalStep(MoveDirection dir){
 				return isLegal;
 			}
 			return isLegal;
-			
+
 		case SouthWest:
 			if (curPawnRow == 9 || curPawnCol == 1) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			if (curPawnCol == otherPawnCol + 1 && curPawnRow == otherPawnRow) {
-				
+
 				if (curPawnCol == 2) {
-  				temp = true;
+					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
 						wallCol = wall.getMove().getTargetTile().getColumn();
-		    			if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
-		    				temp = true;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
-		    				temp = true;
-		    			} else if (curPawnCol == 2) {
-		    				temp = true;
+						if (curPawnRow == wallRow && curPawnCol == wallCol + 2) {
+							temp = true;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 2) {
+							temp = true;
+						} else if (curPawnCol == 2) {
+							temp = true;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol + 1) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
-				
+
 				if (temp) {
 					for (Wall wall : wallList) {
-							wallRow = wall.getMove().getTargetTile().getRow();
-							wallCol = wall.getMove().getTargetTile().getColumn();
-			    			if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
-			    				isLegal= false;
-			    				return isLegal;
-			    			}
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+						if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
+							isLegal= false;
+							return isLegal;
 						}
+					}
 				} else {
 					isLegal = false;
 					return isLegal;
 				}
-				
+
 				// Next, look at case of opponent to the North
 			} else if (curPawnCol == otherPawnCol && curPawnRow + 1 == otherPawnRow) {
-				
+
 				if (curPawnRow == 8) {
-  				temp = true;
+					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
@@ -1754,23 +1754,23 @@ public boolean isLegalStep(MoveDirection dir){
 						} else if (curPawnRow == 8) {
 							temp = true;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow && curPawnCol == wallCol + 1	) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				if (temp) {
 					for (Wall wall : wallList) {
-							wallRow = wall.getMove().getTargetTile().getRow();
-							wallCol = wall.getMove().getTargetTile().getColumn();
-			    			if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
-			    				isLegal= false;
-			    				return isLegal;
-			    			}
+						wallRow = wall.getMove().getTargetTile().getRow();
+						wallCol = wall.getMove().getTargetTile().getColumn();
+						if (curPawnRow == wallRow && curPawnCol == wallCol + 1) {
+							isLegal= false;
+							return isLegal;
 						}
+					}
 				} else {
 					isLegal = false;
 					return isLegal;
@@ -1779,20 +1779,20 @@ public boolean isLegalStep(MoveDirection dir){
 				isLegal = false;
 				return isLegal;
 			}
-			
+
 			return isLegal;
-			
+
 
 		case NorthEast:
 			if (curPawnRow == 1 || curPawnCol == 9) { //for gherkin only
-	    		return false;
-	    	}
+				return false;
+			}
 			if (curPawnCol == otherPawnCol && curPawnRow == otherPawnRow + 1) {
-				
+
 				if (curPawnRow == 2) {
 					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Horizontal)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
@@ -1826,28 +1826,28 @@ public boolean isLegalStep(MoveDirection dir){
 					return isLegal;
 				}
 			} else if (curPawnCol + 1 == otherPawnCol && curPawnRow == otherPawnRow) {
-				
+
 				if (curPawnCol == 8) {
 					temp = true;
 				}
-				
+
 				for (Wall wall : wallList) {
 					if (wall.getMove().getWallDirection().equals(Direction.Vertical)) {
 						wallRow = wall.getMove().getTargetTile().getRow();
 						wallCol = wall.getMove().getTargetTile().getColumn();
-		    			if (curPawnRow == wallRow && curPawnCol + 1 == wallCol) {
-		    				temp = true;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol + 1 == wallCol) {
-		    				temp = true;
-		    			} else if (curPawnCol == 8) {
-		    				temp = true;
+						if (curPawnRow == wallRow && curPawnCol + 1 == wallCol) {
+							temp = true;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol + 1 == wallCol) {
+							temp = true;
+						} else if (curPawnCol == 8) {
+							temp = true;
 						} else if (curPawnRow == wallRow && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
-		    				isLegal = false;
-		    				return isLegal;
-		    			}
+							isLegal = false;
+							return isLegal;
+						} else if (curPawnRow == wallRow + 1 && curPawnCol == wallCol) {
+							isLegal = false;
+							return isLegal;
+						}
 					}
 				}
 				if (temp) {
@@ -1871,31 +1871,29 @@ public boolean isLegalStep(MoveDirection dir){
 			return isLegal;
 
 		}
-		
-		
-		
+
+
+
 		return isLegal;
 	}
 
 
+	/**
+	 * Action to be called when an illegal move is attempted
+	 */
+	// line 142 "../../../../../PawnStateMachine.ump"
+	public void illegalMove(){
 
-  /**
-   * Action to be called when an illegal move is attempted
-   */
-  // line 142 "../../../../../PawnStateMachine.ump"
-  public void illegalMove(){
-    
-  }
-  
-  //------------------------
-  // DEVELOPER CODE - PROVIDED AS-IS
-  //------------------------
-  
-  // line 146 "../../../../../PawnStateMachine.ump"
-  public enum MoveDirection 
-  {
-    East, South, West, North, NorthWest, NorthEast, SouthWest, SouthEast;
-  }
+	}
 
-  
+	//------------------------
+	// DEVELOPER CODE - PROVIDED AS-IS
+	//------------------------
+
+	// line 146 "../../../../../PawnStateMachine.ump"
+	public enum MoveDirection 
+	{
+		East, South, West, North, NorthWest, NorthEast, SouthWest, SouthEast;
+	}
+
 }

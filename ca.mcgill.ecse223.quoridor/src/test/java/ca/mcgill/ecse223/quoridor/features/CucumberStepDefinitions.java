@@ -247,7 +247,7 @@ public class CucumberStepDefinitions {
 	@And("There is existing user {string}")
 	public void thereIsExistingUsername(String username) {
 		QuoridorApplication.getQuoridor().addUser(username); // add the user to set pre-condition that there is already
-																// this user
+		// this user
 
 	}
 
@@ -866,11 +866,11 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is invalid")
 	public void theWallMoveCandidateWithDirectionAtPositionIsInvalid(String direction, int row, int col) {
-//		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-//		int r = candidate.getTargetTile().getRow();
-//		int c = candidate.getTargetTile().getColumn();
-//		String dir = candidate.getWallDirection().toString().toLowerCase();
-//		assert (r != row || c != col || !dir.equals(direction));
+		//		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
+		//		int r = candidate.getTargetTile().getRow();
+		//		int c = candidate.getTargetTile().getColumn();
+		//		String dir = candidate.getWallDirection().toString().toLowerCase();
+		//		assert (r != row || c != col || !dir.equals(direction));
 		List<Wall> whiteWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 				.getWhiteWallsOnBoard();
 		List<Wall> blackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
@@ -889,9 +889,9 @@ public class CucumberStepDefinitions {
 				assert (tmp.getTargetTile().getColumn() == whiteWallsOnBoard.get(i).getMove().getTargetTile()
 						.getColumn()
 						|| tmp.getTargetTile()
-								.getColumn() == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
+						.getColumn() == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| tmp.getTargetTile()
-								.getColumn() == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1);
+						.getColumn() == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1);
 			}
 		}
 		for (int i = 0; i < blackWallsOnBoard.size(); i++) {
@@ -900,9 +900,9 @@ public class CucumberStepDefinitions {
 				assert (tmp.getTargetTile().getColumn() == blackWallsOnBoard.get(i).getMove().getTargetTile()
 						.getColumn()
 						|| tmp.getTargetTile()
-								.getColumn() == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
+						.getColumn() == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
 						|| tmp.getTargetTile()
-								.getColumn() == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1);
+						.getColumn() == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1);
 			}
 		}
 	}
@@ -1234,15 +1234,37 @@ public class CucumberStepDefinitions {
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		MoveMode moveMode = currentGame.getMoveMode();
 
-		if (moveMode == MoveMode.PlayerMove) {
-			Tile targetPawnTile = currentGame.getCurrentPosition().getWhitePosition().getTile();
-			isValid = QuoridorController.validatePosition(targetPawnTile.getRow(), targetPawnTile.getColumn(), "pawn");
-		} else {
-			Tile targetWallTile = currentGame.getWallMoveCandidate().getTargetTile();
-			int row = targetWallTile.getRow();
-			int col = targetWallTile.getColumn();
-			Direction direction = currentGame.getWallMoveCandidate().getWallDirection();
-			isValid = QuoridorController.validatePosition(row, col, direction.toString().toLowerCase());
+		if (currentGame.getCurrentPosition().getWhiteWallsOnBoard().size() == 0) {
+			if (moveMode == MoveMode.PlayerMove) {
+				Tile targetPawnTile = currentGame.getCurrentPosition().getWhitePosition().getTile();
+				isValid = QuoridorController.validatePosition(targetPawnTile.getRow(), targetPawnTile.getColumn(), "pawn");
+			} else {
+				Tile targetWallTile = currentGame.getWallMoveCandidate().getTargetTile();
+				int row = targetWallTile.getRow();
+				int col = targetWallTile.getColumn();
+				Direction direction = currentGame.getWallMoveCandidate().getWallDirection();
+				isValid = QuoridorController.validatePosition(row, col, direction.toString().toLowerCase());
+			}
+		}
+		else {
+			List<Wall> blackWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard();
+			List<Wall> whiteWalls = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+
+			List<Wall> allWallsOnBoard = new ArrayList<Wall>();
+			allWallsOnBoard.addAll(blackWalls);
+			allWallsOnBoard.addAll(whiteWalls);
+			
+			int row1, row2, col1, col2;
+			Direction direction1, direction2;
+			
+			row1 = allWallsOnBoard.get(0).getMove().getTargetTile().getRow();
+			col1 = allWallsOnBoard.get(0).getMove().getTargetTile().getColumn();
+			direction1 = allWallsOnBoard.get(0).getMove().getWallDirection();
+			row2 = allWallsOnBoard.get(1).getMove().getTargetTile().getRow();
+			col2 = allWallsOnBoard.get(1).getMove().getTargetTile().getColumn();
+			direction2 = allWallsOnBoard.get(1).getMove().getWallDirection();
+			
+			isValid = QuoridorController.validateWallOverlapPosition(row1, col1, direction1, row2, col2, direction2);
 		}
 	}
 
@@ -1264,10 +1286,6 @@ public class CucumberStepDefinitions {
 		assertEquals(false, isValid);
 	}
 	// *********** END of VALIDATEPOSITION*************************
-
-	// *********** START of SWITCHCURRRENTPLAYER*************************
-
-	// ************ END of VALIDATEPOSITION **************
 
 	// ************ START of SWITCHCURRENTPLAYER **************
 
@@ -1483,25 +1501,25 @@ public class CucumberStepDefinitions {
 		// get opponent
 		Player opponent = QuoridorController.isBlackTurn()
 				? QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer()
-				: QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+						: QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 
-		// find the tile that the OPPONENT is supposed to be at
-		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
-			if (tile.getRow() == row && tile.getColumn() == col) {
-				// create a new playerPosition for this tile and the OPPONENT
-				PlayerPosition position = new PlayerPosition(opponent, tile);
+				// find the tile that the OPPONENT is supposed to be at
+				for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+					if (tile.getRow() == row && tile.getColumn() == col) {
+						// create a new playerPosition for this tile and the OPPONENT
+						PlayerPosition position = new PlayerPosition(opponent, tile);
 
-				// set the new PlayerPosition for the OPPONENT in game
-				if (QuoridorController.isBlackTurn()) // this means white is the opponent
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setWhitePosition(position);
-				else if (QuoridorController.isWhiteTurn())
-					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setBlackPosition(position);
-				return; // done
-			}
-		}
+						// set the new PlayerPosition for the OPPONENT in game
+						if (QuoridorController.isBlackTurn()) // this means white is the opponent
+							QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setWhitePosition(position);
+						else if (QuoridorController.isWhiteTurn())
+							QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().setBlackPosition(position);
+						return; // done
+					}
+				}
 
-		// if the correct tile wasn't found, or there was an error
-		fail();
+				// if the correct tile wasn't found, or there was an error
+				fail();
 
 	}
 
@@ -1546,7 +1564,7 @@ public class CucumberStepDefinitions {
 	@And("There is a {string} wall at {int}:{int}")
 	public void thereIsADirWallAtWrowWcol(String direction, int wrow, int wcol) {
 		Direction dir = (direction.equals("horizontal")) ? Direction.Horizontal : Direction.Vertical;
-		
+
 		// check if there is a wall at that location already for white and black walls placed
 		if (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasWhiteWallsOnBoard()) {
 			for (Wall wall : QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
@@ -1561,7 +1579,7 @@ public class CucumberStepDefinitions {
 			}
 
 		}
-		
+
 		if (QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasBlackWallsOnBoard()) {
 			for (Wall wall : QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 					.getBlackWallsOnBoard()) {
@@ -1575,7 +1593,7 @@ public class CucumberStepDefinitions {
 			}
 
 		}
-		
+
 		// if no wall, create an arbitrary wall and put it there for the test
 		for (Tile tile :QuoridorApplication.getQuoridor().getBoard().getTiles() ) {
 			//find the tile for wall move
@@ -1586,7 +1604,7 @@ public class CucumberStepDefinitions {
 					Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 					Wall wallPlaced = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock(0);
 					new WallMove(0, 1, black, tile, game, dir, wallPlaced);
-					
+
 					game.getCurrentPosition().removeBlackWallsInStock(wallPlaced);
 					game.getCurrentPosition().addBlackWallsOnBoard(wallPlaced);
 					return;
@@ -1601,7 +1619,7 @@ public class CucumberStepDefinitions {
 				}
 			}
 		}
-		
+
 		//if for some reason we did not find the tile or unable to place a wall on board to test
 		fail();
 	}
@@ -1631,7 +1649,7 @@ public class CucumberStepDefinitions {
 	public void playerColorInitiatesToMoveSide(String color, String side) {
 		//start state machine here to take new tile positions into account
 		QuoridorController.pawnBehaviourSetUp(); 
-		
+
 		//we won't call the controller method to actually move here, we will call it in next step to assert the move's 
 		//result status at same time :)
 	}
@@ -1647,10 +1665,10 @@ public class CucumberStepDefinitions {
 	@Then("The move {string} shall be {string}")
 	public void theMoveSideShallBeStatus(String side, String status) {
 		boolean boolStatus = (status.equals("success"))? true: false; //convert to boolean
-		
+
 		//get the current player's pawn state machine
 		PawnBehavior pb = QuoridorController.getPB(QuoridorController.isBlackTurn());
-		
+
 		//call the actual CONTROLLER method to move or jump pawn, and assert the move status
 		try {
 			boolean result = QuoridorController.movePawn(QuoridorController.stringSideToDirection(side));
@@ -1658,7 +1676,7 @@ public class CucumberStepDefinitions {
 		} catch (InvalidInputException e) {
 			fail();
 		}
-		
+
 	}
 
 	/**
@@ -1671,25 +1689,25 @@ public class CucumberStepDefinitions {
 	@And("Player's new position shall be {int}:{int}")
 	public void playersNewPositionShallBeNrowNcol(int nrow, int ncol) {
 		// assert the new position for the player that just attempted a move
-		
+
 		//if a move was made, player to check was the LAST player
 		PlayerPosition position;
 		if (QuoridorController.getTestMoveWasMade()) {
 			position = QuoridorController.isBlackTurn() ?
 					// this means WHITE just played, so we need to check WHITE position
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
 					// else check Black position
-				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
 		} else {
 			//if a move was NOT made, player to check is same as current player to move
 			position = QuoridorController.isBlackTurn() ?
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+					QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+					: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
 		}
-		
+
 		assertEquals(nrow, position.getTile().getRow());
 		assertEquals(ncol, position.getTile().getColumn());
-		
+
 	}
 
 	/**
