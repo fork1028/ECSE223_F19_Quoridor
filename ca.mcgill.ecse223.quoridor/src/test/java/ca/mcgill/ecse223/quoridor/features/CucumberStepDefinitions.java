@@ -26,6 +26,7 @@ import ca.mcgill.ecse223.quoridor.model.Move;
 import ca.mcgill.ecse223.quoridor.model.Player;
 import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Quoridor;
+import ca.mcgill.ecse223.quoridor.model.StepMove;
 import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
@@ -1253,17 +1254,17 @@ public class CucumberStepDefinitions {
 			List<Wall> allWallsOnBoard = new ArrayList<Wall>();
 			allWallsOnBoard.addAll(blackWalls);
 			allWallsOnBoard.addAll(whiteWalls);
-			
+
 			int row1, row2, col1, col2;
 			Direction direction1, direction2;
-			
+
 			row1 = allWallsOnBoard.get(0).getMove().getTargetTile().getRow();
 			col1 = allWallsOnBoard.get(0).getMove().getTargetTile().getColumn();
 			direction1 = allWallsOnBoard.get(0).getMove().getWallDirection();
 			row2 = allWallsOnBoard.get(1).getMove().getTargetTile().getRow();
 			col2 = allWallsOnBoard.get(1).getMove().getTargetTile().getColumn();
 			direction2 = allWallsOnBoard.get(1).getMove().getWallDirection();
-			
+
 			isValid = QuoridorController.validateWallOverlapPosition(row1, col1, direction1, row2, col2, direction2);
 		}
 	}
@@ -1727,18 +1728,18 @@ public class CucumberStepDefinitions {
 	}
 
 	// ************ END OF MOVEPAWN AND JUMPPAWN ****************
-	
+
 	// ************ START OF IDENTIFYGAMEWON ****************
-	
+
 	/**
 	 * @author Xinyue Chen
 	 * @param player
 	 */
 	@Given("Player {string} has just completed his move")
 	public void playerHasJustCompletedHisMove(String player) {
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 * @param player
@@ -1747,9 +1748,9 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The new position of {string} is {int}:{int}")
 	public void theNewPositionOfPlayerIsRowCol(String player, int row, int col) {
-		
+
 		PlayerPosition position = null;
-		
+
 		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
 			if (tile.getRow() == row && tile.getColumn() == col) {
 				// create a new playerPosition for this tile and the current player to move
@@ -1766,11 +1767,11 @@ public class CucumberStepDefinitions {
 				return; // done
 			}
 		}
-		
+
 		assertEquals(row, position.getTile().getRow());
 		assertEquals(col, position.getTile().getColumn());
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 * @param player
@@ -1788,9 +1789,9 @@ public class CucumberStepDefinitions {
 			remainingTime=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer().getRemainingTime();
 		}
 		assert(remainingTime.getSeconds()>0);
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
@@ -1799,7 +1800,7 @@ public class CucumberStepDefinitions {
 		PlayerPosition position=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
 		QuoridorController.initiateGameResult(position);
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 * @param result
@@ -1820,7 +1821,7 @@ public class CucumberStepDefinitions {
 			assert(result.contentEquals("whiteWon"));
 		}
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
@@ -1828,9 +1829,9 @@ public class CucumberStepDefinitions {
 	public void theGameShallNoLongerBeRunning() {
 		GameStatus status=QuoridorController.getGameResult();
 		assert(status==GameStatus.BlackWon||status==GameStatus.WhiteWon);
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 * @param player
@@ -1849,60 +1850,110 @@ public class CucumberStepDefinitions {
 		}
 		assert(remainingTime.getSeconds()==0);
 	}
-	
+
 	// ************ END OF IDENTIFYGAMEWON ****************
-	
+
+	// ************ START OF IDENTIFYGAMEDRAWN ****************
+
+	/** @author Sami Junior Kahil, 260834568 */
+	@Given("The following moves were executed:")
+	public void theFollowingMovesWereExecuted(io.cucumber.datatable.DataTable dataTable) {
+		Quoridor quoridor = QuoridorApplication.getQuoridor();
+		Game game = quoridor.getCurrentGame();
+		List<Map<String, String>> valueMaps = dataTable.asMaps();
+		// keys: move, turn, row, col
+
+		int moveNumber = 0;
+
+		for (Map<String, String> map : valueMaps) {
+			Integer roundNumber = Integer.decode(map.get("move"));
+			Integer turn = Integer.decode(map.get("turn"));
+			Integer row = Integer.decode(map.get("row"));
+			Integer col = Integer.decode(map.get("col"));
+
+			Tile targetTile = quoridor.getBoard().getTile((row - 1) * 9 + col - 1);
+			Player currentPlayer = (turn == 1) ? quoridor.getCurrentGame().getWhitePlayer() : quoridor.getCurrentGame().getBlackPlayer();			
+
+			quoridor.getCurrentGame().addMove(new StepMove(moveNumber, roundNumber, currentPlayer, targetTile, game));
+
+			moveNumber++;
+		}
+	}
+
+	/** @author Sami Junior Kahil, 260834568 */
+	@And("The last move of {string} is pawn move to {int}:{int}")
+	public void lastMoveOfPlayerIsPawnMoveTo(String player, int row, int col) {
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player currentPlayer = (player.equals("white")) ? game.getWhitePlayer() : game.getBlackPlayer();
+
+
+	}
+
+
+	// ************ END OF IDENTIFYGAMEDRAWN ****************
+
 	// ************ START OF REPORTFINALRESULT ****************
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
 	@When("The game is no longer running")
 	public void theGameIsNoLongerRunning() {
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
 	@Then("The final result shall be displayed")
 	public void theFinalResultShallBeDisplayed() {
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
 	@And("White's clock shall not be counting down")
 	public void whiteClockShallNotBeCountingDown() {
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
 	@And("Black's clock shall not be counting down")
 	public void blackClockShallNotBeCountingDown() {
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
 	@And("White shall be unable to move")
 	public void whiteShallBeUnableToMove() {
-		
+
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 */
 	@And("Black shall be unable to move")
 	public void blackShallBeUnableToMove() {
-		
+
 	}
-	
+
 	// ************ END OF REPORTFINALRESULT ****************
+
+	// ************ START OF RESIGNGAME ****************
+
+	/** @author Sami Junior Kahil, 260834568 */
+	@When("Player initates to resign")
+	public void playerInitiatesToResign() {
+		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		//call controller
+	}
+
+	// ************ END OF RESIGNGAME ****************
 
 	// ***********************************************
 	// Clean up
