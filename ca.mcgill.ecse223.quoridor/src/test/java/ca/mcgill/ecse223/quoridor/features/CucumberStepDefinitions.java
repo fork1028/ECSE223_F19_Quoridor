@@ -1797,9 +1797,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Checking of game result is initated")
 	public void checkingOfGameResultIsInitiated() {
-		PlayerPosition position=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
-		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		QuoridorController.initiateGameResult(position, game);
+		QuoridorController.initiateGameResult();
 	}
 
 	/**
@@ -1908,7 +1906,7 @@ public class CucumberStepDefinitions {
 		currentGame.getMove(numberOfMoves - 1).setNextMove(stepMove);
 		
 		game.addMove(stepMove);
-		QuoridorController.identifyGameDrawn(QuoridorApplication.getQuoridor().getCurrentGame());
+		QuoridorController.identifyGameDrawn();
 	}
 
 

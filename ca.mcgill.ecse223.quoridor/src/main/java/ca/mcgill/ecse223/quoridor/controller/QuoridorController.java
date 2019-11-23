@@ -1178,9 +1178,8 @@ public class QuoridorController {
 	 */
 	public static boolean validatePosition(int row, int col, Direction direction, Quoridor quoridor)
 			throws UnsupportedOperationException {
-		boolean position;
 		if (direction == null) {
-			return position = validatePawnPosition(row, col, quoridor);
+			return validatePawnPosition(row, col, quoridor);
 			// return validatePawnPosition(row, col);
 		} else {
 			return validateWallBoundaryPosition(row, col, direction, quoridor)
@@ -1279,11 +1278,11 @@ public class QuoridorController {
 	 * 
 	 * This method checks if a player has repeated the same move 3 times in a row.
 	 * 
-	 * @param currentGame       passes the instance of the current game being played
 	 * @return boolean          true if game is drawn, false if not
 	 * @author Sami Junior Kahil, 260834568
 	 */
-	public static boolean identifyGameDrawn(Game currentGame) {
+	public static boolean identifyGameDrawn() {
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (currentGame.getMoves().size() <= 8) {
 			status = GameStatus.Running;
 			return false;
@@ -1848,20 +1847,33 @@ public class QuoridorController {
 	}
 
 	/**
+	 * This method initiates a check for the current game to see if a player has won or if a player was won the game or if the game is a draw
 	 * @author Xinyue Chen
 	 * @param currentPlayer
 	 * @return
 	 */
-	public static void initiateGameResult(PlayerPosition position, Game game) {
-		if(position.getTile().getRow()==1) {
+	public static void initiateGameResult() {
+		//check both players!
+		//current position
+		GamePosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+
+		if (getCurrentRowForPawn(true) == 1) { //check black
 			status=GameStatus.BlackWon;
+			//TODO: set status of game
+			//stop clock etc...
 		}
-		else {
-			status=GameStatus.Running;
-		}
-		if (identifyGameDrawn(game) == true) {
+		
+		if(getCurrentRowForPawn(false) == 9) { //check white
+			status=GameStatus.WhiteWon;
+			//TODO: set status of game
+			//stop clock etc...
+		} 
+		
+		if (identifyGameDrawn() == true) {
 			status = GameStatus.Draw;
 		}
+		
+		//not sure if you should check running or set running, it should be already at that state.
 	}
 
 	/**
