@@ -26,15 +26,15 @@ public class QuoridorController {
 	private static boolean boardWasInitiated = false;
 	private static boolean nextPlayerToSetUsername = false;
 	private static boolean moveWasMade = false; //variable to test gherkin test for move and jump only
-	
+
 	//THIS IS WHERE WE DECLARE THE 2 STATEMACHINES!
-    private static PawnBehavior whitePB;
-    private static PawnBehavior blackPB;
-    
-    private static GameStatus status;
+	private static PawnBehavior whitePB;
+	private static PawnBehavior blackPB;
+
+	private static GameStatus status;
 
 
-	
+
 	/**
 	 * This method initializes a game that is ready to start. The game is
 	 * initialized from the view, after all validation.
@@ -1142,21 +1142,21 @@ public class QuoridorController {
 	 * @return boolean    false if overlap, true otherwise
 	 */
 	public static boolean validateWallOverlapPosition(int row1, int col1, Direction direction1, int row2, int col2, Direction direction2) {		
-			if (row1 == row2 && col1 == col2) {
+		if (row1 == row2 && col1 == col2) {
+			return false;
+		}
+
+		if (direction1.equals( Direction.Vertical )) {
+			if ((row1 == row2 - 1 || row1 == row2 + 1) && col1 == col2 && direction2.equals( Direction.Vertical )) {
 				return false;
 			}
+		}
 
-			if (direction1.equals( Direction.Vertical )) {
-				if ((row1 == row2 - 1 || row1 == row2 + 1) && col1 == col2 && direction2.equals( Direction.Vertical )) {
-					return false;
-				}
+		if (direction1.equals( Direction.Horizontal )) {
+			if (row1 == row2 && (col1 == col2 - 1 || col1 == col2 + 1) && direction2.equals( Direction.Horizontal )) {
+				return false;
 			}
-
-			if (direction1.equals( Direction.Horizontal )) {
-				if (row1 == row2 && (col1 == col2 - 1 || col1 == col2 + 1) && direction2.equals( Direction.Horizontal )) {
-					return false;
-				}
-			}
+		}
 
 		return true;
 	}
@@ -1257,7 +1257,109 @@ public class QuoridorController {
 		}
 	}
 
-	// helper methods
+	/********** SECOND SET OF FEATURES **********/
+
+
+	/** 5. Identify Game Drawn
+	 * 
+	 * This method checks if a player has repeated the same move 3 times in a row, which indicates a draw.
+	 * 
+	 * @param row       row of the move position
+	 * @param col       column of the move position
+	 * @param dir       direction of the move position -- "horizontal", "vertical", or "pawn"
+	 * @return boolean  true if valid position, false if invalid position
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static void sup() {
+
+	}
+
+
+	/** 7. Identify Game Drawn
+	 * 
+	 * This method checks if a player has repeated the same move 3 times in a row
+	 * 
+	 * @param row       row of the move position
+	 * @param col       column of the move position
+	 * @param dir       direction of the move position -- "horizontal", "vertical", or "pawn"
+	 * @return boolean  true if valid position, false if invalid position
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static boolean identifyGameDrawn(Game currentGame) {
+		if (currentGame.getMoves().size() <= 8) {
+			status = GameStatus.Running;
+			return false;
+		}
+		List<Move> listOfMoves = currentGame.getMoves();
+		List<Move> subListOfMoves = listOfMoves.subList(listOfMoves.size() - 9, listOfMoves.size());
+
+		Move w1, w2;
+
+		for (int i = 0; i < 3; i++) {
+			w1 = subListOfMoves.get(i);
+			w2 = subListOfMoves.get(i + 4);
+			if ( w1.getTargetTile().getRow() == w2.getTargetTile().getRow() && 
+					w1.getTargetTile().getColumn() == w2.getTargetTile().getColumn() ) {
+				status = GameStatus.Draw;
+				return true;
+			}
+		}
+
+		//		List<Move> listOfWhiteMoves = new ArrayList<Move>();
+		//		List<Move> listOfBlackMoves = new ArrayList<Move>();
+		//		int count = 0;
+		//
+		//		for (Move move : listOfMoves) {
+		//			if (count % 2 == 0) {
+		//				listOfWhiteMoves.add(listOfMoves.get(count));
+		//			}
+		//			else {
+		//				listOfBlackMoves.add(listOfMoves.get(count));
+		//			}			
+		//			count++;
+		//		}
+		//
+		//		if (listOfWhiteMoves.size() < 4 || listOfBlackMoves.size() < 4) { 
+		//			status = GameStatus.Running;
+		//			return false;
+		//		}
+		//
+		//		int sizeOfWhiteMoves = listOfWhiteMoves.size();
+		//		int sizeOfBlackMoves = listOfBlackMoves.size();
+		//
+		//		// get the last 6 moves only
+		//		List<Move> subListOfWhiteMoves = listOfWhiteMoves.subList(sizeOfWhiteMoves - 5, sizeOfWhiteMoves);
+		//		List<Move> subListOfBlackMoves = listOfWhiteMoves.subList(sizeOfBlackMoves - 5, sizeOfBlackMoves);
+		//
+		//		Move w1, w2;
+		//
+		//		for (int i = 0; i < 3; i++) {
+		//			w1 = subListOfWhiteMoves.get(i);
+		//			w2 = subListOfWhiteMoves.get(i + 2);
+		//			if ( w1.getTargetTile().getRow() == w2.getTargetTile().getRow() && 
+		//					w1.getTargetTile().getColumn() == w2.getTargetTile().getColumn() ) {
+		//				status = GameStatus.Draw;
+		//				return true;
+		//			}
+		//		}
+		//
+		//		for (int i = 0; i < 3; i++) {
+		//			w1 = subListOfBlackMoves.get(i);
+		//			w2 = subListOfBlackMoves.get(i + 2);
+		//			if ( w1.getTargetTile().getRow() == w2.getTargetTile().getRow() && 
+		//					w1.getTargetTile().getColumn() == w2.getTargetTile().getColumn() ) {
+		//				status = GameStatus.Draw;
+		//				return true;
+		//			}
+		//		}
+
+		status = GameStatus.Running;
+		return false;
+	}
+
+
+
+	/********** HELPER METHODS **********/
 
 	/**
 	 * Helper method to convert time provided by user to Time.
@@ -1555,23 +1657,23 @@ public class QuoridorController {
 	// pawn, depending on config.
 
 
-    /**
-    * Setup method for pawn bahaviour state machines for black and white pawns. Must be called on startGame
-    * @author Helen
-    * 
-     */
-    public static void pawnBehaviourSetUp() {           
-	    whitePB = new PawnBehavior();
-	    whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
-	    whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
-	    whitePB.startGame();
-	          
-	    blackPB = new PawnBehavior();
-	    blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
-	    blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
-	    blackPB.startGame();
-    }
-    
+	/**
+	 * Setup method for pawn bahaviour state machines for black and white pawns. Must be called on startGame
+	 * @author Helen
+	 * 
+	 */
+	public static void pawnBehaviourSetUp() {           
+		whitePB = new PawnBehavior();
+		whitePB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer());
+		whitePB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+		whitePB.startGame();
+
+		blackPB = new PawnBehavior();
+		blackPB.setPlayer(QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer());
+		blackPB.setCurrentGame(QuoridorApplication.getQuoridor().getCurrentGame());
+		blackPB.startGame();
+	}
+
 	/**
 	 * Controller method to move or jump the current player's pawn
 	 * @Author Shayne, Helen
@@ -1579,162 +1681,162 @@ public class QuoridorController {
 	 * @throws InvalidInputException 
 	 */
 	public static boolean movePawn(MoveDirection dir) throws InvalidInputException {
-		
+
 		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
 
 		//current game objects
 		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		PlayerPosition curPPos = (isBlackTurn()) 
 				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
-		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		GamePosition curGamePos = curGame.getCurrentPosition();
-		
-		//get last move. if this is the first move, allow it to stay null;
-		Move recentMove = null;
-		if (curGame.hasMoves()) {
-			recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
-		}
-		
-		//current player and opponent pawn locations
-		int curRow, curCol, opRow , opCol;
-		if (isBlackTurn()) {
-			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-		} else {
-			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-		}
-		
-		//1) run the pawn behavior method associated with the direction. It updates SM state and returns true if the move valid.
-		//also get the row offset and column offset for a successful move according to direction
-		int rowOffset = 0;
-		int colOffset = 0;
-		boolean isLegalMove = false; //default false
-		switch (dir) {
-		case North:
-			isLegalMove = pb.moveUp();
-			if (curCol == opCol && curRow == opRow + 1) {
-				rowOffset = -2;
-			} else {
-				rowOffset = -1;
-			}
-			break;
-			case South:
-				isLegalMove = pb.moveDown();
-				if (curCol == opCol && curRow == opRow - 1) {
-					rowOffset = 2;
-				} else {
-					rowOffset = 1;
+						: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+				Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+				GamePosition curGamePos = curGame.getCurrentPosition();
+
+				//get last move. if this is the first move, allow it to stay null;
+				Move recentMove = null;
+				if (curGame.hasMoves()) {
+					recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
 				}
-				break;
-			case West:
-				isLegalMove = pb.moveLeft();
-				if (curRow == opRow && curCol == opCol + 1) {
-					colOffset = -2;
+
+				//current player and opponent pawn locations
+				int curRow, curCol, opRow , opCol;
+				if (isBlackTurn()) {
+					curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+					curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+					opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+					opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
 				} else {
+					curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
+					curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
+					opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
+					opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
+				}
+
+				//1) run the pawn behavior method associated with the direction. It updates SM state and returns true if the move valid.
+				//also get the row offset and column offset for a successful move according to direction
+				int rowOffset = 0;
+				int colOffset = 0;
+				boolean isLegalMove = false; //default false
+				switch (dir) {
+				case North:
+					isLegalMove = pb.moveUp();
+					if (curCol == opCol && curRow == opRow + 1) {
+						rowOffset = -2;
+					} else {
+						rowOffset = -1;
+					}
+					break;
+				case South:
+					isLegalMove = pb.moveDown();
+					if (curCol == opCol && curRow == opRow - 1) {
+						rowOffset = 2;
+					} else {
+						rowOffset = 1;
+					}
+					break;
+				case West:
+					isLegalMove = pb.moveLeft();
+					if (curRow == opRow && curCol == opCol + 1) {
+						colOffset = -2;
+					} else {
+						colOffset = -1;
+					}
+					break;
+				case East:
+					isLegalMove = pb.moveRight();
+					if (curRow == opRow && curCol == opCol - 1) {
+						colOffset = 2;
+					} else {
+						colOffset = 1;
+					}
+					break;
+				case NorthWest:
+					isLegalMove = pb.moveUpLeft();
+					rowOffset = -1;
 					colOffset = -1;
-				}
-				break;
-			case East:
-				isLegalMove = pb.moveRight();
-				if (curRow == opRow && curCol == opCol - 1) {
-					colOffset = 2;
-				} else {
+					break;
+				case SouthWest:
+					isLegalMove = pb.moveDownLeft();
+					rowOffset = 1;
+					colOffset = -1;
+					break;
+				case NorthEast:
+					isLegalMove = pb.moveUpRight();
+					rowOffset = -1;
 					colOffset = 1;
+					break;
+				case SouthEast:
+					isLegalMove = pb.moveDownRight();
+					rowOffset = 1;
+					colOffset = 1;
+					break;
 				}
-				break;
-			case NorthWest:
-				isLegalMove = pb.moveUpLeft();
-				rowOffset = -1;
-				colOffset = -1;
-				break;
-			case SouthWest:
-				isLegalMove = pb.moveDownLeft();
-				rowOffset = 1;
-				colOffset = -1;
-				break;
-			case NorthEast:
-				isLegalMove = pb.moveUpRight();
-				rowOffset = -1;
-				colOffset = 1;
-				break;
-			case SouthEast:
-				isLegalMove = pb.moveDownRight();
-				rowOffset = 1;
-				colOffset = 1;
-				break;
-		}
-		
-		//if it was invalid, simply return from this method. The move was illegal, and it is still that player's turn :)
-		if (!isLegalMove) {
-			moveWasMade = false; //note this is only for gherkin tests to be able to check which player attempted a move
-			return isLegalMove;
-		}
-		
-		//2) If it returns true, then we create a new StepMove:
-					
-		//a) find the tile associated with new move
-		Tile newTile = null;
-		int newCol = curPPos.getTile().getColumn() + colOffset;
-		int newRow = curPPos.getTile().getRow() + rowOffset;
-		
-		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
-			if (tile.getRow() == newRow && tile.getColumn() == newCol) {
-				newTile = tile;
-				break;
-			}
-		}
-			//if did not find correct tile, something went wrong, return error
-		if (newTile == null) {
-			throw new InvalidInputException("Unable to find the tile for a new pawn move!");
-		}
-		
-		//b) create new PlayerPositions for BOTH players - important to not overwrite old positions!
-		PlayerPosition newPos = new PlayerPosition(curPlayer, newTile);
-		PlayerPosition opponentPos = (isBlackTurn())
-				? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
-						: new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile());
-		
-		//c) create a new pawn move
-		//TODO: check that the stepMove id is correct. did we start from moveID= 0 or from 1 at initial?
-		StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves() + 1) % 2), curPlayer, newTile, curGame);
-		
-		if (recentMove !=null) { //if this is NOT the first move
-			recentMove.setNextMove(newMove);
-			newMove.setPrevMove(recentMove);
-		}
-		curGame.addMove(newMove);
-		
-		//d) create a new GamePosition, add all walls, set new game position for game
-		//TODO: also check that the gamePos id is correct. did we start from ID= 0 or from 1 at initial?
-		GamePosition newGamePos = (isBlackTurn()) 
-				? new GamePosition(curGame.numberOfPositions() + 1, opponentPos, newPos, curGame.getWhitePlayer(), curGame)
-				: new GamePosition(curGame.numberOfPositions() + 1, newPos, opponentPos, curGame.getBlackPlayer(), curGame);
-		
-		for (Wall wall : curGamePos.getBlackWallsInStock()) {
-			newGamePos.addBlackWallsInStock(wall);
-		}
-		for (Wall wall : curGamePos.getWhiteWallsInStock()) {
-			newGamePos.addWhiteWallsInStock(wall);
-		}
-		for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
-			newGamePos.addBlackWallsOnBoard(wall);
-		}
-		for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
-			newGamePos.addWhiteWallsOnBoard(wall);
-		}
-		
-		curGame.addPosition(newGamePos);
-		curGame.setCurrentPosition(newGamePos);
-		
-		moveWasMade = true; //note this is only for gherkin tests to be able to check which player attempted a move
-		//NOTE : do NOT need to call switchCurrentPlayer because by creating new CurrentGame and Current Game Position, we already set a new player to move :)
-		return true;
+
+				//if it was invalid, simply return from this method. The move was illegal, and it is still that player's turn :)
+				if (!isLegalMove) {
+					moveWasMade = false; //note this is only for gherkin tests to be able to check which player attempted a move
+					return isLegalMove;
+				}
+
+				//2) If it returns true, then we create a new StepMove:
+
+				//a) find the tile associated with new move
+				Tile newTile = null;
+				int newCol = curPPos.getTile().getColumn() + colOffset;
+				int newRow = curPPos.getTile().getRow() + rowOffset;
+
+				for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+					if (tile.getRow() == newRow && tile.getColumn() == newCol) {
+						newTile = tile;
+						break;
+					}
+				}
+				//if did not find correct tile, something went wrong, return error
+				if (newTile == null) {
+					throw new InvalidInputException("Unable to find the tile for a new pawn move!");
+				}
+
+				//b) create new PlayerPositions for BOTH players - important to not overwrite old positions!
+				PlayerPosition newPos = new PlayerPosition(curPlayer, newTile);
+				PlayerPosition opponentPos = (isBlackTurn())
+						? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
+								: new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile());
+
+						//c) create a new pawn move
+						//TODO: check that the stepMove id is correct. did we start from moveID= 0 or from 1 at initial?
+						StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves() + 1) % 2) + 1, curPlayer, newTile, curGame);
+
+						if (recentMove !=null) { //if this is NOT the first move
+							recentMove.setNextMove(newMove);
+							newMove.setPrevMove(recentMove);
+						}
+						curGame.addMove(newMove);
+
+						//d) create a new GamePosition, add all walls, set new game position for game
+						//TODO: also check that the gamePos id is correct. did we start from ID= 0 or from 1 at initial?
+						GamePosition newGamePos = (isBlackTurn()) 
+								? new GamePosition(curGame.numberOfPositions() + 1, opponentPos, newPos, curGame.getWhitePlayer(), curGame)
+										: new GamePosition(curGame.numberOfPositions() + 1, newPos, opponentPos, curGame.getBlackPlayer(), curGame);
+
+								for (Wall wall : curGamePos.getBlackWallsInStock()) {
+									newGamePos.addBlackWallsInStock(wall);
+								}
+								for (Wall wall : curGamePos.getWhiteWallsInStock()) {
+									newGamePos.addWhiteWallsInStock(wall);
+								}
+								for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
+									newGamePos.addBlackWallsOnBoard(wall);
+								}
+								for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
+									newGamePos.addWhiteWallsOnBoard(wall);
+								}
+
+								curGame.addPosition(newGamePos);
+								curGame.setCurrentPosition(newGamePos);
+
+								moveWasMade = true; //note this is only for gherkin tests to be able to check which player attempted a move
+								//NOTE : do NOT need to call switchCurrentPlayer because by creating new CurrentGame and Current Game Position, we already set a new player to move :)
+								return true;
 	}
 
 	/**
@@ -1775,8 +1877,8 @@ public class QuoridorController {
 
 		return dir;
 	}
-	
-    /**
+
+	/**
 	 * Helper Getter for pawn behavior state machine
 	 * @param forBlackPawn true to get blackPB, false to get whitePB
 	 * @author Helen
@@ -1785,7 +1887,6 @@ public class QuoridorController {
 		return (forBlackPawn) ? blackPB : whitePB;
 	}
 
-
 	/**
 	 * Helper method only for gherkin tests for pawn moves to test which player attempted a move
 	 * @return
@@ -1793,21 +1894,24 @@ public class QuoridorController {
 	public static boolean getTestMoveWasMade() {
 		return moveWasMade;
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 * @param currentPlayer
 	 * @return
 	 */
-	public static void initiateGameResult(PlayerPosition position) {
+	public static void initiateGameResult(PlayerPosition position, Game game) {
 		if(position.getTile().getRow()==1) {
 			status=GameStatus.BlackWon;
 		}
 		else {
 			status=GameStatus.Running;
 		}
+		if (identifyGameDrawn(game) == true) {
+			status = GameStatus.Draw;
+		}
 	}
-	
+
 	/**
 	 * @author Xinyue Chen
 	 * @return

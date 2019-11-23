@@ -687,7 +687,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		try {
 			QuoridorController.movePawn(MoveDirection.North);
 			PlayerPosition position=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
-			QuoridorController.initiateGameResult(position);
+			QuoridorController.initiateGameResult(position, QuoridorApplication.getQuoridor().getCurrentGame());
 		} catch (InvalidInputException e) {
 			error="Unable to move the pawn";
 			// TODO Auto-generated catch block

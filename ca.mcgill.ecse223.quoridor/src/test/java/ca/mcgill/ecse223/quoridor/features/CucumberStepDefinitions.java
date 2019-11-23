@@ -1798,7 +1798,8 @@ public class CucumberStepDefinitions {
 	@When("Checking of game result is initated")
 	public void checkingOfGameResultIsInitiated() {
 		PlayerPosition position=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
-		QuoridorController.initiateGameResult(position);
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		QuoridorController.initiateGameResult(position, game);
 	}
 
 	/**
@@ -1820,6 +1821,10 @@ public class CucumberStepDefinitions {
 			result="whiteWon";
 			assert(result.contentEquals("whiteWon"));
 		}
+		if (status==GameStatus.Draw) {
+			result = "Drawn";
+			assert(result.contentEquals("Drawn"));
+		}
 	}
 
 	/**
@@ -1828,7 +1833,7 @@ public class CucumberStepDefinitions {
 	@And("The game shall no longer be running")
 	public void theGameShallNoLongerBeRunning() {
 		GameStatus status=QuoridorController.getGameResult();
-		assert(status==GameStatus.BlackWon||status==GameStatus.WhiteWon);
+		assert(status==GameStatus.BlackWon||status==GameStatus.WhiteWon||status==GameStatus.Draw);
 
 	}
 
@@ -1874,7 +1879,17 @@ public class CucumberStepDefinitions {
 			Tile targetTile = quoridor.getBoard().getTile((row - 1) * 9 + col - 1);
 			Player currentPlayer = (turn == 1) ? quoridor.getCurrentGame().getWhitePlayer() : quoridor.getCurrentGame().getBlackPlayer();			
 
-			quoridor.getCurrentGame().addMove(new StepMove(moveNumber, roundNumber, currentPlayer, targetTile, game));
+			StepMove stepMove = new StepMove(moveNumber, roundNumber, currentPlayer, targetTile, game);
+			
+			if (moveNumber == 0) {
+				quoridor.getCurrentGame().addMove(stepMove);
+			}
+			else {
+				quoridor.getCurrentGame().getMove(moveNumber - 1).setNextMove(stepMove);
+				//quoridor.getCurrentGame().getMove(moveNumber).setPrevMove(moveNumber - 1);
+			}
+			
+			//quoridor.getCurrentGame().addMove(stepMove);
 
 			moveNumber++;
 		}
@@ -1884,9 +1899,16 @@ public class CucumberStepDefinitions {
 	@And("The last move of {string} is pawn move to {int}:{int}")
 	public void lastMoveOfPlayerIsPawnMoveTo(String player, int row, int col) {
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
-		Player currentPlayer = (player.equals("white")) ? game.getWhitePlayer() : game.getBlackPlayer();
-
-
+		Player currentPlayer = ( player.equals("white") ) ? game.getWhitePlayer() : game.getBlackPlayer();
+		Game currentGame = ( player.equals("white") ) ? game.getWhitePlayer().getGameAsWhite() : game.getWhitePlayer().getGameAsBlack();
+		Tile targetTile = QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1);
+		int numberOfMoves = game.getMoves().size();
+		int roundNumber = ( player.equals("white") ) ? 1 : 2;
+		StepMove stepMove = new StepMove(numberOfMoves, roundNumber, currentPlayer, targetTile, currentGame);
+		currentGame.getMove(numberOfMoves - 1).setNextMove(stepMove);
+		
+		game.addMove(stepMove);
+		QuoridorController.identifyGameDrawn(QuoridorApplication.getQuoridor().getCurrentGame());
 	}
 
 
