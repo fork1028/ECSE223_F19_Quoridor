@@ -261,7 +261,10 @@ public class QuoridorStartGame extends JFrame {
 				//creates a READYTOSTART game
 				QuoridorController.createReadyGame(blackUserList.getSelectedItem().toString(), whiteUserList.getSelectedItem().toString(), minuteList.getSelectedIndex(), secondList.getSelectedIndex());
 				error = "Game is ready to start!";
-				new QuoridorGamePage().setVisible(true); //create and display new GamePage!
+				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
+				gamePage.setUsernameToDisplay(blackUserList.getSelectedItem().toString(), true);
+				gamePage.setUsernameToDisplay(whiteUserList.getSelectedItem().toString(), false);
+				gamePage.setVisible(true);
 				QuoridorController.startGameAndClocks();
 				refreshData();
 				return;

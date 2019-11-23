@@ -67,6 +67,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JLabel playerBlackTurnLabel;
 	private JLabel playerBlackClockLabel;
 	private static final int refreshClockMS = 100;
+	
+	private String playerWhiteUsername;
+	private String playerBlackUsername;
 
 	// Wall
 	private JButton moveWall;
@@ -76,8 +79,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JButton cancel;
 	
 	// Pawn
-	private JButton grabPawn; 
-	//private JButton dropPawn;
 	private JButton moveLeft;
 	private JButton moveRight;
 	private JButton moveUp;
@@ -119,10 +120,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private int grabClickedTimes=0;
 	private static boolean dropBtnIsClicked=false;
 	private static boolean cancelIsClicked=false;
-	private static boolean grabPawnIsClicked=false;
 	private static boolean moveIsClicked=false;
-	private static boolean dropPawnIsClicked=false;
-	private static boolean dropPawnBtnIsClicked=false;
 	private static boolean moveUpRightIsClicked=false;
 	private static boolean moveDownRightIsClicked=false;
 	private static boolean moveUpLeftIsClicked=false;
@@ -136,7 +134,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 
 	// graphics
-	Color customGreen = new Color(0, 204, 0);
+	private static final Color CUSTOM_GREEN = new Color(0, 204, 0);
 
 	/** Constructor to create QuoridorBoardPage */
 	public QuoridorGamePage() {
@@ -145,6 +143,23 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		refreshBoardVisualizer();
 		overwriteYes.setEnabled(false);
 		overwriteCancel.setEnabled(false);
+	}
+	
+	/**
+	 * This method will allow the usernames for the current game to be displayed on Game Page.
+	 * Optionally called when the game is initiated.
+	 * @param username
+	 * @param forBlackPlayer
+	 */
+	public void setUsernameToDisplay(String username, Boolean forBlackPlayer) {
+		if (forBlackPlayer) {
+			this.playerBlackUsername = username;
+			playerWhiteNameLabel.setText("<html><center><b><u>PLAYER BLACK</u></b><br/>Username: <b>" + username + "</b></html>");
+		} else {
+			this.playerWhiteUsername = username;
+			playerBlackNameLabel.setText("<html><center><b><u>PLAYER WHITE</u></b><br/>Username: <b>" + username + "</b></html>");
+		}
+			
 	}
 
 	/************ INITIALIZATION AND LAYOUT ***************/
@@ -167,7 +182,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		playerWhiteTurnLabel = new JLabel();
 		playerWhiteTurnLabel.setText("  YOUR TURN  ");
 		playerWhiteTurnLabel.setFont(new Font(null, Font.BOLD, 16));
-		playerWhiteTurnLabel.setBackground(customGreen);
+		playerWhiteTurnLabel.setBackground(CUSTOM_GREEN);
 		playerWhiteTurnLabel.setOpaque(true);
 
 		playerWhiteClockLabel = new JLabel();
@@ -207,25 +222,23 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		cancel.setText("cancel");
 		
 		// pawn
-		grabPawn=new JButton();
-		grabPawn.setText("GRAB PAWN");
 		moveUpRight=new JButton();
-		moveUpRight.setText("MOVE UP RIGHT");
+		moveUpRight.setText("PAWN NORTH-EAST");
 		moveUpLeft=new JButton();
-		moveUpLeft.setText("MOVE UP LEFT");
+		moveUpLeft.setText("PAWN NORTH-WEST");
 		moveDownRight=new JButton();
-		moveDownRight.setText("MOVE DOWN RIGHT");
+		moveDownRight.setText("PAWN SOUTH-EAST");
 		moveDownLeft=new JButton();
-		moveDownLeft.setText("MOVE DOWN LEFT");
+		moveDownLeft.setText("PAWN SOUTH-WEST");
 		
 		moveUp=new JButton();
-		moveUp.setText("MOVE UP");
+		moveUp.setText("PAWN UP");
 		moveDown=new JButton();
-		moveDown.setText("MOVE DOWN");
+		moveDown.setText("PAWN DOWN");
 		moveLeft=new JButton();
-		moveLeft.setText("MOVE LEFT");
+		moveLeft.setText("PAWN LEFT");
 		moveRight=new JButton();
-		moveRight.setText("MOVE RIGHT");
+		moveRight.setText("PAWN RIGHT");
 		
 
 		// save and pause game
@@ -241,14 +254,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
-//		wallVisualizer = new QuoridorWallMoveVisualizer();
-//		wallVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
-		
-		//WALLS
-//		blackWalls=QuoridorWallMoveVisualizer.getBlackWalls();
-//		whiteWalls=QuoridorBoardVisualizer.getWhiteWalls();
-//		rectanglesForWhiteWalls=QuoridorBoardVisualizer.getWhiteRectangles();
-//		rectanglesForBlackWalls=QuoridorBoardVisualizer.getBlackRectangles();
 
 		// global settings
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -295,12 +300,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				rotateIsClicked(evt);
 			}
 		});
-		grabPawn.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent evt) {
-
-				grabPawnIsClicked(evt);
-			}
-		});
+		
 		moveUpRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 
@@ -386,7 +386,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					if (QuoridorController.isBlackTurn()) {
 						//also display player to move display
 						playerBlackTurnLabel.setText("  YOUR TURN  ");
-						playerBlackTurnLabel.setBackground(customGreen);
+						playerBlackTurnLabel.setBackground(CUSTOM_GREEN);
 						playerWhiteTurnLabel.setText("       WAIT        ");
 						playerWhiteTurnLabel.setBackground(Color.LIGHT_GRAY);
 						
@@ -403,7 +403,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					if (QuoridorController.isWhiteTurn()) {
 						//also update player to move display
 						playerWhiteTurnLabel.setText("  YOUR TURN  ");
-						playerWhiteTurnLabel.setBackground(customGreen);
+						playerWhiteTurnLabel.setBackground(CUSTOM_GREEN);
 						playerBlackTurnLabel.setText("       WAIT        ");
 						playerBlackTurnLabel.setBackground(Color.LIGHT_GRAY);
 						
@@ -442,22 +442,25 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				.addGroup(layout.createSequentialGroup()
 						// player1 controls etc on left
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-								.addComponent(playerWhiteNameLabel).addComponent(playerWhiteTurnLabel)
+								.addComponent(playerWhiteNameLabel)
+								.addComponent(playerWhiteTurnLabel)
 								.addComponent(playerWhiteClockLabel)
 						)
 
 						// board in middle
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(boardVisualizer)
+						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+								.addComponent(boardVisualizer)
 								.addGroup(layout.createSequentialGroup()
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall).addComponent(cancel))
-								.addGroup(layout.createSequentialGroup().addComponent(grabPawn).addComponent(moveUp).addComponent(moveDown).addComponent(moveLeft).addComponent(moveRight))
+								.addGroup(layout.createSequentialGroup().addComponent(moveUp).addComponent(moveDown).addComponent(moveLeft).addComponent(moveRight))
 								.addGroup(layout.createSequentialGroup().addComponent(moveUpLeft).addComponent(moveUpRight).addComponent(moveDownLeft).addComponent(moveDownRight)))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-								.addComponent(playerBlackNameLabel).addComponent(playerBlackTurnLabel)
+								.addComponent(playerBlackNameLabel)
+								.addComponent(playerBlackTurnLabel)
 								.addComponent(playerBlackClockLabel)
 						))
 
@@ -488,7 +491,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 										// walls and pawn buttons
 										.addComponent(grabWall).addComponent(rotateWall)
 										.addComponent(dropWall).addComponent(cancel))
-								.addGroup(layout.createParallelGroup().addComponent(grabPawn).addComponent(moveUp).addComponent(moveDown).addComponent(moveLeft).addComponent(moveRight))
+								.addGroup(layout.createParallelGroup().addComponent(moveUp).addComponent(moveDown).addComponent(moveLeft).addComponent(moveRight))
 								.addGroup(layout.createParallelGroup().addComponent(moveUpLeft).addComponent(moveUpRight).addComponent(moveDownLeft).addComponent(moveDownRight)))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
@@ -506,19 +509,22 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 
 	/************ REFRESH METHODS ***************/
+	
+	/**
+	 * This method refreshes any components on the game page.
+	 * @author Helen Lin, 260715521
+	 */
 	private static void refreshData() {
 		// TODO ???
-		// if turn changes
-		// if stock changes
-		// countdown
-		// moves
+
+		// update error message
 		errorMsg.setText(error);
-		
 
 	}
 
 	private void refreshBoardVisualizer() {
-		// TODO
+		// TODO - NOTE (Helen): nov22, I don't think we need this --> board is automatically
+		//refreshed whenever this class or boardVisualizer calls repaint();
 		// board visualizer already automatically detects which tile is clicked
 		// implement for walls
 	}
@@ -624,65 +630,40 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		
 	}
 	
-	private void grabPawnIsClicked(java.awt.event.ActionEvent evt) {
-		grabPawnIsClicked=true;
-		repaint();
-	}
 	
+	
+	/*******************MOVE AND JUMP PAWN ACTION RESPONSES**************************************/
+	
+	/*
+	 * The following methods are called whenever a player attempts to move their pawn using the buttons.
+	 * @author Xinyue + Helen
+	 */
 	
 	private void moveUpRightIsClicked(java.awt.event.ActionEvent evt) {
-		moveUpRightIsClicked=true;
-		try {
-			QuoridorController.movePawn(MoveDirection.NorthEast);
-		} catch (InvalidInputException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			error="Unable to move the pawn";
-		}
-		repaint();
-		refreshData();
+		this.moveAction(MoveDirection.NorthEast);
 	}
 	
+	/**
+	 * This method is called whenever a player attempts to move their pawn UP-LEFT.
+	 * @author Xinyue + Helen
+	 * @param evt
+	 */
 	private void moveUpLeftIsClicked(java.awt.event.ActionEvent evt) {
-		moveUpLeftIsClicked=true;
-		try {
-			QuoridorController.movePawn(MoveDirection.NorthWest);
-		} catch (InvalidInputException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			error="Unable to move the pawn";
-		}
-		repaint();
-		refreshData();
+		this.moveAction(MoveDirection.NorthWest);
 	}
 	
 	private void moveDownLeftIsClicked(java.awt.event.ActionEvent evt) {
-		moveDownLeftIsClicked=true;
-		try {
-			QuoridorController.movePawn(MoveDirection.SouthWest);
-		} catch (InvalidInputException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			error="Unable to move the pawn";
-		}
-		repaint();
-		refreshData();
+		this.moveAction(MoveDirection.SouthWest);
 	}
 	
 	private void moveDownRightIsClicked(java.awt.event.ActionEvent evt) {
-		moveDownRightIsClicked=true;
-		try {
-			QuoridorController.movePawn(MoveDirection.SouthEast);
-		} catch (InvalidInputException e) {
-			// TODO Auto-generated catch block
-			error="Unable to move the pawn";
-			e.printStackTrace();
-		}
-		repaint();
-		refreshData();
+		this.moveAction(MoveDirection.SouthEast);
 	}
 	
 	private void moveUpIsClicked(java.awt.event.ActionEvent evt) {
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
+<<<<<<< Updated upstream
 		moveUpIsClicked=true;
 		try {
 			QuoridorController.movePawn(MoveDirection.North);
@@ -695,49 +676,57 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		}
 		repaint();
 		refreshData();
+=======
+		this.moveAction(MoveDirection.North);
+>>>>>>> Stashed changes
+=======
+		this.moveAction(MoveDirection.North);
+>>>>>>> Stashed changes
+=======
+		this.moveAction(MoveDirection.North);
+>>>>>>> Stashed changes
 	}
 	
 	private void moveDownIsClicked(java.awt.event.ActionEvent evt) {
-		moveDownIsClicked=true;
-		try {
-			
-			QuoridorController.movePawn(MoveDirection.South);
-			
-		} catch (InvalidInputException e) {
-			// TODO Auto-generated catch block
-			error="Unable to move the pawn";
-			e.printStackTrace();
-		}
-		repaint();
-		refreshData();
+		this.moveAction(MoveDirection.South);
 	}
 	
 	private void moveLeftIsClicked(java.awt.event.ActionEvent evt) {
-		moveLeftIsClicked=true;
-		try {
-			QuoridorController.movePawn(MoveDirection.West);
-		} catch (InvalidInputException e) {
-			error="Unable to move the pawn";
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		repaint();
-		refreshData();
+		this.moveAction(MoveDirection.West);
 	}
 	
 	private void moveRightIsClicked(java.awt.event.ActionEvent evt) {
-		moveRightIsClicked=true;
+		this.moveAction(MoveDirection.East);
+	}
+	
+	/**
+	 * Moves the pawn in the appropriate direction by calling controller method and updates GUI elements.
+	 * @param dir
+	 * @author Helen Lin, Xinyue Chen
+	 */
+	private void moveAction(MoveDirection dir) {
+		String currentPlayer = (QuoridorController.isBlackTurn()) ? "black player" : "white player";
 		try {
-			QuoridorController.movePawn(MoveDirection.East);
+			//try the move and display the result
+			if (QuoridorController.movePawn(dir)) {
+				//move success
+				error = "Successful move, " + currentPlayer + "!";
+			} else {
+				//move was illegal, display that to the user
+				error="Illegal move, " + currentPlayer + ". Try again :)";
+			}
 		} catch (InvalidInputException e) {
 			// TODO Auto-generated catch block
-			error="Unable to move the pawn";
 			e.printStackTrace();
+			error="Unable to move the pawn for " + currentPlayer;
 		}
-		repaint();
-		refreshData();
+		repaint(); //refresh board
+		refreshData(); //update game page
 		
+		QuoridorController.initiateGameResult();
 	}
+	
+	/*******************SAVE GAME**************************************/
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
 		error = "";
@@ -927,24 +916,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		cancelIsClicked=false;
 	}
 	
-	public static boolean getGrabPawnIsClicked() {
-		return grabPawnIsClicked;
-	}
-	
-	public static void setGrabPawnIsClicked(boolean input) {
-		grabPawnIsClicked=input;
-	}
-	
 	public static boolean moveIsClicked() {
 		return moveIsClicked;
-	}
-	
-	public static boolean getDropPawnIsClicked() {
-		return dropPawnIsClicked;
-	}
-	
-	public static void setDropPawnIsClicked(boolean input) {
-		dropPawnIsClicked=false;
 	}
 	
 	public static boolean getMoveDownRightIsClicked() {
