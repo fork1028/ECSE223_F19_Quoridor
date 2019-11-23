@@ -15,6 +15,7 @@ import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
 import ca.mcgill.ecse223.quoridor.model.Game.GameStatus;
 import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
+import ca.mcgill.ecse223.quoridor.view.QuoridorGamePage;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
 
@@ -1858,19 +1859,23 @@ public class QuoridorController {
 		GamePosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
 
 		if (getCurrentRowForPawn(true) == 1) { //check black
-			status=GameStatus.BlackWon;
-			//TODO: set status of game
+			//set status of game
 			//stop clock etc...
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
+			QuoridorGamePage.getTimer().stop();
+			QuoridorGamePage.setBlackWon(true);
 		}
 		
 		if(getCurrentRowForPawn(false) == 9) { //check white
-			status=GameStatus.WhiteWon;
-			//TODO: set status of game
+			//set status of game
 			//stop clock etc...
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+			QuoridorGamePage.getTimer().stop();
+			QuoridorGamePage.setWhiteWon(true);
 		} 
 		
 		if (identifyGameDrawn() == true) {
-			status = GameStatus.Draw;
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Draw);
 		}
 		
 		//not sure if you should check running or set running, it should be already at that state.

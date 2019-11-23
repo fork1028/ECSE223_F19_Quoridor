@@ -70,6 +70,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 	private String playerWhiteUsername;
 	private String playerBlackUsername;
+	
+	private static JLabel blackWon;
+	private static JLabel whiteWon;
 
 	// Wall
 	private JButton moveWall;
@@ -129,6 +132,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static boolean moveDownIsClicked=false;
 	private static boolean moveLeftIsClicked=false;
 	private static boolean moveRightIsClicked=false;
+	private static Timer timer;
+	private static boolean isBlackWon=false;
+	private static boolean isWhiteWon=false;
 	
 	
 	
@@ -209,6 +215,15 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		playerBlackClockLabel.setBackground(Color.LIGHT_GRAY);
 		playerBlackClockLabel.setOpaque(true);
 
+		blackWon=new JLabel();
+		blackWon.setText("BLACK WON!");
+		blackWon.setFont(new Font(null, Font.BOLD, 16));
+		blackWon.setVisible(false);
+		whiteWon=new JLabel();
+		whiteWon.setText("WHITE WON!");
+		whiteWon.setFont(new Font(null, Font.BOLD, 16));
+		whiteWon.setVisible(false);
+		
 		// elements for Wall buttons
 		moveWall = new JButton();
 		moveWall.setText("MOVE WALL");
@@ -372,7 +387,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		 * Timer refreshes every 100ms.
 		 * @author Helen
 		 */
-		new Timer(refreshClockMS, new ActionListener() {
+		ActionListener al=new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				// refresh clocks every 100ms
 				String blackStr = "MM:SS"; // default
@@ -418,7 +433,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				playerBlackClockLabel.setText(blackStr);
 				playerWhiteClockLabel.setText(whiteStr);
 			}
-		}).start();
+		};
+		timer=new Timer(refreshClockMS,al);
+		timer.start();
 
 		// Layout
 		GroupLayout layout = new GroupLayout(getContentPane());
@@ -435,9 +452,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				// main controls (save, pause)
 				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame)
-						.addComponent(overwriteYes).addComponent(overwriteCancel)
-
-				)
+						.addComponent(overwriteYes).addComponent(overwriteCancel))
+				.addGroup(layout.createSequentialGroup().addComponent(blackWon).addComponent(whiteWon))
 				// player1, board, player2
 				.addGroup(layout.createSequentialGroup()
 						// player1 controls etc on left
@@ -476,6 +492,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(overwriteYes)
 						.addComponent(overwriteCancel))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon))
 				// player1, board, player2
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						// player1 controls etc on left
@@ -516,9 +533,14 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	 */
 	private static void refreshData() {
 		// TODO ???
-
 		// update error message
 		errorMsg.setText(error);
+		if(isBlackWon==true) {
+			blackWon.setVisible(true);
+		}
+		if(isWhiteWon==true) {
+			whiteWon.setVisible(true);
+		}
 
 	}
 
@@ -697,10 +719,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			e.printStackTrace();
 			error="Unable to move the pawn for " + currentPlayer;
 		}
+		QuoridorController.initiateGameResult();
 		repaint(); //refresh board
 		refreshData(); //update game page
 		
-		QuoridorController.initiateGameResult();
 	}
 	
 	/*******************SAVE GAME**************************************/
@@ -937,6 +959,18 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 	public static void setMoveRightIsClicked(boolean input) {
 		moveRightIsClicked=input;
+	}
+	
+	public static Timer getTimer() {
+		return timer;
+	}
+	
+	public static void setBlackWon(boolean input) {
+		isBlackWon=input;
+	}
+	
+	public static void setWhiteWon(boolean input) {
+		isWhiteWon=input;
 	}
 
 	@Override

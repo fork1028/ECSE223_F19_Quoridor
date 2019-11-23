@@ -779,10 +779,11 @@ public class CucumberStepDefinitions {
 
 	public void theWallMoveCandidateWithDirectionAtPositionIsValid(String direction, int row, int col) {
 		// QuoridorController.moveWall(direction);
+		//Wall wall=new Wall()
 		if (direction.contentEquals("horizontal")) {
-			assert (row != 1 && col != 1);
+			assert (Math.abs(row-1)>=2);
 		} else {
-			assert (row != 7 && col != 4);
+			assert (Math.abs(col-4)>=2);
 		}
 	}
 
@@ -1797,6 +1798,8 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Checking of game result is initated")
 	public void checkingOfGameResultIsInitiated() {
+		PlayerPosition position=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		QuoridorController.initiateGameResult();
 	}
 
