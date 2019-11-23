@@ -1293,65 +1293,19 @@ public class QuoridorController {
 		List<Move> listOfMoves = currentGame.getMoves();
 		List<Move> subListOfMoves = listOfMoves.subList(listOfMoves.size() - 9, listOfMoves.size());
 
-		Move w1, w2;
+		Move m1, m2, m3;
+		int count = 0;
 
-		for (int i = 0; i < 3; i++) {
-			w1 = subListOfMoves.get(i);
-			w2 = subListOfMoves.get(i + 4);
-			if ( w1.getTargetTile().getRow() == w2.getTargetTile().getRow() && 
-					w1.getTargetTile().getColumn() == w2.getTargetTile().getColumn() ) {
-				status = GameStatus.Draw;
-				return true;
-			}
+		m1 = subListOfMoves.get(0);
+		m2 = subListOfMoves.get(4);
+		m3 = subListOfMoves.get(8);
+
+		if ( (m1.getTargetTile().getRow() == m2.getTargetTile().getRow()) && (m1.getTargetTile().getRow() == m3.getTargetTile().getRow())
+				&& (m1.getTargetTile().getColumn() == m2.getTargetTile().getColumn()) && (m1.getTargetTile().getColumn() == m3.getTargetTile().getColumn())
+				) {
+			status = GameStatus.Draw;
+			return true;
 		}
-
-		//		List<Move> listOfWhiteMoves = new ArrayList<Move>();
-		//		List<Move> listOfBlackMoves = new ArrayList<Move>();
-		//		int count = 0;
-		//
-		//		for (Move move : listOfMoves) {
-		//			if (count % 2 == 0) {
-		//				listOfWhiteMoves.add(listOfMoves.get(count));
-		//			}
-		//			else {
-		//				listOfBlackMoves.add(listOfMoves.get(count));
-		//			}			
-		//			count++;
-		//		}
-		//
-		//		if (listOfWhiteMoves.size() < 4 || listOfBlackMoves.size() < 4) { 
-		//			status = GameStatus.Running;
-		//			return false;
-		//		}
-		//
-		//		int sizeOfWhiteMoves = listOfWhiteMoves.size();
-		//		int sizeOfBlackMoves = listOfBlackMoves.size();
-		//
-		//		// get the last 6 moves only
-		//		List<Move> subListOfWhiteMoves = listOfWhiteMoves.subList(sizeOfWhiteMoves - 5, sizeOfWhiteMoves);
-		//		List<Move> subListOfBlackMoves = listOfWhiteMoves.subList(sizeOfBlackMoves - 5, sizeOfBlackMoves);
-		//
-		//		Move w1, w2;
-		//
-		//		for (int i = 0; i < 3; i++) {
-		//			w1 = subListOfWhiteMoves.get(i);
-		//			w2 = subListOfWhiteMoves.get(i + 2);
-		//			if ( w1.getTargetTile().getRow() == w2.getTargetTile().getRow() && 
-		//					w1.getTargetTile().getColumn() == w2.getTargetTile().getColumn() ) {
-		//				status = GameStatus.Draw;
-		//				return true;
-		//			}
-		//		}
-		//
-		//		for (int i = 0; i < 3; i++) {
-		//			w1 = subListOfBlackMoves.get(i);
-		//			w2 = subListOfBlackMoves.get(i + 2);
-		//			if ( w1.getTargetTile().getRow() == w2.getTargetTile().getRow() && 
-		//					w1.getTargetTile().getColumn() == w2.getTargetTile().getColumn() ) {
-		//				status = GameStatus.Draw;
-		//				return true;
-		//			}
-		//		}
 
 		status = GameStatus.Running;
 		return false;
