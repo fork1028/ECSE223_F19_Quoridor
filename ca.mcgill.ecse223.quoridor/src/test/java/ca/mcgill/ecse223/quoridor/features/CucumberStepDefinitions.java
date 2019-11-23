@@ -9,6 +9,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -561,22 +562,6 @@ public class CucumberStepDefinitions {
 
 	// ****** START of ROTATEWALL ******************
 
-	// //ignore
-	// @Given("A wall move candidate exists with {string} at position ({int},
-	// {int})")
-	// public void aWallMoveCandidateExistsWithDirectionAtPosition1(String
-	// direction, int row, int col) {
-	// //supposed to create a wall move candidate with the given direction, row and
-	// col in the model as precondition
-	// Direction setDir;
-	//
-	// if (direction.equals("horizontal")) {
-	// setDir = Direction.Horizontal;
-	// } else if (direction.equals("horizontal"))
-	// setDir = Direction.Horizontal;
-	//
-	// }
-
 	/** * @author Rajaa Boukhelif, 260870030 */
 
 	@Given("A wall move candidate exists with {string} at position \\({int}, {int})")
@@ -696,26 +681,6 @@ public class CucumberStepDefinitions {
 		assert (dir.equals(direction) || nrow == row || ncol != col);
 	}
 
-	// /**
-	// * @author Xinyue Chen
-	// * @param direction
-	// * @param row
-	// * @param col
-	// */
-	// @Given("A wall move candidate exists with {string} at position \\({int},
-	// {int})")
-	// public void aWallMoveCandidateExistsWithDirectionAtPosition(String direction,
-	// int row, int col) {
-
-	// WallMove candidate =
-	// QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-	// int r=candidate.getTargetTile().getRow();
-	// int c=candidate.getTargetTile().getColumn();
-	// assert(col==c&&row==r);
-
-	// }
-
-	// ====Move wall at the edge of the board====
 
 	/**
 	 * @author Xinyue Chen
@@ -776,7 +741,6 @@ public class CucumberStepDefinitions {
 	 * @throws UnsupportedOperationException
 	 */
 	@Given("The wall move candidate with {string} at position \\({int}, {int}) is valid")
-
 	public void theWallMoveCandidateWithDirectionAtPositionIsValid(String direction, int row, int col) {
 		// QuoridorController.moveWall(direction);
 		if (direction.contentEquals("horizontal")) {
@@ -1667,13 +1631,10 @@ public class CucumberStepDefinitions {
 	public void theMoveSideShallBeStatus(String side, String status) {
 		boolean boolStatus = (status.equals("success"))? true: false; //convert to boolean
 
-		//get the current player's pawn state machine
-		PawnBehavior pb = QuoridorController.getPB(QuoridorController.isBlackTurn());
-
 		//call the actual CONTROLLER method to move or jump pawn, and assert the move status
 		try {
 			boolean result = QuoridorController.movePawn(QuoridorController.stringSideToDirection(side));
-			//assertEquals (boolStatus, result);
+			assertEquals (boolStatus, result);
 		} catch (InvalidInputException e) {
 			fail();
 		}
@@ -1974,6 +1935,290 @@ public class CucumberStepDefinitions {
 	}
 
 	// ************ END OF RESIGNGAME ****************
+	
+	
+	//****************************REPLAY MODE FEATURES**********************************/
+	
+	/**
+	 * Pre-condition for Phase 2 replay mode features
+	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
+	 */
+	@Given("The game is in replay mode")
+	public void theGameIsInReplayMode() throws InvalidInputException {
+		theGameIsRunning();
+		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
+	}
+	
+	/**
+	 * Pre-condition for Phase 2 replay mode features
+	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
+	 */
+	@Given("The following moves have been played in game:")
+	public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) {
+		//TODO: debug this --> something is weird
+		List<Map<String, String>> moveMapList = dataTable.asMaps();
+		// keys: mv, rnd, move
+
+		int moveNumber = 0; //?
+		
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition currentGamePos = currentGame.getCurrentPosition();
+		Player blackPlayer = currentGame.getBlackPlayer();
+		Player whitePlayer = currentGame.getWhitePlayer();
+		
+		//read each move from the list of maps of move info,
+		//and create the correct move for each one
+		for (Map<String,String> moveMap : moveMapList) {			
+			Integer mv = Integer.decode(moveMap.get("mv"));
+			Integer rnd = Integer.decode(moveMap.get("rnd"));
+			String move = moveMap.get("move");
+			int col = ((int) move.charAt(0)) - 96;
+			int row = Integer.parseInt(move.substring(1,2));
+			
+			//note that we assume game starts with white player,
+			//so, at every move, there is round1 for white player
+			//and round 2 is black player
+			Player currentPlayer = (rnd == 1) ? whitePlayer : blackPlayer;
+			
+			//1) find the tile associated with new move
+			Tile targetTile = null;
+			for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+				if (tile.getRow() == row && tile.getColumn() == col) {
+					targetTile = tile;
+					break;
+				}
+			}
+			
+			//2) add the move
+			
+			Move newMove;
+		
+			//if stepMove, moveS.length from data table is 2
+			if (move.length() == 2) {
+				//player for the move is whitePlayer if rnd 1, black player if rnd 2 
+				//this assumes white starts on default!
+				newMove = new StepMove(mv,rnd, currentPlayer,
+						targetTile, currentGame);
+				
+			} else { 
+				//else wallMove, add a wallMove here in similar fashion
+				//again, place it 
+				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal: Direction.Vertical;
+
+				Wall wallToPlace = null; //find an arbitrary wall that is not placed already
+				for (Wall wall : currentPlayer.getWalls()) {
+					if (!wall.hasMove()) {
+						wallToPlace = wall;
+						break;
+					}
+					
+				}
+				
+				newMove = new WallMove(mv, rnd, currentPlayer, QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1),
+						currentGame, dir, wallToPlace);
+				
+				if (rnd == 1) {
+					currentGame.getCurrentPosition().removeWhiteWallsInStock(wallToPlace);
+					currentGame.getCurrentPosition().addWhiteWallsOnBoard(wallToPlace);
+				} else {
+					currentGame.getCurrentPosition().removeBlackWallsInStock(wallToPlace);
+					currentGame.getCurrentPosition().addBlackWallsOnBoard(wallToPlace);
+				}
+				
+			
+			}
+			
+			//add move to list of moves
+			if (moveNumber == 0) {
+				QuoridorApplication.getQuoridor().getCurrentGame().addMove(newMove);
+			}
+			else {
+				int totalMoves = currentGame.numberOfMoves();
+				currentGame.getMove(totalMoves -1).setNextMove(newMove);
+			}
+			
+			// create a new GamePosition, add all walls, set new game position for game
+			PlayerPosition newPos = new PlayerPosition(currentPlayer, targetTile);
+			PlayerPosition opponentPos = (rnd == 1)
+					? new PlayerPosition(currentGame.getBlackPlayer(), currentGame.getCurrentPosition().getBlackPosition().getTile())
+							: new PlayerPosition(currentGame.getWhitePlayer(), currentGame.getCurrentPosition().getWhitePosition().getTile());
+					
+			GamePosition newGamePos = (rnd == 1)
+					? new GamePosition(currentGame.numberOfPositions() + 1, newPos, opponentPos, currentGame.getBlackPlayer(), currentGame)
+									: new GamePosition(currentGame.numberOfPositions() + 1, opponentPos, newPos, currentGame.getWhitePlayer(), currentGame);
+
+			for (Wall wall : currentGamePos.getBlackWallsInStock()) {
+				newGamePos.addBlackWallsInStock(wall);
+			}
+			for (Wall wall : currentGamePos.getWhiteWallsInStock()) {
+				newGamePos.addWhiteWallsInStock(wall);
+			}
+			for (Wall wall : currentGamePos.getBlackWallsOnBoard()) {
+				newGamePos.addBlackWallsOnBoard(wall);
+			}
+			for (Wall wall : currentGamePos.getWhiteWallsOnBoard()) {
+				newGamePos.addWhiteWallsOnBoard(wall);
+			}
+
+			currentGame.addPosition(newGamePos);
+			currentGame.setCurrentPosition(newGamePos);
+
+		}
+	
+	}
+	
+	/**
+	 * Part of pre-condition (Given) for several replay mode features
+	 * @param movno moveNumber of the next move within replay mode
+	 * @param rndno roundNumber of the next move within replay mode (typically 1 for white, 2 for black)
+	 * @author Helen Lin, 260715521
+	 */
+	@And ("The next move is {int}.{int}")
+	public void theNextMoveIsMovnoRndNo(int movno, int rndno) {
+		//TODO set replay mode's next move CAUTION ONLY FOR REPLAY MODE
+	}
+	
+	
+
+	/**
+	 * Post-condition for several replay mode features to assert if the correct next move is identified
+	 * @param movno moveNumber of the next move within replay mode within replay mode (typically 1 for white, 2 for black)
+	 * @param rndno roundNumber of the next move
+	 * @author Helen Lin, 260715521
+	 */
+	@Then("The next move shall be {int}.{int}")
+	public void theNextMoveShallBe(int movno, int rndno) {
+		//TODO: check logic for this
+		// get the next move number and round number from the current position and add 1 if needed
+		int totalMoves = QuoridorApplication.getQuoridor().getCurrentGame().numberOfMoves();
+		int nextRoundNumber = (QuoridorApplication.getQuoridor().getCurrentGame().getMove(totalMoves-1).getRoundNumber() == 1) ? 2 : 1;
+		int nextMoveNumber;
+		//if next is a new round rather than round 2, it is a new move number
+		nextMoveNumber = (nextRoundNumber == 1) ?
+				QuoridorApplication.getQuoridor().getCurrentGame().getMove(totalMoves-1).getMoveNumber() +1 
+				: QuoridorApplication.getQuoridor().getCurrentGame().getMove(totalMoves-1).getMoveNumber();
+		
+		assertEquals(movno, nextMoveNumber);
+		assertEquals(rndno, nextRoundNumber);
+	}
+	
+	/**
+	 * Part of post-condition for several replay mode features
+	 * to check if white player is at correct tile
+	 * @param wrow the row number of the white player to assert
+	 * @param wcol the col number of the white player to assert
+	 * @author Helen Lin, 260715521
+	 */
+	@And ("White player's position shall be \\({int},{int})")
+	public void whitePlayersPositionShallBe(int wrow, int wcol) {
+		int row = QuoridorController.getCurrentRowForPawn(false);
+		int col = QuoridorController.getCurrentColForPawn(false);
+		
+		assertEquals(wrow, row);
+		assertEquals(wcol, col);
+	}
+	
+	/**
+	 * Part of post-condition for several replay mode features
+	 * to check if the black player is at correct tile
+	 * @param brow the row number of the black player to assert
+	 * @param bcol the col number of the black player to assert
+	 * @author Helen Lin, 260715521
+	 */
+	@And ("Black player's position shall be \\({int},{int})")
+	public void blackPlayersPositionShallBe(int brow, int bcol) {
+		int row = QuoridorController.getCurrentRowForPawn(true);
+		int col = QuoridorController.getCurrentColForPawn(true);
+		
+		assertEquals(brow, row);
+		assertEquals(bcol, col);
+	}
+	
+
+	/**
+	 * Part of post-condition for several replay mode features
+	 * to check if correct number of white walls left in stock for current replay mode
+	 * @param wwallno number of white walls still in stock
+	 * @author Helen Lin, 260715521
+	 */
+	@And ("White has <wwallno> on stock")
+	public void whiteHasWwallsOnStock(int wwallno) {
+		int wallNum = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfWhiteWallsInStock();
+		assertEquals(wallNum, wwallno);
+	}
+	
+	/**
+	 * Part of post-condition for several replay mode features
+	 * to check if correct number of black walls left in stock for current replay mode
+	 * @param bwallno number of black walls still in stock
+	 * @author Helen Lin, 260715521
+	 */
+	@And ("Black has {int} on stock")
+	public void blackHasWwallsOnStock(int bwallno) {
+		int wallNum = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfBlackWallsInStock();
+		assertEquals(wallNum, bwallno);
+	}
+	
+	
+	// ************ START OF JUMPTOFINAL and JUMP TO START****************
+	
+	/**
+	 * @author Helen Lin, 260715521
+	 */
+	@When("Jump to start position is initiated")
+	public void jumpToStartPositionIsInitiated() {
+		//TODO call controller method to jump to start position
+		//TODO create UI implementation of this (button, action listeners)
+	}
+	
+	/**
+	 * @author Helen Lin, 260715521
+	 */
+	@When("Jump to final position is initiated")
+	public void jumpToFinalPositionIsInitiated() {
+		//TODO call controller method to jump to finalposition
+		//TODO create UI implementation of this (button, action listeners)
+		
+		//find last move info and move
+		int lastMoveNum = 1;
+		int lastRoundNum = 1;
+		Move lastMove = null;
+		List<Move> moves =  QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
+		Collections.sort(moves, (move1, move2) -> {
+			return move1.getMoveNumber() - move2.getMoveNumber();
+		});
+		
+		for (Move move : moves) {
+			System.out.println(move.getMoveNumber() + ", " + move.getRoundNumber());
+//			if (move.getMoveNumber() >= lastMoveNum) {
+//				lastMoveNum = move.getMoveNumber();
+//				lastRoundNum = move.getRoundNumber();
+//				lastMove = move;
+//				if (lastRoundNum == 2) {
+//					break;
+//				}
+//			}
+		}
+		
+		//set as current game position
+		for (GamePosition position : QuoridorApplication.getQuoridor().getCurrentGame().getPositions()) {
+			//find the last move
+
+
+		}
+//		currentGame.addPosition(newGamePos);
+//		currentGame.setCurrentPosition(newGamePos);
+	}
+
+	
+	// ************END OF JUMPTOFINAL****************
+	
+	// ************START OF JUMPTOSTART****************
+	
+	// ************END OF JUMPTOSTART****************
+
 
 	// ***********************************************
 	// Clean up
