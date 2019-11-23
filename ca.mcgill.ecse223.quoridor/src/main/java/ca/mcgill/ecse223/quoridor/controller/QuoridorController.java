@@ -1277,12 +1277,10 @@ public class QuoridorController {
 
 	/** 7. Identify Game Drawn
 	 * 
-	 * This method checks if a player has repeated the same move 3 times in a row
+	 * This method checks if a player has repeated the same move 3 times in a row.
 	 * 
-	 * @param row       row of the move position
-	 * @param col       column of the move position
-	 * @param dir       direction of the move position -- "horizontal", "vertical", or "pawn"
-	 * @return boolean  true if valid position, false if invalid position
+	 * @param currentGame       passes the instance of the current game being played
+	 * @return boolean          true if game is drawn, false if not
 	 * @author Sami Junior Kahil, 260834568
 	 */
 	public static boolean identifyGameDrawn(Game currentGame) {
@@ -1290,11 +1288,11 @@ public class QuoridorController {
 			status = GameStatus.Running;
 			return false;
 		}
+		
 		List<Move> listOfMoves = currentGame.getMoves();
 		List<Move> subListOfMoves = listOfMoves.subList(listOfMoves.size() - 9, listOfMoves.size());
 
 		Move m1, m2, m3;
-		int count = 0;
 
 		m1 = subListOfMoves.get(0);
 		m2 = subListOfMoves.get(4);
