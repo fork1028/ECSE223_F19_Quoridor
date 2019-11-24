@@ -61,11 +61,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	// players
 	private JLabel playerWhiteNameLabel;
 	private JLabel playerWhiteTurnLabel;
-	private JLabel playerWhiteClockLabel;
+	private static JLabel playerWhiteClockLabel;
 
 	private JLabel playerBlackNameLabel;
 	private JLabel playerBlackTurnLabel;
-	private JLabel playerBlackClockLabel;
+	private static JLabel playerBlackClockLabel;
 	private static final int refreshClockMS = 100;
 	
 	private String playerWhiteUsername;
@@ -135,6 +135,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static Timer timer;
 	private static boolean isBlackWon=false;
 	private static boolean isWhiteWon=false;
+	private static boolean gameStopped=false;
 	
 	
 	
@@ -217,11 +218,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 		blackWon=new JLabel();
 		blackWon.setText("BLACK WON!");
-		blackWon.setFont(new Font(null, Font.BOLD, 16));
+		blackWon.setFont(new Font(null, Font.BOLD, 25));
 		blackWon.setVisible(false);
 		whiteWon=new JLabel();
 		whiteWon.setText("WHITE WON!");
-		whiteWon.setFont(new Font(null, Font.BOLD, 16));
+		whiteWon.setFont(new Font(null, Font.BOLD, 25));
 		whiteWon.setVisible(false);
 		
 		// elements for Wall buttons
@@ -278,14 +279,17 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 		moveWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
+				if(gameStopped==false) {
 				if (evt.getActionCommand().equals("MOVE")) {
 					// TODO make a wall appear at the default location on the board
 					error = "I have a wall in my hand now";
+				}
 				}
 			}
 		});
 		dropWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
+				if(gameStopped==false) {
 				try {
 					dropIsClicked(evt);
 				} catch (UnsupportedOperationException | InvalidInputException e) {
@@ -293,75 +297,92 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					e.printStackTrace();
 				}
 				droppedIsClicked=true;
+				}
 			}
 		});
 		cancel.addKeyListener(this);
 		cancel.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent evt) {
+				if(gameStopped==false) {
 				cancelIsClicked(evt);
+				}
 			}
 		});
 		grabWall.addKeyListener(this);
 		grabWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
+				if(gameStopped==false) {
 				grabIsClicked(evt);
 				droppedIsClicked=false;
 				error = "I have a wall in my hand now";
+				}
 			}
 		});
 		rotateWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-
+				if(gameStopped==false) {
 				rotateIsClicked(evt);
+				}
 			}
 		});
 		
 		moveUpRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-
+				if(gameStopped==false) {
 				moveUpRightIsClicked(evt);
+				}
 			}
 		});
 		moveUpLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 
+				if(gameStopped==false) {
 				moveUpLeftIsClicked(evt);
+				}
 			}
 		});
 		moveDownRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-
+				if(gameStopped==false) {
 				moveDownRightIsClicked(evt);
+				}
 			}
 		});
 		moveDownLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 
+				if(gameStopped==false) {
 				moveDownLeftIsClicked(evt);
+				}
 			}
 		});
 		moveUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 
-				moveUpIsClicked(evt);
+				if(gameStopped==false) {
+					moveUpIsClicked(evt);
+				}
 			}
 		});
 		moveDown.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-
+				if(gameStopped==false) {
 				moveDownIsClicked(evt);
+				}
 			}
 		});
 		moveLeft.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-
+				if(gameStopped==false) {
 				moveLeftIsClicked(evt);
+				}
 			}
 		});
 		moveRight.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-
+				if(gameStopped==false) {
 				moveRightIsClicked(evt);
+				}
 			}
 		});
 		saveGame.addActionListener(new ActionListener() {
@@ -456,7 +477,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				// main controls (save, pause)
 				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame)
 						.addComponent(overwriteYes).addComponent(overwriteCancel))
-				.addGroup(layout.createSequentialGroup().addComponent(blackWon).addComponent(whiteWon))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon))
 				// player1, board, player2
 				.addGroup(layout.createSequentialGroup()
 						// player1 controls etc on left
@@ -540,9 +561,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		errorMsg.setText(error);
 		if(isBlackWon==true) {
 			blackWon.setVisible(true);
+			gameStopped=true;
+			playerBlackClockLabel.setText("00:00");
 		}
 		if(isWhiteWon==true) {
 			whiteWon.setVisible(true);
+			gameStopped=true;
+			playerWhiteClockLabel.setText("00:00");
 		}
 
 	}
@@ -982,6 +1007,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	
 	public static boolean getWhiteWon() {
 		return isWhiteWon;
+	}
+	
+	public static boolean getGameStopped() {
+		return gameStopped;
 	}
 	
 

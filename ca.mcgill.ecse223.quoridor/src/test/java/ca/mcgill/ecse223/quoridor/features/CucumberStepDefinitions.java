@@ -13,6 +13,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.Timer;
+
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
@@ -1881,7 +1883,7 @@ public class CucumberStepDefinitions {
 	 */
 	@When("The game is no longer running")
 	public void theGameIsNoLongerRunning() {
-		QuoridorGamePage.getTimer();
+		QuoridorGamePage.getTimer().stop();
 	}
 
 	/**
@@ -1899,7 +1901,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White's clock shall not be counting down")
 	public void whiteClockShallNotBeCountingDown() {
-		
+		Timer timer=QuoridorGamePage.getTimer();
+		assert(timer.isRunning()==false);
 	}
 
 	/**
@@ -1908,6 +1911,8 @@ public class CucumberStepDefinitions {
 	@And("Black's clock shall not be counting down")
 	public void blackClockShallNotBeCountingDown() {
 
+		Timer timer=QuoridorGamePage.getTimer();
+		assert(timer.isRunning()==false);
 	}
 
 	/**
@@ -1915,7 +1920,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("White shall be unable to move")
 	public void whiteShallBeUnableToMove() {
-		
+		boolean gameStopped=QuoridorGamePage.getGameStopped();
+		assert(gameStopped==true);
 	}
 
 	/**
@@ -1923,6 +1929,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("Black shall be unable to move")
 	public void blackShallBeUnableToMove() {
+		boolean gameStopped=QuoridorGamePage.getGameStopped();
+		assert(gameStopped==true);
 
 	}
 
