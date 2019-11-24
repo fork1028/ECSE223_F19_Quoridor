@@ -432,6 +432,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 				playerBlackClockLabel.setText(blackStr);
 				playerWhiteClockLabel.setText(whiteStr);
+				
+				QuoridorController.initiateGameResult();
+				refreshData();
 			}
 		};
 		timer=new Timer(refreshClockMS,al);
@@ -972,6 +975,15 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	public static void setWhiteWon(boolean input) {
 		isWhiteWon=input;
 	}
+	
+	public static boolean getBlackWon() {
+		return isBlackWon;
+	}
+	
+	public static boolean getWhiteWon() {
+		return isWhiteWon;
+	}
+	
 
 	@Override
 	public void keyReleased(KeyEvent e) {

@@ -1857,22 +1857,35 @@ public class QuoridorController {
 		//check both players!
 		//current position
 		GamePosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-
+		
 		if (getCurrentRowForPawn(true) == 1) { //check black
 			//set status of game
 			//stop clock etc...
 			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
-			QuoridorGamePage.getTimer().stop();
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 			QuoridorGamePage.setBlackWon(true);
 		}
 		
-		if(getCurrentRowForPawn(false) == 9) { //check white
+		if (getCurrentRowForPawn(false) == 9) { //check white
 			//set status of game
 			//stop clock etc...
 			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
-			QuoridorGamePage.getTimer().stop();
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 			QuoridorGamePage.setWhiteWon(true);
 		} 
+		
+		Time blackRemainingTime=getTimeForPlayer(true);
+		Time whiteRemainingTime=getTimeForPlayer(false);
+		if(blackRemainingTime.getMinutes()+blackRemainingTime.getSeconds()==0) {
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
+			QuoridorGamePage.setBlackWon(true);
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
+		}
+		if(whiteRemainingTime.getMinutes()+whiteRemainingTime.getSeconds()==0) {
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+			QuoridorGamePage.setWhiteWon(true);
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
+		}
 		
 		if (identifyGameDrawn() == true) {
 			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Draw);
@@ -1886,7 +1899,7 @@ public class QuoridorController {
 	 * @return
 	 */
 	public static GameStatus getGameResult() {
-		return status;
+		return QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
 	}
 
 }
