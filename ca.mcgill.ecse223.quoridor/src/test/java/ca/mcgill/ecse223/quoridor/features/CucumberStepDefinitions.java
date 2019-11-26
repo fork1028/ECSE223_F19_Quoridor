@@ -1283,14 +1283,14 @@ public class CucumberStepDefinitions {
 		if (color.equals("white")) {
 			timeBefore = whitePlayer.getRemainingTime().getTime();
 
-			// wait 1s to actually allow timer to increment
+			// wait to actually allow timer to increment
 			Thread.sleep(500);
 
 			timeAfter = whitePlayer.getRemainingTime().getTime();
 		} else {
 			timeBefore = blackPlayer.getRemainingTime().getTime();
 
-			// wait 1s to actually allow timer to increment
+			// wait to actually allow timer to increment
 			Thread.sleep(500);
 
 			timeAfter = blackPlayer.getRemainingTime().getTime();
@@ -1873,7 +1873,6 @@ public class CucumberStepDefinitions {
 		QuoridorController.identifyGameDrawn();
 	}
 
-
 	// ************ END OF IDENTIFYGAMEDRAWN ****************
 
 	// ************ START OF REPORTFINALRESULT ****************
@@ -1942,7 +1941,7 @@ public class CucumberStepDefinitions {
 	@When("Player initates to resign")
 	public void playerInitiatesToResign() {
 		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		//call controller
+		QuoridorController.resignGame(currentPlayer);
 	}
 
 	// ************ END OF RESIGNGAME ****************

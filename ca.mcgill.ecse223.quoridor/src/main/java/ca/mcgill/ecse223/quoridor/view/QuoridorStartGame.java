@@ -21,9 +21,12 @@ public class QuoridorStartGame extends JFrame {
 	
 	private static final long serialVersionUID = -453453453453245345L;
 	
+	private JFrame f;
+	
 	// UI elements
 	private JLabel errorMsg;
 	//Game
+	private JLabel welcomeMsg;
 	private JButton createNewGameButton;
 	private JButton loadGameButton;
 	private JTextField loadGameTextField;
@@ -57,12 +60,15 @@ public class QuoridorStartGame extends JFrame {
 	}
 	
 	
-	/** This method is called from within the constructor to initialize the form.
-	 */
+	/** This method is called from within the constructor to initialize the form. */
 	private void initComponents() {
+		// elements for welcome message
+		welcomeMsg = new JLabel();
+		welcomeMsg.setText("Welcome to the Quoridor Game!");
+		
 		// elements for error message
 		errorMsg = new JLabel();
-		errorMsg.setForeground(Color.blue);
+		errorMsg.setForeground(Color.red);
 		//elements for Game
 		createNewGameButton = new JButton();
 		createNewGameButton.setText("Create New Game");
@@ -134,6 +140,7 @@ public class QuoridorStartGame extends JFrame {
 		layout.setHorizontalGroup(
 				layout.createSequentialGroup()
 				.addGroup(layout.createParallelGroup()
+						.addComponent(welcomeMsg)
 						.addComponent(errorMsg)
 						.addComponent(horizontalLineMid)
 						.addGroup(layout.createSequentialGroup()
@@ -165,6 +172,7 @@ public class QuoridorStartGame extends JFrame {
 		layout.setVerticalGroup(
 				layout.createParallelGroup()
 				.addGroup(layout.createSequentialGroup()
+						.addComponent(welcomeMsg)
 						.addComponent(errorMsg)
 						.addGroup(layout.createParallelGroup()
 								.addComponent(createUserLabel)
