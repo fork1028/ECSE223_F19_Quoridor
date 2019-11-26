@@ -1270,8 +1270,19 @@ public class QuoridorController {
 	 * @return boolean  true if valid position, false if invalid position
 	 * @author Sami Junior Kahil, 260834568
 	 */
-	public static void sup() {
+	public static void resignGame(Player currentPlayer) {
+		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		
+		if (currentPlayer.equals(whitePlayer)) {
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+		}
+		else {
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
+		}
 
+		QuoridorApplication.getQuoridor().setCurrentGame(null);
+		
+		//QuoridorApplication.getQuoridor().getCurrentGame().setCurrentPosition(gamePos);
 	}
 
 
