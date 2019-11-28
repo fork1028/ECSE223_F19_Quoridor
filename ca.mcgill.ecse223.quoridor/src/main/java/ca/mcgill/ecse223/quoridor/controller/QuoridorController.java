@@ -3,6 +3,7 @@ package ca.mcgill.ecse223.quoridor.controller;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -1767,7 +1768,7 @@ public class QuoridorController {
 
 						//c) create a new pawn move
 						//TODO: check that the stepMove id is correct. did we start from moveID= 0 or from 1 at initial?
-						StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves() + 1) % 2) + 1, curPlayer, newTile, curGame);
+						StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves()) / 2) + 1, curPlayer, newTile, curGame);
 
 						if (recentMove !=null) { //if this is NOT the first move
 							recentMove.setNextMove(newMove);
@@ -1912,5 +1913,141 @@ public class QuoridorController {
 	public static GameStatus getGameResult() {
 		return QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
 	}
+	
+	
+	/**
+	 * This method loads a game
+	 * @author Shayne Leitman
+	 * @param filename	name of the file you wish to load
+	 * @return boolean	returns true if successful loading, false if failed
+	 * @throws InvalidInputException 
+	 * @throws IOException 
+	 */
+	public static boolean loadGame(String filename, String whiteUser, String blackUser) throws InvalidInputException, IOException {
+		//To do:
+		//Save current game, then create a new game and set it as the current
+		//set the users to player, then save players as variables.
+		//Net we need to initialize the board and walls into players stock
+		//
+		Game oldGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Game newGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
+		QuoridorApplication.getQuoridor().setCurrentGame(newGame);
+		if (!setUserToPlayer(whiteUser, false)) {
+			QuoridorApplication.getQuoridor().setCurrentGame(oldGame);
+			return false;
+		}
+		if (!setUserToPlayer(blackUser, true)) {
+			QuoridorApplication.getQuoridor().setCurrentGame(oldGame);
+			return false;
+		}
+		Player whitePl = newGame.getWhitePlayer();
+		Player blackPl = newGame.getBlackPlayer();
+		initializeBoard();
+		pawnBehaviourSetUp();
+		
+		//Now get the move info into a list
+		ArrayList<String> gameData = new ArrayList<String>();
+		String line = null;
+		BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(filename));
+			line = reader.readLine();  
+			while (line != null) {
+				gameData.add(line);
+				line = reader.readLine();
+			} 
+			reader.close();
+		} catch (FileNotFoundException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		}
+		
+		String[] curMoves = null;
+		int roundNum = 0;
+		int wMoveNum = 0;
+		int bMoveNum = 0;
+		//Now, for each entry in the list, we should split on " ", giving us the move(s) separated.
+		for (String moves : gameData) {
+			//For each move, we split first.
+			curMoves = moves.split(" ");
+			roundNum = Integer.parseInt(curMoves[0].replace(".", ""));
+			wMoveNum = 2 * roundNum - 1;
+			bMoveNum = 2 * roundNum;
+			
+			loadGameMovePawn(curMoves[2]);
+			loadGameMovePawn(curMoves[1]);
+			
+		}
+
+		return false;
+	}
+	
+	public static boolean loadGameMovePawn(String move) {
+		boolean result = false;
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		int curRow = getCurrentRowForPawn(isBlackTurn());
+		int curCol = getCurrentColForPawn(isBlackTurn());
+		int newCol = ((int) move.charAt(0)) - 96;;
+		int newRow = Integer.parseInt(move.substring(1, 2));
+		MoveDirection moveDir = getMoveDirection(curRow, curCol, newCol, newRow);
+		boolean movePawn = false;
+		try {
+			movePawn = movePawn(moveDir);
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			return false;
+		}
+		if (movePawn == false) {
+			return false;
+		}
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Boolean isCurBlack = false;
+		if (blackPlayer.equals(curPlayer)) {
+			isCurBlack = true;
+		}
+		
+		int checkRow = getCurrentRowForPawn(isCurBlack);
+		int checkCol = getCurrentColForPawn(isCurBlack);
+		
+		if (checkRow == newRow && checkCol == newCol) {
+			result = true;
+		}
+		
+		return result;
+	}
+	
+	public static MoveDirection getMoveDirection(int curRow, int curCol, int newCol, int newRow) {
+		
+		MoveDirection moveDir = null;
+		//First, case of same column, then case of same row, then, 4 corner moves!
+		if (curCol == newCol) {
+			if (curRow == newRow + 1) {
+				moveDir = MoveDirection.North;
+			} else {
+				moveDir = MoveDirection.South;
+			}
+			
+		} else if (curRow == newRow) {
+			if (curCol == newCol + 1) {
+				moveDir = MoveDirection.West;
+			} else {
+				moveDir = MoveDirection.East;
+			}
+			
+		} else if (curCol == newCol + 1 && curRow == newRow + 1) {
+			moveDir = MoveDirection.NorthWest;
+		} else if (curCol == newCol + 1 && curRow + 1 == newRow) {
+			moveDir = MoveDirection.SouthWest;
+		} else if (curCol + 1 == newCol && curRow + 1 == newRow) {
+			moveDir = MoveDirection.SouthEast;
+		} else if (curCol + 1 == newCol + 1 && curRow == newRow + 1) {
+			moveDir = MoveDirection.NorthEast;
+		}
+		
+		return moveDir;
+	}
+	
 
 }

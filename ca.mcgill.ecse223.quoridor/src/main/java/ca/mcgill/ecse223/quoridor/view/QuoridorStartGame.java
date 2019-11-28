@@ -293,9 +293,10 @@ public class QuoridorStartGame extends JFrame {
 		error = null;
 		//controller method
 		try {
-			QuoridorController.loadSavedPosition(loadGameTextField.getText());
+			//QuoridorController.loadSavedPosition(loadGameTextField.getText());
+			QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
 			new QuoridorGamePage().setVisible(true);
-		} catch (UnsupportedOperationException e) {
+		} catch (UnsupportedOperationException | IOException | InvalidInputException e) {
 			error = e.getMessage();
 			refreshData();
 			return;
