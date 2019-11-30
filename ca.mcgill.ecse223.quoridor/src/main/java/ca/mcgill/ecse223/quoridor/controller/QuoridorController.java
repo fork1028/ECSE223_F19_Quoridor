@@ -1273,17 +1273,17 @@ public class QuoridorController {
 	 */
 	public static void resignGame(Player currentPlayer) {
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		
-		if (currentPlayer.equals(whitePlayer)) {
-			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+		//currentPlayer.hasGameAsWhite();
+		if (currentPlayer.hasGameAsWhite()) {
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
+			QuoridorGamePage.setBlackWon(true);
 		}
 		else {
-			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
+			QuoridorGamePage.setWhiteWon(true);
 		}
-
-		QuoridorApplication.getQuoridor().setCurrentGame(null);
-		
-		//QuoridorApplication.getQuoridor().getCurrentGame().setCurrentPosition(gamePos);
 	}
 
 
@@ -1297,7 +1297,7 @@ public class QuoridorController {
 	public static boolean identifyGameDrawn() {
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (currentGame.getMoves().size() <= 8) {
-			status = GameStatus.Running;
+			currentGame.setGameStatus(GameStatus.Running);
 			return false;
 		}
 		
@@ -1313,7 +1313,9 @@ public class QuoridorController {
 		if ( (m1.getTargetTile().getRow() == m2.getTargetTile().getRow()) && (m1.getTargetTile().getRow() == m3.getTargetTile().getRow())
 				&& (m1.getTargetTile().getColumn() == m2.getTargetTile().getColumn()) && (m1.getTargetTile().getColumn() == m3.getTargetTile().getColumn())
 				) {
-			status = GameStatus.Draw;
+			currentGame.setGameStatus(GameStatus.Draw);
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
+			
 			return true;
 		}
 
@@ -1901,6 +1903,7 @@ public class QuoridorController {
 		
 		if (identifyGameDrawn() == true) {
 			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Draw);
+			QuoridorGamePage.setDraw(true);
 		}
 		
 		//not sure if you should check running or set running, it should be already at that state.
