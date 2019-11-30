@@ -329,16 +329,15 @@ public class QuoridorController {
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		int wallIdxForPlayer = 1;
-		System.out.println(player);
 		if (player == whitePlayer) {
 			// Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
 			Tile whiteStart = new Tile(5, 4, QuoridorApplication.getQuoridor().getBoard());
-			System.out.println("whiteStockSize:" + QuoridorApplication.getQuoridor().getCurrentGame()
-					.getCurrentPosition().getWhiteWallsInStock().size());
+			//System.out.println("whiteStockSize:" + QuoridorApplication.getQuoridor().getCurrentGame()
+					//.getCurrentPosition().getWhiteWallsInStock().size());
 			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 					.getWhiteWallsInStock(wallIdxForPlayer);
 
-			System.out.println(wall);
+			//System.out.println(wall);
 			WallMove nextmove = new WallMove(0, 0, player, whiteStart, game, startDir, wall);
 
 			QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
@@ -419,7 +418,7 @@ public class QuoridorController {
 		boolean movable = true;
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		System.out.println(candidate);
+		//System.out.println(candidate);
 		// Wall
 		// wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		if (candidate == null) {
