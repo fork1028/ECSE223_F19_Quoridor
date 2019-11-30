@@ -436,7 +436,6 @@ public class QuoridorBoardVisualizer extends JPanel {
 				timesBlackGrabClicked--;
 			}
 			else {
-				System.out.println("im hereeeeee");
 				indexCurrentBlackWall++;
 			}
 			Rectangle2D rec=rectanglesForBlackWalls.get(indexCurrentBlackWall);
@@ -480,19 +479,42 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public void drawRotate(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.setStroke(thinStroke);
-		Boolean rotateIsClicked = QuoridorGamePage.getDirectionIsClicked();
-		if(rotateIsClicked =true) {
-			Rectangle2D rec=rectanglesForWhiteWalls.get(indexCurrentWhiteWall);
-
-			int x = -SQUAREWIDTH/2 + r*(SQUAREWIDTH + SPACING)+10;
-			int y = SQUAREWIDTH/2 + c*(SQUAREWIDTH + SPACING)+1;
-			int w = WALLHEIGHT;
-			int h = WALLWIDTH;
-			g2d.rotate(Math.toRadians(90));
+		boolean rotateIsClicked = QuoridorGamePage.getDirectionIsClicked();
+		Player currentPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		Player whitePlayer=QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		Player blackPlayer=QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		if(currentPlayer==whitePlayer) {
+			Rectangle2D rec=rectanglesForWhiteWalls.get(getCurrentWhiteWall());
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			
+			x = -SQUAREWIDTH/2 + (r+1)*(SQUAREWIDTH + SPACING)+2;
+			y = SQUAREWIDTH/2 + (c-1)*(SQUAREWIDTH + SPACING)+10;
+			w = WALLWIDTH;
+			h = WALLHEIGHT;
 			rec.setRect(x,y,w,h);
-			g2d.setColor(Color.PINK);
+			g2d.setColor(Color.GRAY);
 			g2d.fill(rec);
-			g2d.setColor(CUSTOM_GREEN);
+			g2d.setColor(Color.MAGENTA);
+			g2d.draw(rec);
+		}
+		else {
+			Rectangle2D rec=rectanglesForBlackWalls.get(getCurrentBlackWall());
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			
+			x = -SQUAREWIDTH/2 + (r+1)*(SQUAREWIDTH + SPACING)+2;
+			y = SQUAREWIDTH/2 + (c-1)*(SQUAREWIDTH + SPACING)+10;
+			w = WALLWIDTH;
+			h = WALLHEIGHT;
+			rec.setRect(x,y,w,h);
+			g2d.setColor(Color.GRAY);
+			g2d.fill(rec);
+			g2d.setColor(Color.MAGENTA);
 			g2d.draw(rec);
 		}
 
@@ -766,17 +788,17 @@ public class QuoridorBoardVisualizer extends JPanel {
 			drawGrab(g);
 			grabIsClicked=false;
 		}
+		if(rotateIsClicked==true) {
+			drawRotate(g);
+			rotateIsClicked=false;
+		}
 
 		if(moveIsClicked==true) {
-
 			drawMove(g, QuoridorGamePage.getDirection());
 
 			moveIsClicked=false;
 		}
 
-		if(rotateIsClicked==true) {
-			drawRotate(g);
-		}
 
 
 	}
