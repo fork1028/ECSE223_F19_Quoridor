@@ -73,6 +73,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	private static JLabel blackWon;
 	private static JLabel whiteWon;
+	private static JLabel draw;
 
 	// Wall
 	private JButton moveWall;
@@ -138,6 +139,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static Timer timer;
 	private static boolean isBlackWon=false;
 	private static boolean isWhiteWon=false;
+	private static boolean isDraw = false;
 	private static boolean gameStopped=false;
 
 
@@ -225,6 +227,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		whiteWon.setText("WHITE WON!");
 		whiteWon.setFont(new Font(null, Font.BOLD, 25));
 		whiteWon.setVisible(false);
+		draw=new JLabel();
+		draw.setText("DRAW!");
+		draw.setFont(new Font(null, Font.BOLD, 25));
+		draw.setVisible(false);
 
 		// elements for Wall buttons
 		moveWall = new JButton();
@@ -488,7 +494,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				// main controls (save, pause)
 				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame).addComponent(resignGame)
 						.addComponent(overwriteYes).addComponent(overwriteCancel))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon).addComponent(draw))
 				// player1, board, player2
 				.addGroup(layout.createSequentialGroup()
 						// player1 controls etc on left
@@ -527,7 +533,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 						)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(overwriteYes)
 						.addComponent(overwriteCancel))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon).addComponent(draw))
 				// player1, board, player2
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						// player1 controls etc on left
@@ -573,12 +579,20 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		if(isBlackWon==true) {
 			blackWon.setVisible(true);
 			gameStopped=true;
+			playerWhiteClockLabel.setText("00:00");
 			playerBlackClockLabel.setText("00:00");
 		}
 		if(isWhiteWon==true) {
 			whiteWon.setVisible(true);
 			gameStopped=true;
 			playerWhiteClockLabel.setText("00:00");
+			playerBlackClockLabel.setText("00:00");
+		}
+		if(isDraw==true) {
+			draw.setVisible(true);
+			gameStopped=true;
+			playerWhiteClockLabel.setText("00:00");
+			playerBlackClockLabel.setText("00:00");
 		}
 
 	}
@@ -796,6 +810,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	/**************** RESIGN GAME ****************/	
 	private void resignGameIsClicked(java.awt.event.ActionEvent evt) {
 		QuoridorController.resignGame(QuoridorController.getCurrentPlayer().getPlayerToMove());
+		resignGame.setEnabled(false);
 	}
 
 	public static String getErrMsg() {
@@ -1016,6 +1031,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		isWhiteWon=input;
 	}
 
+	public static void setDraw(boolean input) {
+		isDraw=input;
+	}
+	
 	public static boolean getBlackWon() {
 		return isBlackWon;
 	}
