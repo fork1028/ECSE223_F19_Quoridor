@@ -1975,6 +1975,9 @@ public class QuoridorController {
 			wMoveNum = 2 * roundNum - 1;
 			bMoveNum = 2 * roundNum;
 			
+			
+			
+			
 			loadGameMovePawn(curMoves[2]);
 			loadGameMovePawn(curMoves[1]);
 			
@@ -1989,7 +1992,7 @@ public class QuoridorController {
 		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
 		int curRow = getCurrentRowForPawn(isBlackTurn());
 		int curCol = getCurrentColForPawn(isBlackTurn());
-		int newCol = ((int) move.charAt(0)) - 96;;
+		int newCol = ((int) move.charAt(0)) - 96;
 		int newRow = Integer.parseInt(move.substring(1, 2));
 		MoveDirection moveDir = getMoveDirection(curRow, curCol, newCol, newRow);
 		boolean movePawn = false;
@@ -2049,5 +2052,168 @@ public class QuoridorController {
 		return moveDir;
 	}
 	
+	public static boolean loadGamePlaceWall(String move) throws InvalidInputException {
+		boolean result = false;
+		boolean hasWallsToPlace = false;
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		int wallRow = Integer.parseInt(move.substring(1, 2));
+		int wallCol = ((int) move.charAt(0)) - 96;
+		Direction wallDir = null;
+		if (move.substring(2, 3).equals("v")) {
+			wallDir = Direction.Vertical;
+		} else if (move.substring(2, 3).equals("h")){
+			wallDir = Direction.Horizontal;
+		}
+		
+		if (isWhiteTurn()) {
+			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasWhiteWallsInStock();
+		} else {
+			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasBlackWallsInStock();
+		}
+		
+		if (!hasWallsToPlace) {
+			return false;
+		}
+		
+		Tile newTile = null;
+
+		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+			if (tile.getRow() == wallRow && tile.getColumn() == wallCol) {
+				newTile = tile;
+				break;
+			}
+		}
+		//if did not find correct tile, something went wrong, return error
+		if (newTile == null) {
+			throw new InvalidInputException("Unable to find the tile for a new pawn move!");
+		}
+		
+		boolean validPlace = validatingWallPlacement(wallRow, wallCol, wallDir);
+		if (validPlace) {
+			//Need to update gameposition AND create a new move!
+			//First let's create the move. Get the wall being placed, create the new wall move, add the move to the game
+			Wall wallToBePlaced = null;
+			if (isWhiteTurn()) {
+				wallToBePlaced = curGame.getCurrentPosition().getWhiteWallsInStock(curGame.getCurrentPosition().numberOfWhiteWallsInStock()-1);
+
+			} else {
+				wallToBePlaced = curGame.getCurrentPosition().getBlackWallsInStock(curGame.getCurrentPosition().numberOfBlackWallsInStock()-1);
+			}
+			
+			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1,
+					((curGame.numberOfMoves()) / 2) + 1, curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
+			curGame.addMove(newWallMove);
+			Move recentMove = null;
+			if (curGame.hasMoves()) {
+				recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
+			}
+			recentMove.setNextMove(newWallMove);
+			newWallMove.setPrevMove(recentMove);
+			//Next, we need to create a new game position!
+			GamePosition curGamePos = curGame.getCurrentPosition();
+			PlayerPosition curPPos = curGamePos.getBlackPosition();
+			PlayerPosition nextPPos = curGamePos.getWhitePosition();
+
+
+			GamePosition newGamePos = (isBlackTurn()) 
+					? new GamePosition(curGame.numberOfPositions() + 1, nextPPos, curPPos, curGame.getWhitePlayer(), curGame)
+							: new GamePosition(curGame.numberOfPositions() + 1, nextPPos, curPPos, curGame.getBlackPlayer(), curGame);
+
+					for (Wall wall : curGamePos.getBlackWallsInStock()) {
+						newGamePos.addBlackWallsInStock(wall);
+					}
+					for (Wall wall : curGamePos.getWhiteWallsInStock()) {
+						newGamePos.addWhiteWallsInStock(wall);
+					}
+					for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
+						newGamePos.addBlackWallsOnBoard(wall);
+					}
+					for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
+						newGamePos.addWhiteWallsOnBoard(wall);
+					}
+					
+					if (isBlackTurn()) {
+						curGamePos.removeBlackWallsInStock(wallToBePlaced);
+						curGamePos.addBlackWallsOnBoard(wallToBePlaced);
+					} else {
+						curGamePos.removeWhiteWallsInStock(wallToBePlaced);
+						curGamePos.addWhiteWallsOnBoard(wallToBePlaced);
+					}
+
+					curGame.addPosition(newGamePos);
+					curGame.setCurrentPosition(newGamePos);
+			
+			result = true;
+			
+		} else {
+			return false;
+		}
+		
+		return result;
+		
+	}
+	
+	public static boolean validatingWallPlacement(int row, int col, Direction dir) {
+		boolean result = true;
+		GamePosition curPos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
+		
+		ArrayList<Wall> wallList = new ArrayList<Wall>();
+		if (curPos.numberOfBlackWallsOnBoard() > 0) {
+			for (Wall wall : curPos.getBlackWallsOnBoard()) {
+				wallList.add(wall);
+			}
+		}
+		if (curPos.numberOfWhiteWallsOnBoard() > 0) {
+			for (Wall wall : curPos.getWhiteWallsOnBoard()) {
+				wallList.add(wall);
+			}
+		}
+		
+		if (wallList.isEmpty()) {
+			return true;
+		}
+		
+		int curRow = 0;
+		int curCol = 0;
+		Direction curDir = null;
+		
+		//Now loop through the wall and check if they interfere with this new one!
+		for (Wall wall : wallList) {
+			curCol = wall.getMove().getTargetTile().getColumn();
+			curRow = wall.getMove().getTargetTile().getRow();
+			curDir = wall.getMove().getWallDirection();
+			
+			if (dir.equals(Direction.Horizontal)) {
+				//HORIZONTAL CASE
+				//First check if directions are the same!
+				if (curDir.equals(dir)) {
+					if ((row == curRow) && (curCol == col || curCol + 1 == col || curCol == col + 1)) {
+						result = false;
+					}
+				} else {
+					if (curRow == row && curCol == col) {
+						result = false;
+					}
+				}
+				
+			} else {
+				//VERTICAL CASE
+				//First check if directions are the same!
+				if (curDir.equals(dir)) {
+					if ((col == curCol) && (curRow == row || curRow + 1 == row || curRow == row + 1)) {
+						result = false;
+					}
+				} else {
+					if (curRow == row && curCol == col) {
+						result = false;
+					}
+				}
+				
+			}
+			
+		}
+		
+		return result;
+	}
 
 }
