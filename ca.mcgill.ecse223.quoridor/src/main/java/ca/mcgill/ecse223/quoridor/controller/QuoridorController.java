@@ -1932,6 +1932,7 @@ public class QuoridorController {
 		//set the users to player, then save players as variables.
 		//Net we need to initialize the board and walls into players stock
 		//
+		boolean result = true;
 		Game oldGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Game newGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
 		QuoridorApplication.getQuoridor().setCurrentGame(newGame);
@@ -1966,27 +1967,50 @@ public class QuoridorController {
 			return false;
 		}
 		
+		boolean lastRound = false;
+		
 		String[] curMoves = null;
-		int roundNum = 0;
-		int wMoveNum = 0;
-		int bMoveNum = 0;
 		//Now, for each entry in the list, we should split on " ", giving us the move(s) separated.
 		for (String moves : gameData) {
 			//For each move, we split first.
 			curMoves = moves.split(" ");
-			roundNum = Integer.parseInt(curMoves[0].replace(".", ""));
-			wMoveNum = 2 * roundNum - 1;
-			bMoveNum = 2 * roundNum;
+			
+			if (curMoves.length < 3) {
+				lastRound = true;
+			}
+			
+			//First do white player's move
+			if (curMoves[1].length() == 2) {
+				result = loadGameMovePawn(curMoves[1]);
+			} else if (curMoves[1].length() == 3) {
+				result = loadGamePlaceWall(curMoves[1]);
+			} else {
+				return false;
+			}
+			
+			if (!result) {
+				return false;
+			}
 			
 			
-			
-			
-			loadGameMovePawn(curMoves[2]);
-			loadGameMovePawn(curMoves[1]);
+			if (!lastRound) {
+				//Next do black player's move
+				if (curMoves[2].length() == 2) {
+					result = loadGameMovePawn(curMoves[2]);
+				} else if (curMoves[2].length() == 3) {
+					result = loadGamePlaceWall(curMoves[2]);
+				} else {
+					return false;
+				}
+				
+				if (!result) {
+					return false;
+				}
+			}
 			
 		}
 
-		return false;
+		return result;
 	}
 	
 	public static boolean loadGameMovePawn(String move) {
@@ -2029,14 +2053,14 @@ public class QuoridorController {
 		MoveDirection moveDir = null;
 		//First, case of same column, then case of same row, then, 4 corner moves!
 		if (curCol == newCol) {
-			if (curRow == newRow + 1) {
+			if (curRow == newRow + 1 || curRow == newRow + 2) {
 				moveDir = MoveDirection.North;
 			} else {
 				moveDir = MoveDirection.South;
 			}
 			
 		} else if (curRow == newRow) {
-			if (curCol == newCol + 1) {
+			if (curCol == newCol + 1 || curCol == newCol + 2) {
 				moveDir = MoveDirection.West;
 			} else {
 				moveDir = MoveDirection.East;
@@ -2093,7 +2117,7 @@ public class QuoridorController {
 		
 		boolean validPlace = validatingWallPlacement(wallRow, wallCol, wallDir);
 		if (validPlace) {
-			//Need to update gameposition AND create a new move!
+			//Need to update game position AND create a new move!
 			//First let's create the move. Get the wall being placed, create the new wall move, add the move to the game
 			Wall wallToBePlaced = null;
 			if (isWhiteTurn()) {
@@ -2103,24 +2127,33 @@ public class QuoridorController {
 				wallToBePlaced = curGame.getCurrentPosition().getBlackWallsInStock(curGame.getCurrentPosition().numberOfBlackWallsInStock()-1);
 			}
 			
-			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1,
-					((curGame.numberOfMoves()) / 2) + 1, curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
-			curGame.addMove(newWallMove);
 			Move recentMove = null;
 			if (curGame.hasMoves()) {
 				recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
 			}
+			
+			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1,
+					((curGame.numberOfMoves()) / 2) + 1, curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
+			curGame.addMove(newWallMove);
+
 			recentMove.setNextMove(newWallMove);
 			newWallMove.setPrevMove(recentMove);
+			
 			//Next, we need to create a new game position!
 			GamePosition curGamePos = curGame.getCurrentPosition();
-			PlayerPosition curPPos = curGamePos.getBlackPosition();
-			PlayerPosition nextPPos = curGamePos.getWhitePosition();
+			Tile curPlayerTile = (isBlackTurn())
+					? curGame.getCurrentPosition().getBlackPosition().getTile()
+						: curGame.getCurrentPosition().getWhitePosition().getTile();
+			PlayerPosition newPos = new PlayerPosition(curGame.getCurrentPosition().getPlayerToMove(), curPlayerTile);
+			PlayerPosition opponentPos = (isBlackTurn())
+					? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
+							: new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile());
 
 
-			GamePosition newGamePos = (isBlackTurn()) 
-					? new GamePosition(curGame.numberOfPositions() + 1, nextPPos, curPPos, curGame.getWhitePlayer(), curGame)
-							: new GamePosition(curGame.numberOfPositions() + 1, nextPPos, curPPos, curGame.getBlackPlayer(), curGame);
+
+					GamePosition newGamePos = (isBlackTurn()) 
+							? new GamePosition(curGame.numberOfPositions() + 1, opponentPos, newPos, curGame.getWhitePlayer(), curGame)
+									: new GamePosition(curGame.numberOfPositions() + 1, newPos, opponentPos, curGame.getBlackPlayer(), curGame);
 
 					for (Wall wall : curGamePos.getBlackWallsInStock()) {
 						newGamePos.addBlackWallsInStock(wall);
@@ -2136,11 +2169,11 @@ public class QuoridorController {
 					}
 					
 					if (isBlackTurn()) {
-						curGamePos.removeBlackWallsInStock(wallToBePlaced);
-						curGamePos.addBlackWallsOnBoard(wallToBePlaced);
+						newGamePos.removeBlackWallsInStock(wallToBePlaced);
+						newGamePos.addBlackWallsOnBoard(wallToBePlaced);
 					} else {
-						curGamePos.removeWhiteWallsInStock(wallToBePlaced);
-						curGamePos.addWhiteWallsOnBoard(wallToBePlaced);
+						newGamePos.removeWhiteWallsInStock(wallToBePlaced);
+						newGamePos.addWhiteWallsOnBoard(wallToBePlaced);
 					}
 
 					curGame.addPosition(newGamePos);
