@@ -490,8 +490,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 			int w = 0;
 			int h = 0;
 			
-			x = -SQUAREWIDTH/2 + r*(SQUAREWIDTH + SPACING)+2;
-			y = SQUAREWIDTH/2 + c*(SQUAREWIDTH + SPACING)+10;
+			x = -SQUAREWIDTH/2 + (r+1)*(SQUAREWIDTH + SPACING)+2;
+			y = SQUAREWIDTH/2 + (c-1)*(SQUAREWIDTH + SPACING)+10;
 			w = WALLWIDTH;
 			h = WALLHEIGHT;
 			rec.setRect(x,y,w,h);
@@ -507,8 +507,8 @@ public class QuoridorBoardVisualizer extends JPanel {
 			int w = 0;
 			int h = 0;
 			
-			x = -SQUAREWIDTH/2 + r*(SQUAREWIDTH + SPACING)+2;
-			y = SQUAREWIDTH/2 + c*(SQUAREWIDTH + SPACING)+10;
+			x = -SQUAREWIDTH/2 + (r+1)*(SQUAREWIDTH + SPACING)+2;
+			y = SQUAREWIDTH/2 + (c-1)*(SQUAREWIDTH + SPACING)+10;
 			w = WALLWIDTH;
 			h = WALLHEIGHT;
 			rec.setRect(x,y,w,h);
