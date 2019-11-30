@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
@@ -2216,6 +2218,173 @@ public class QuoridorController {
 		}
 		
 		return result;
+	}
+	
+	
+	//**********************REPLAY MODE CONTROLLER METHODS********************/
+	
+	private static int nextMoveInReplayMode;
+	private static int nextRoundInReplayMode;
+	
+	/**
+	 * Helper method to allow controller and test methods
+	 * to access the next move and round number for tests
+	 * @param movNo Move number of next move
+	 * @param rndNo Round number of next move (1 for white and 2 for black)
+	 * @author Helen Lin, 260715521
+	 */
+	public static void setNextMoveRoundInReplay(int movNo, int rndNo) {
+		nextMoveInReplayMode = movNo;
+		nextRoundInReplayMode = rndNo;
+	}
+	
+	/**
+	 * Helper method to allow test methods
+	 * to access the next move number for tests
+	 * @return nextMoveInReplayMode
+	 * @author Helen Lin, 260715521
+	 */
+	public static int getNextMoveInReplay() {
+		return nextMoveInReplayMode;
+	}
+	
+	/**
+	 * Helper method to allow test methods
+	 * to access the next round number for tests
+	 * @return nextRoundInReplayMode
+	 * @author Helen Lin, 260715521
+	 */
+	public static int getNextRoundInReplay() {
+		return nextRoundInReplayMode;
+	}
+	
+	/**
+	 * This method starts replay mode for a game
+	 * 
+	 * @throws InvalidInputException
+	 * @author Helen Lin, 260715521
+	 */
+	public static void enterReplayMode() throws InvalidInputException {
+		//set game status to replay mode if game is not running
+		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
+		
+		//TODO: probably need to pause timers for game if game was still running
+	}
+	
+	/**
+	 * This method allows the users to continue a game when the game is in replay mode,
+	 * from the current replay mode step (only if the game is still unfinished)
+	 * 
+	 * @throws InvalidInputException
+	 * @author Helen Lin, 260715521
+	 */
+	public static void continueGameFromCurrent() throws InvalidInputException {
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		//check game is unfinished
+		initiateGameResult();
+		
+		GameStatus status = currentGame.getGameStatus();
+		if (status.equals(GameStatus.BlackWon) || status.equals(GameStatus.WhiteWon) || status.equals(GameStatus.Draw)) {
+			return;
+		}
+		
+		//otherwise, continue game from this current step
+		
+		//1) set game to be running
+		currentGame.setGameStatus(GameStatus.Running);
+		
+		//2) remove remaining moves of the game starting at Next move and round #
+		List<Move> movesToRemove = new ArrayList<Move>();
+		
+		//first go through moveList in game and remove links between moves that we do not need
+		for (Move move : currentGame.getMoves()) {
+			//if current move in list is equal or after the desired next move,
+			//then we do not need it anymore and can delete it
+			if (move.getMoveNumber() > nextMoveInReplayMode
+					|| move.getMoveNumber() == nextMoveInReplayMode && move.getRoundNumber() == nextRoundInReplayMode) {
+				Move newNext = move.getNextMove();
+				Move newPrevious = move.getPrevMove();
+				if (newPrevious != null && newNext != null) {
+					//both previous and next exist, link them
+					newNext.setPrevMove(newPrevious);
+					newPrevious.setNextMove(newNext);
+				} else if (newNext != null) {
+					//only next move exists, remove its previous move link
+					newNext.setPrevMove(null);
+				} else if (newPrevious != null) {
+					//there is no next move, remove its next move link
+					newPrevious.setNextMove(null);
+				}
+				//add it to a List of moves to remove
+				movesToRemove.add(move);
+			} 
+			
+		}
+		
+		//now remove all the moves we do not need from the game
+		for (Move move : movesToRemove) {
+			currentGame.removeMove(move);
+		}
+		
+		//return current game's current Position to the desired position and delete the other ones
+		
+		//assuming game position ID starts at 1 for each move/round,
+		//then the current game position should be:
+		
+		int posID = (nextRoundInReplayMode == 1) ? (nextMoveInReplayMode * 2 - 2) : (nextMoveInReplayMode * 2 - 1);
+		
+		//remove all saved game positions that are after desired move, and save current position for desired continue game position
+		for (GamePosition pos : currentGame.getPositions()) {
+			if (pos.getId() > posID) 
+				currentGame.removePosition(pos);
+			if (pos.getId() == posID) {
+				currentGame.setCurrentPosition(pos);
+			}
+		}
+		
+		
+		//TODO: check timers for game etc have been restarted
+	}
+	
+
+	/**
+	 * This method fast-forwards the game to the final position played when the game is in Replay Mode
+	 * @throws InvalidInputException
+	 * @author Helen Lin, 260715521
+	 */
+	public static void jumpToFinal() throws InvalidInputException {
+		// find last move info and move
+		int lastMoveNum = 1;
+		int lastRoundNum = 1;
+		Move lastMove = null;
+		List<Move> moves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
+		Collections.sort(moves, (move1, move2) -> {
+			return move1.getMoveNumber() - move2.getMoveNumber();
+		});
+
+		for (Move move : moves) {
+			System.out.println(move.getMoveNumber() + ", " + move.getRoundNumber());
+//					if (move.getMoveNumber() >= lastMoveNum) {
+//						lastMoveNum = move.getMoveNumber();
+//						lastRoundNum = move.getRoundNumber();
+//						lastMove = move;
+//						if (lastRoundNum == 2) {
+//							break;
+//						}
+//					}
+		}
+
+		// set as current game position
+		for (GamePosition position : QuoridorApplication.getQuoridor().getCurrentGame().getPositions()) {
+			// find the last move
+
+		}
+//				currentGame.addPosition(newGamePos);
+//				currentGame.setCurrentPosition(newGamePos);
+	}
+
+	public static void jumpToStart() throws InvalidInputException {
+
 	}
 
 }
