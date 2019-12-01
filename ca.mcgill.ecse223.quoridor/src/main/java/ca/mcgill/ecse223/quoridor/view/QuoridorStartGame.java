@@ -300,7 +300,7 @@ public class QuoridorStartGame extends JFrame {
 		}else {
 			try {
 				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
-				QuoridorController.loadGame(loadPositionTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
+				QuoridorController.loadSavedPosition(loadPositionTextField.getText());
 				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
 				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
 				gamePage.setVisible(true);
@@ -308,7 +308,7 @@ public class QuoridorStartGame extends JFrame {
 				//gamePage.refreshData();
 				refreshData();
 				return;
-			} catch (UnsupportedOperationException | IOException | InvalidInputException e) {
+			} catch (UnsupportedOperationException | InvalidInputException e) {
 				error = e.getMessage();
 				refreshData();
 				return;
@@ -337,7 +337,7 @@ public class QuoridorStartGame extends JFrame {
 		}else {
 			try {
 				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
-				QuoridorController.loadGame(loadPositionTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
+				QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
 				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
 				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
 				gamePage.setVisible(true);
