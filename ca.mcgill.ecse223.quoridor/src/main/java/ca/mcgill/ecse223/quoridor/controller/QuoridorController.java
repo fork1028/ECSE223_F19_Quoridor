@@ -555,16 +555,27 @@ public class QuoridorController {
 			}
 
 		}
-		//System.out.println("isvalid:" + isValid);
+		
 		if (isValid) {
-
-			if (playerToMove == whitePlayer) {
-				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
-				graph.wallAdded(row, row, wall.getMove().getWallDirection());
+			int path = graph.wallAdded(row, col, wall.getMove().getWallDirection());
+			
+			if (path == 00) {
+				throw new java.lang.UnsupportedOperationException("No path exists for both players if you drop the wall here!");
 			}
-			if (playerToMove == blackPlayer) {
+			
+			if (path == 10) {
+				throw new java.lang.UnsupportedOperationException("No path exists for black player if you drop the wall here!");
+			}
+			
+			if (path == 01) {
+				throw new java.lang.UnsupportedOperationException("No path exists for white player if you drop the wall here!");
+			}
+			
+			if (playerToMove.equals(whitePlayer)) {
+				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);					
+			}
+			if (playerToMove.equals(blackPlayer)) {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
-				graph.wallAdded(row, row, wall.getMove().getWallDirection());
 			}
 		} else {
 			throw new java.lang.UnsupportedOperationException("You can't drop the wall here.");
