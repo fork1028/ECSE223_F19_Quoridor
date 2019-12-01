@@ -1317,7 +1317,8 @@ public class QuoridorController {
 	public static boolean identifyGameDrawn() {
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (currentGame.getMoves().size() <= 8) {
-			currentGame.setGameStatus(GameStatus.Running);
+			//do not need to set game status back to running, it should be already running
+			//currentGame.setGameStatus(GameStatus.Running);
 			return false;
 		}
 
@@ -1335,11 +1336,11 @@ public class QuoridorController {
 				) {
 			currentGame.setGameStatus(GameStatus.Draw);
 			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
-
 			return true;
 		}
 
-		status = GameStatus.Running;
+		//do not need to set game status back to running, it should be already running
+		//status = GameStatus.Running;
 		return false;
 	}
 
@@ -2323,6 +2324,7 @@ public class QuoridorController {
 	
 	private static int nextMoveInReplayMode;
 	private static int nextRoundInReplayMode;
+	private static GameStatus originalGameStatus;
 	
 	/**
 	 * Helper method to allow controller and test methods
@@ -2357,6 +2359,27 @@ public class QuoridorController {
 	}
 	
 	/**
+	 * Helper method to allow test methods
+	 * to access the original game status from within Replay mode
+	 * @param originalGameStatus
+	 * @author Helen Lin, 260715521
+	 */
+	public static void setOriginalGameStatus(GameStatus status) {
+		originalGameStatus = status;
+	}
+	
+	/**
+	 * Helper method to allow test methods
+	 * to access the original game status from within Replay mode
+	 * @return originalGameStatus
+	 * @author Helen Lin, 260715521
+	 */
+	public static GameStatus getOriginalGameStatus() {
+		return originalGameStatus;
+	}
+	
+	
+	/**
 	 * This method starts replay mode for a game
 	 * 
 	 * @throws InvalidInputException
@@ -2365,10 +2388,13 @@ public class QuoridorController {
 	public static void enterReplayMode() throws InvalidInputException {
 		
 		//TODO: probably need to pause timers for game if game was still running
-		//set game status to replay mode if game is not running
+		
+		//store the original game status to know if game has finished or not
+		originalGameStatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
+		
+		//set game status to replay mode
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
-		
-		
+
 	}
 	
 	/**
@@ -2380,17 +2406,15 @@ public class QuoridorController {
 	 */
 	public static void continueGameFromCurrent() throws InvalidInputException {
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		//check game is unfinished
-		initiateGameResult();
 		
-		GameStatus status = currentGame.getGameStatus();
-		if (status.equals(GameStatus.BlackWon) || status.equals(GameStatus.WhiteWon) || status.equals(GameStatus.Draw)) {
+		//if the game already had a final result
+		if (originalGameStatus.equals(GameStatus.BlackWon) || originalGameStatus.equals(GameStatus.WhiteWon) || originalGameStatus.equals(GameStatus.Draw)) {
 			return;
 		}
 		
 		//otherwise, continue game from this current step
 		
-		//1) set game to be running
+		//1) set game to be running to continue game
 		currentGame.setGameStatus(GameStatus.Running);
 		
 		//2) remove remaining moves of the game starting at Next move and round #
