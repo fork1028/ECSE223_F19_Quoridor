@@ -2318,10 +2318,12 @@ public class QuoridorController {
 	 * @author Helen Lin, 260715521
 	 */
 	public static void enterReplayMode() throws InvalidInputException {
+		
+		//TODO: probably need to pause timers for game if game was still running
 		//set game status to replay mode if game is not running
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
 		
-		//TODO: probably need to pause timers for game if game was still running
+		
 	}
 	
 	/**
@@ -2353,22 +2355,18 @@ public class QuoridorController {
 		for (Move move : currentGame.getMoves()) {
 			//if current move in list is equal or after the desired next move,
 			//then we do not need it anymore and can delete it
-			if (move.getMoveNumber() > nextMoveInReplayMode
-					|| move.getMoveNumber() == nextMoveInReplayMode && move.getRoundNumber() == nextRoundInReplayMode) {
-				Move newNext = move.getNextMove();
+			
+			//if this is the "next move"
+			if (move.getMoveNumber() == nextMoveInReplayMode && move.getRoundNumber() == nextRoundInReplayMode) {
+				//set its previous move to have a null next move (because the game will continue from there
 				Move newPrevious = move.getPrevMove();
-				if (newPrevious != null && newNext != null) {
-					//both previous and next exist, link them
-					newNext.setPrevMove(newPrevious);
-					newPrevious.setNextMove(newNext);
-				} else if (newNext != null) {
-					//only next move exists, remove its previous move link
-					newNext.setPrevMove(null);
-				} else if (newPrevious != null) {
-					//there is no next move, remove its next move link
-					newPrevious.setNextMove(null);
-				}
+				newPrevious.setNextMove(null);
+				move.setPrevMove(null);
 				//add it to a List of moves to remove
+				movesToRemove.add(move);
+			} else if (move.getMoveNumber() > nextMoveInReplayMode
+					|| (move.getMoveNumber() == nextMoveInReplayMode && move.getRoundNumber() > nextRoundInReplayMode)) {
+				//else if this move is after the next move
 				movesToRemove.add(move);
 			} 
 			
@@ -2376,7 +2374,14 @@ public class QuoridorController {
 		
 		//now remove all the moves we do not need from the game
 		for (Move move : movesToRemove) {
+			//cannot simply set the game to null of the move
+			//also cannot do currentGame.removeMove(move) because the move always has to have a game
+			//so, set it to a new temporary game, then remove it
+			Quoridor tempQ = new Quoridor();
+			Game temp = new Game(null, null, tempQ);
+			move.setGame(temp);
 			currentGame.removeMove(move);
+			
 		}
 		
 		//return current game's current Position to the desired position and delete the other ones

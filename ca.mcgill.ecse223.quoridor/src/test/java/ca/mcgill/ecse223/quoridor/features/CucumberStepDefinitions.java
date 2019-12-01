@@ -15,7 +15,6 @@ import java.util.Map;
 
 import javax.swing.Timer;
 
-import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.*;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -2013,10 +2012,19 @@ public class CucumberStepDefinitions {
 			//scenario 1) entering replay mode
 	/**
 	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
 	 */
 	@When("I initiate replay mode")
-	public void iInitiateReplayMode() {
+	public void iInitiateReplayMode() throws InvalidInputException {
+		//setup test game first
+		aNewGameisbeingInitialized();
+		whitePlayerChoosesAUsername();
+		blackPlayerChoosesAUsername();
+		totalThinkingTimeIsSet();
 		try {
+			//start test game
+			QuoridorController.startGameAndClocks();
+			//enter replay mode
 			QuoridorController.enterReplayMode();
 		} catch (InvalidInputException e) {
 			e.printStackTrace();
@@ -2042,71 +2050,12 @@ public class CucumberStepDefinitions {
 	public void theGameIsReplayMode() {
 		try {
 			theGameIsNotRunning();
-			QuoridorController.enterReplayMode();
+			iInitiateReplayMode();
 		} catch (InvalidInputException e) {
 			e.printStackTrace();
 			fail();
 		}
 		
-	}
-	
-	/**
-	 * Part of pre-condition for Enter Replay Mode's "continue unfinished game" scenario
-	 * @author Helen Lin, 260715521
-	 */
-	@And("The game does not have a final result")
-	public void theGameDoesNotHaveAFinalResult() {
-		QuoridorController.initiateGameResult();
-		GameStatus status = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
-		assertNotEquals(status, GameStatus.BlackWon);
-		assertNotEquals(status, GameStatus.WhiteWon);
-		assertNotEquals(status, GameStatus.Draw);
-		
-	}
-	
-	/**
-	 * Condition for Enter Replay Mode's "continue unfinished game" scenario
-	 * @author Helen Lin, 260715521
-	 */
-	@When("I initiate to continue game")
-	public void iInitiateToContinueGame() {
-		try {
-			QuoridorController.continueGameFromCurrent();
-		} catch (InvalidInputException e) {
-			e.printStackTrace();
-			fail();
-		}
-	}
-	
-	/**
-	 * Part of post-condition for Enter Replay Mode's "continue unfinished game" scenario
-	 * @author Helen Lin, 260715521
-	 */
-	@And("The remaining moves of the game shall be removed")
-	public void theRemainingMovesOfTheGameShallBeRemoved() {
-		//assert the remaining moves do not exist
-		//get move of latest played move
-		List<Move> allMoves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
-		for (Move move: allMoves) {
-			assertTrue(move.getMoveNumber() <= QuoridorController.getNextMoveInReplay());
-			if (move.getMoveNumber() == QuoridorController.getNextMoveInReplay()) {
-				assertTrue(move.getRoundNumber() < QuoridorController.getNextMoveInReplay());
-			}
-			
-		}
-	}
-	
-	
-	//****************************REPLAY MODE FEATURES**********************************/
-	
-	/**
-	 * Pre-condition for Phase 2 replay mode features
-	 * @author Helen Lin, 260715521
-	 * @throws InvalidInputException 
-	 */
-	@Given("The game is in replay mode")
-	public void theGameIsInReplayMode() throws InvalidInputException {
-		theGameIsReplayMode();
 	}
 	
 	/**
@@ -2116,11 +2065,8 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("The following moves have been played in game:")
 	public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) {
-		//TODO: debug this --> something is weird
 		List<Map<String, String>> moveMapList = dataTable.asMaps();
 		// keys: mv, rnd, move
-
-		int moveNumber = 0; //?
 		
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition currentGamePos = currentGame.getCurrentPosition();
@@ -2189,13 +2135,12 @@ public class CucumberStepDefinitions {
 			
 			}
 			
-			//add move to list of moves
-			if (moveNumber == 0) {
-				QuoridorApplication.getQuoridor().getCurrentGame().addMove(newMove);
-			}
-			else {
-				int totalMoves = currentGame.numberOfMoves();
-				currentGame.getMove(totalMoves -1).setNextMove(newMove);
+			//add to moves and set previous move of current and next move of previous
+			currentGame.addMove(newMove);
+			int totalMoves = currentGame.numberOfMoves();
+			if (totalMoves > 1) {
+				Move previous = currentGame.getMove(totalMoves-2);
+				previous.setNextMove(newMove);
 			}
 			
 			// create a new GamePosition, add all walls, set new game position for game
@@ -2225,8 +2170,71 @@ public class CucumberStepDefinitions {
 			currentGame.setCurrentPosition(newGamePos);
 
 		}
+		
+		//List<Move> moves = currentGame.getMoves(); //for debugging
 	
 	}
+	
+	
+	/**
+	 * Part of pre-condition for Enter Replay Mode's "continue unfinished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@And("The game does not have a final result")
+	public void theGameDoesNotHaveAFinalResult() {
+		QuoridorController.initiateGameResult();
+		GameStatus status = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
+		assertNotEquals(status, GameStatus.BlackWon);
+		assertNotEquals(status, GameStatus.WhiteWon);
+		assertNotEquals(status, GameStatus.Draw);
+		
+	}
+	
+	/**
+	 * Condition for Enter Replay Mode's "continue unfinished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@When("I initiate to continue game")
+	public void iInitiateToContinueGame() {
+		try {
+			QuoridorController.continueGameFromCurrent();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Part of post-condition for Enter Replay Mode's "continue unfinished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@And("The remaining moves of the game shall be removed")
+	public void theRemainingMovesOfTheGameShallBeRemoved() {
+		//assert the remaining moves do not exist
+		//get move of latest played move
+		List<Move> allMoves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
+		for (Move move: allMoves) {
+			assertTrue(move.getMoveNumber() <= QuoridorController.getNextMoveInReplay());
+			if (move.getMoveNumber() == QuoridorController.getNextMoveInReplay()) {
+				assertTrue(move.getRoundNumber() < QuoridorController.getNextRoundInReplay());
+			}
+			
+		}
+	}
+	
+	
+	//****************************REPLAY MODE FEATURES**********************************/
+	
+	/**
+	 * Pre-condition for Phase 2 replay mode features
+	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
+	 */
+	@Given("The game is in replay mode")
+	public void theGameIsInReplayMode() throws InvalidInputException {
+		theGameIsReplayMode();
+	}
+	
 	
 	/**
 	 * Part of pre-condition (Given) for several replay mode features
