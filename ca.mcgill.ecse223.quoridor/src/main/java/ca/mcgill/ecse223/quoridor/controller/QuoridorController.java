@@ -2748,13 +2748,64 @@ public class QuoridorController {
 	}
 	
 	public static void stepForward() throws InvalidInputException {
-		//TODO
-		throw new InvalidInputException("To be implemented");
+		
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return;
+		}
+		else {
+			//Determine which move is the next move
+			// nextMoveInReplayMode = QuoridorApplication.getQuoridor().getCurrentGame().getMove(nextMoveInReplayMode).getMoveNumber();
+			//nextRoundInReplayMode = 1;
+			
+		
+		GamePosition pos = currentGame.getCurrentPosition();
+		int currentMove = pos.getId();
+	//	List<Move> moves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
+		Move move = QuoridorApplication.getQuoridor().getCurrentGame().getMove(currentMove);
+		/*for(Move move: currentGame.getMoves())
+			*/
+		
+		int posID = move.getNextMove().getMoveNumber();
+		//Set current move to next move
+			if (currentMove == posID) {
+				currentGame.setCurrentPosition(pos);
+				Move newNext = move.getNextMove();
+				int newNextNumber = newNext.getMoveNumber();
+				nextMoveInReplayMode = (newNextNumber + 1 );
+			}
+	
+		}
 	}
 	
 	public static void stepBackward() throws InvalidInputException {
-		//TODO
-		throw new InvalidInputException("To be implemented");
+		
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return;
+		}
+		else {
+		//Determine which move is the previous move
+
+	//	int nextMoveInReplayMode = QuoridorApplication.getQuoridor().getCurrentGame().getMove(nextMoveInReplayMode).getMoveNumber();
+		
+		currentGame.getPositions();
+		GamePosition pos = currentGame.getCurrentPosition();
+		int currentMove = pos.getId();
+		//int posID = (nextRoundInReplayMode - 1);
+		
+		Move move = QuoridorApplication.getQuoridor().getCurrentGame().getMove(currentMove);
+
+		int posID = move.getPrevMove().getMoveNumber();
+		
+		//Set current move to previous move
+		if (currentMove == posID) {
+			currentGame.setCurrentPosition(pos);
+			Move newPrevious = move.getPrevMove();
+			int newPreviousNumber = newPrevious.getMoveNumber();
+			nextMoveInReplayMode = (newPreviousNumber - 1 );
+		}
+		}
 	}
 	
 	
