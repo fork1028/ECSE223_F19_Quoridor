@@ -13,6 +13,9 @@ public class TOWall
 
   //TOWall Attributes
   private int id;
+  private boolean isHorizontal;
+  private int row;
+  private int col;
 
   //------------------------
   // CONSTRUCTOR
@@ -26,6 +29,32 @@ public class TOWall
   //------------------------
   // INTERFACE
   //------------------------
+  public boolean setWallMoveInfo(boolean h, int r, int c)
+  {
+    boolean wasSet = false;
+    isHorizontal = h;
+    row = r;
+    col = c;
+    wasSet = true;
+    return wasSet;
+  }
+  
+  public boolean getIsHorizontal()
+  {
+    return isHorizontal;
+  }
+  
+  public int getRow()
+  {
+    return row;
+  }
+  
+  public int getCol()
+  {
+    return col;
+  }
+  
+  
 
   public boolean setId(int aId)
   {
