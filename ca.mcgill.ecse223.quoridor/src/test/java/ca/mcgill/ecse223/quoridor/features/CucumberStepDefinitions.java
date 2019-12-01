@@ -1415,6 +1415,67 @@ public class CucumberStepDefinitions {
 
 	// ************END of SWITCHCURRENTPLAYER**************
 
+	// ************START of CHECKIFPATHEXISTS**************
+	
+	@Given("A {string} wall move candidate exists at position {int}:{int}")
+	public void wallMoveCandidateExistsAtPosition(String dir, int row, int col) {
+		Direction direction;
+		Wall wall;
+		if (dir.equals("horizontal")) {
+			direction = Direction.Horizontal;
+		}
+		else direction = Direction.Vertical;
+		
+		Player currentPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		int moveNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMoves().size();
+		int roundNumber = currentPlayer.equals(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer()) ? 1 : 2;
+		Tile targetTile = QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1);
+		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		int numWhiteWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard().size();
+		int numBlackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard().size();
+		
+		wall = currentPlayer.equals(QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer()) ? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock(numWhiteWallsOnBoard) : QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock(numBlackWallsOnBoard);
+		
+		WallMove wallMove = new WallMove(moveNumber, roundNumber, currentPlayer, targetTile, game, direction, wall);
+		QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(wallMove);
+	}
+	
+	@And("The black player is located at {int}:{int}")
+	public void blackPlayerLocatedAt (int row, int col) {
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		int id = QuoridorApplication.getQuoridor().getCurrentGame().getPositions().size();
+		PlayerPosition whitePosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+		Tile targetTile = QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1);
+		PlayerPosition blackPosition = new PlayerPosition(blackPlayer, targetTile);
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		GamePosition gamePos = new GamePosition(id, whitePosition, blackPosition, whitePlayer, currentGame);
+		QuoridorApplication.getQuoridor().getCurrentGame().setCurrentPosition(gamePos);
+	}
+	
+	@And("The white player is located at {int}:{int}")
+	public void whitePlayerLocatedAt (int row, int col) {
+		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
+		int id = QuoridorApplication.getQuoridor().getCurrentGame().getPositions().size();
+		PlayerPosition blackPosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
+		Tile targetTile = QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1);
+		PlayerPosition whitePosition = new PlayerPosition(whitePlayer, targetTile);
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		
+		GamePosition gamePos = new GamePosition(id, whitePosition, blackPosition, blackPlayer, currentGame);
+		QuoridorApplication.getQuoridor().getCurrentGame().setCurrentPosition(gamePos);
+	}
+	
+	@When("Check path existence is initiated")
+	public void pathExistenceIsInitiated() {
+		QuoridorController.checkIfPathExists();
+	}
+	
+	// ************END of CHECKIFPATHEXISTS**************
+	
 	// ************ START OF MOVEPAWN and JUMPPAWN****************
 
 	/**
