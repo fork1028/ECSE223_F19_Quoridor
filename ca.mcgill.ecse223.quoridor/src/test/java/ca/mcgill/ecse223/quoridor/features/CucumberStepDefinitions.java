@@ -2087,8 +2087,10 @@ public class CucumberStepDefinitions {
 				if (whiteResult == 1) {
 					//assume it is a resign game for the sake of the test
 					QuoridorController.setOriginalGameStatus(GameStatus.WhiteWon);
+					currentGame.setGameStatus(GameStatus.WhiteWon);
 				} else if (blackResult == 1) {
 					QuoridorController.setOriginalGameStatus(GameStatus.WhiteWon);
+					currentGame.setGameStatus(GameStatus.BlackWon);
 				}
 				break;
 			} 
@@ -2238,19 +2240,6 @@ public class CucumberStepDefinitions {
 	
 			//scenario 3) continue a FINISHED game
 	/**
-	 * Part of pre-condition for Enter Replay Mode's "continue finished game" scenario
-	 * @author Helen Lin, 260715521
-	 */
-	@And("The game has a final result")
-	public void theGameHasAFinalResult() {
-		GameStatus status = QuoridorController.getOriginalGameStatus();
-		boolean result = status.equals(GameStatus.BlackWon) || status.equals(GameStatus.WhiteWon) || status.equals(GameStatus.Draw);
-		
-		assertTrue(result);
-		
-	}
-
-	/**
 	 * Part of ost-condition for Enter Replay Mode's "continue finished game"
 	 * scenario
 	 * 
@@ -2369,7 +2358,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	
-	// ************ START OF JUMPTOFINAL and JUMP TO START****************
+	// ************ WHEN for jump to start/finish and step forward/backward****************
 	
 	/**
 	 * @author Helen Lin, 260715521
@@ -2392,6 +2381,34 @@ public class CucumberStepDefinitions {
 	public void jumpToFinalPositionIsInitiated() {
 		try {
 			QuoridorController.jumpToFinal();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
+		}
+		//TODO create UI implementation of this (button, action listeners)
+	}
+	
+	/**
+	 * @author Helen Lin, 260715521
+	 */
+	@When("Step backward is initiated")
+	public void stepBackwardIsInitiated() {
+		try {
+			QuoridorController.stepBackward();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+	}
+	
+	/**
+	 * @author Helen Lin, 260715521
+	 */
+	@When("Step forward is initiated")
+	public void stepForwardIsInitiated() {
+		try {
+			QuoridorController.stepForward();
 		} catch (InvalidInputException e) {
 			e.printStackTrace();
 			fail();

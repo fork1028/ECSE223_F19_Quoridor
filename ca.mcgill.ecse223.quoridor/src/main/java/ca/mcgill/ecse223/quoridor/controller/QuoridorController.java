@@ -2387,14 +2387,14 @@ public class QuoridorController {
 	 */
 	public static void enterReplayMode() throws InvalidInputException {
 		
-		//TODO: probably need to pause timers for game if game was still running
+		//pause timers for game if game was still running
+		if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 		
 		//store the original game status to know if game has finished or not
 		originalGameStatus = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
 		
 		//set game status to replay mode
 		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
-
 	}
 	
 	/**
@@ -2409,15 +2409,14 @@ public class QuoridorController {
 		
 		//if the game already had a final result
 		if (originalGameStatus.equals(GameStatus.BlackWon) || originalGameStatus.equals(GameStatus.WhiteWon) || originalGameStatus.equals(GameStatus.Draw)) {
+			//continue in replay mode
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
 			return;
 		}
 		
 		//otherwise, continue game from this current step
 		
-		//1) set game to be running to continue game
-		currentGame.setGameStatus(GameStatus.Running);
-		
-		//2) remove remaining moves of the game starting at Next move and round #
+		//1) remove remaining moves of the game starting at Next move and round #
 		List<Move> movesToRemove = new ArrayList<Move>();
 		
 		//first go through moveList in game and remove links between moves that we do not need
@@ -2453,7 +2452,7 @@ public class QuoridorController {
 			
 		}
 		
-		//return current game's current Position to the desired position and delete the other ones
+		//2) return current game's current Position to the desired position and delete the other ones
 		
 		//assuming game position ID starts at 1 on default, and increments by 1 for each move/round,
 		//then the current game position should be:
@@ -2476,8 +2475,15 @@ public class QuoridorController {
 			pos.delete();
 		}
 		
+
+		//3) set game to be running to continue game
+		currentGame.setGameStatus(GameStatus.Running);
 		
-		//TODO: check timers for game etc have been restarted
+		
+		//4) restart timers for game
+		if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().restart();
+		
+		
 	}
 	
 
@@ -2518,7 +2524,19 @@ public class QuoridorController {
 	}
 
 	public static void jumpToStart() throws InvalidInputException {
-
+		//TODO
+		throw new InvalidInputException("To be implemented");
 	}
-
+	
+	public static void stepForward() throws InvalidInputException {
+		//TODO
+		throw new InvalidInputException("To be implemented");
+	}
+	
+	public static void stepBackward() throws InvalidInputException {
+		//TODO
+		throw new InvalidInputException("To be implemented");
+	}
+	
+	
 }
