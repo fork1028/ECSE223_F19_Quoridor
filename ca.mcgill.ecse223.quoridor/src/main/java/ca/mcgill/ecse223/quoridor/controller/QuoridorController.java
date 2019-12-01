@@ -2483,6 +2483,7 @@ public class QuoridorController {
 					if (!reset) {
 						printW.print(roundCount + ". " + curMove);
 						reset = true;
+						roundCount++;
 					} else {
 						printW.println(" " + curMove);
 						reset = false;
