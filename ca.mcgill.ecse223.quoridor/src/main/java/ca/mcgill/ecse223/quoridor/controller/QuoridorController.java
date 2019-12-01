@@ -265,27 +265,31 @@ public class QuoridorController {
 				if (!quoridor.getCurrentGame().getWhitePlayer().hasWalls()
 						|| !quoridor.getCurrentGame().getBlackPlayer().hasWalls()) {
 					Player player = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-					for (int i = 0; i < 2; i++) {
-						if (i == 1) {
-							player = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+					for (int i = 0; i < 10; i++) {
+						// if wall with id already exists (happens from some games or tests)
+						Wall wall;
+						if (Wall.hasWithId(i)) {
+							Wall.getWithId(i).setOwner(player);
+							wall = Wall.getWithId(i);
+						} else {
+							wall = new Wall(i, player);
 						}
-						for (int j = 0; j < 10; j++) {
-							// if wall with id already exists (happens from some games or tests)
-							if (Wall.hasWithId(i * 10 + j)) {
-								Wall.getWithId(i * 10 + j).setOwner(player);
-							} else {
-								new Wall(i * 10 + j, player);
-							}
-
+						quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsInStock(wall);
+					}
+					player = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+					for (int i = 0; i < 10; i++) {
+						// if wall with id already exists (happens from some games or tests)
+						Wall wall;
+						if (Wall.hasWithId(i+10)) {
+							Wall.getWithId(i+10).setOwner(player);
+							wall = Wall.getWithId(i+10);
+						} else {
+							wall = new Wall(i+10, player);
 						}
+						quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(wall);
 					}
 				}
 
-				// add walls to stock for each player if needed
-				for (int j = 0; j < 10; j++) {
-					quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsInStock(Wall.getWithId(j));
-					quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(Wall.getWithId(j + 10));
-				}
 			}
 
 			// set controller local var to show board was successfully
@@ -603,6 +607,70 @@ public class QuoridorController {
 		}
 		return walls;
 	}
+	
+
+	/**
+	 * This method helps link transfer objects with models for walls in stock
+	 * 
+	 * @author Helen Lin, 260715521
+	 * @return
+	 */
+	public static List<TOWall> getWallsInStock(boolean forBlackPlayer) {
+		int wallsInStock = (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfBlackWallsInStock()
+						:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfWhiteWallsInStock();
+				
+		if (wallsInStock ==0) {
+			return null;
+		}
+		
+		List<Wall> stockWalls = (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock()
+					:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock();
+		ArrayList<TOWall> TOWalls = new ArrayList<TOWall>();
+		for (Wall wall : stockWalls) {
+			if (wall!=null) {
+				TOWall toWall = new TOWall(wall.getId());
+				TOWalls.add(toWall);
+			}
+		}
+		return TOWalls;
+	}
+	
+	/**
+	 * This method helps link transfer objects with models for walls on board
+	 * 
+	 * @author Helen Lin, 260715521
+	 * @return
+	 */
+	public static List<TOWall> getWallsOnBoard(boolean forBlackPlayer) {
+		int wallsOnBoard= (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfBlackWallsOnBoard()
+						:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfWhiteWallsOnBoard();
+				
+		if (wallsOnBoard ==0) {
+			return null;
+		}
+		
+		List<Wall> boardWalls = (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard()
+					:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+			
+		ArrayList<TOWall> walls = new ArrayList<TOWall>();
+		for (Wall wall : boardWalls) {
+			if (wall!=null) {
+				TOWall toWall = new TOWall(wall.getId());
+				boolean isHorizontal = (wall.getMove().getWallDirection().equals(Direction.Horizontal)) ? true : false;
+				int row = wall.getMove().getTargetTile().getRow();
+				int col = wall.getMove().getTargetTile().getColumn();
+				toWall.setWallMoveInfo(isHorizontal, row, col);
+				walls.add(toWall);
+			}
+			
+		}
+		return walls;
+	}
+
 
 	public static TOWall getWallCandidate() {
 		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
@@ -913,7 +981,11 @@ public class QuoridorController {
 
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 10; j++) {
-					new Wall(i * 10 + j, players.get(i));
+					if (Wall.hasWithId(i * 10 + j)) {
+						Wall.getWithId(i * 10 + j).setOwner(players.get(i));
+					} else {
+						new Wall(i * 10 + j,players.get(i));
+					}
 				}
 			}
 
