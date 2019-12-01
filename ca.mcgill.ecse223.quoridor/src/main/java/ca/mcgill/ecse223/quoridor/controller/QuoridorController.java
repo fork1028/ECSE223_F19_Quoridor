@@ -2576,39 +2576,77 @@ public class QuoridorController {
 	 * @author Helen Lin, 260715521
 	 */
 	public static void jumpToFinal() throws InvalidInputException {
-		// find last move info and move
+		
+		//assumes we are in REPLAY mode right now
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return;
+		}
+		
+		
+		//1) now we want to jump to the final move in game
 		int lastMoveNum = 1;
 		int lastRoundNum = 1;
-		Move lastMove = null;
 		List<Move> moves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
-		Collections.sort(moves, (move1, move2) -> {
-			return move1.getMoveNumber() - move2.getMoveNumber();
-		});
-
 		for (Move move : moves) {
 			System.out.println(move.getMoveNumber() + ", " + move.getRoundNumber());
-//					if (move.getMoveNumber() >= lastMoveNum) {
-//						lastMoveNum = move.getMoveNumber();
-//						lastRoundNum = move.getRoundNumber();
-//						lastMove = move;
-//						if (lastRoundNum == 2) {
-//							break;
-//						}
-//					}
+			if (move.getMoveNumber() > lastMoveNum) {
+				lastMoveNum = move.getMoveNumber();
+				lastRoundNum = move.getRoundNumber();
+			} else if (move.getMoveNumber() == lastMoveNum && move.getRoundNumber() > lastRoundNum) {
+				lastRoundNum = move.getRoundNumber();
+			}
 		}
+		
+		//now update this controller's private next move and round info for replay mode
+		nextMoveInReplayMode = (lastRoundNum == 1) ? lastMoveNum : lastMoveNum +1;
+		nextRoundInReplayMode = (lastRoundNum == 1) ? 2: 1;
 
-		// set as current game position
-		for (GamePosition position : QuoridorApplication.getQuoridor().getCurrentGame().getPositions()) {
-			// find the last move
-
+		//2) return current game's current Position to the desired position
+		//assuming game position ID starts at 1 on default, and increments by 1 for each move/round,
+		//then the current game position should be:
+		int posID = (nextRoundInReplayMode == 1) ? (nextMoveInReplayMode * 2 -1) : (nextMoveInReplayMode * 2);
+		
+		//set it as the current game position
+		for (GamePosition pos : currentGame.getPositions()) {
+			if (pos.getId() == posID) {
+				currentGame.setCurrentPosition(pos);
+			}
 		}
-//				currentGame.addPosition(newGamePos);
-//				currentGame.setCurrentPosition(newGamePos);
+		
+		
 	}
 
+	/**
+	 * This method rewinds the game to the initial position (default starting positions) when the game is in Replay Mode
+	 * @throws InvalidInputException
+	 */
 	public static void jumpToStart() throws InvalidInputException {
-		//TODO
-		throw new InvalidInputException("To be implemented");
+
+		//assumes we are in REPLAY mode right now
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return;
+		}
+		
+		//1) now we want to jump to the first move in game
+		
+		//update this controller's private next move and round info for replay mode
+		nextMoveInReplayMode = 1;
+		nextRoundInReplayMode = 1;
+
+		//2) return current game's current Position to the desired position
+		//assuming game position ID starts at 1 on default, and increments by 1 for each move/round,
+		//then the current game position should be:
+		int posID = 1;
+		
+		//set it as the current game position
+		for (GamePosition pos : currentGame.getPositions()) {
+			if (pos.getId() == posID) {
+				currentGame.setCurrentPosition(pos);
+			}
+		}
+		
 	}
 	
 	public static void stepForward() throws InvalidInputException {

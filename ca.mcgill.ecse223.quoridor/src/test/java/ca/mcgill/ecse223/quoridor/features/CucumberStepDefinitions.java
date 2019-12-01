@@ -2065,14 +2065,26 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("The following moves have been played in game:")
 	public void theFollowingMovesHaveBeenPlayedInGame(io.cucumber.datatable.DataTable dataTable) {
-		List<Map<String, String>> moveMapList = dataTable.asMaps();
-		// keys: mv, rnd, move
-		
+		//note: the replay mode tests are different from other tests in that they assume that white starts at row 9 and black starts at row 1
+		//so, set those as default tiles for the first position
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		GamePosition currentGamePos = currentGame.getCurrentPosition();
 		Player blackPlayer = currentGame.getBlackPlayer();
 		Player whitePlayer = currentGame.getWhitePlayer();
 		
+		for (Tile tile: QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+			if (tile.getRow() == 1 && tile.getColumn() == 5) {
+				currentGamePos.setBlackPosition(new PlayerPosition(blackPlayer, tile));
+			}
+			if (tile.getRow() == 9 && tile.getColumn() == 5) {
+				currentGamePos.setWhitePosition(new PlayerPosition(whitePlayer, tile));
+			}
+		}
+		
+		
+		List<Map<String, String>> moveMapList = dataTable.asMaps();
+		// keys: mv, rnd, move
+
 		//read each move from the list of maps of move info,
 		//and create the correct move for each one
 		for (Map<String,String> moveMap : moveMapList) {			
@@ -2102,7 +2114,13 @@ public class CucumberStepDefinitions {
 			//so, at every move, there is round1 for white player
 			//and round 2 is black player
 			Player currentPlayer = (rnd == 1) ? whitePlayer : blackPlayer;
-			
+			PlayerPosition playerPos = (rnd == 1)
+					? new PlayerPosition(currentGame.getWhitePlayer(), currentGame.getCurrentPosition().getWhitePosition().getTile())
+							: new PlayerPosition(currentGame.getBlackPlayer(), currentGame.getCurrentPosition().getBlackPosition().getTile());
+			PlayerPosition opponentPos = (rnd == 1)
+					? new PlayerPosition(currentGame.getBlackPlayer(), currentGame.getCurrentPosition().getBlackPosition().getTile())
+							: new PlayerPosition(currentGame.getWhitePlayer(), currentGame.getCurrentPosition().getWhitePosition().getTile());
+					
 			//1) find the tile associated with new move
 			Tile targetTile = null;
 			for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
@@ -2122,6 +2140,10 @@ public class CucumberStepDefinitions {
 				//this assumes white starts on default!
 				newMove = new StepMove(mv,rnd, currentPlayer,
 						targetTile, currentGame);
+				
+				//new playerPosition for a step move
+				playerPos = new PlayerPosition(currentPlayer, targetTile);
+				
 				
 			} else { 
 				//else wallMove, add a wallMove here in similar fashion
@@ -2148,6 +2170,9 @@ public class CucumberStepDefinitions {
 					currentGame.getCurrentPosition().addBlackWallsOnBoard(wallToPlace);
 				}
 				
+				//if wall move, player position of current player stays the same
+				//so no changes to playerPos
+				
 			
 			}
 			
@@ -2160,14 +2185,9 @@ public class CucumberStepDefinitions {
 			}
 			
 			// create a new GamePosition, add all walls, set new game position for game
-			PlayerPosition newPos = new PlayerPosition(currentPlayer, targetTile);
-			PlayerPosition opponentPos = (rnd == 1)
-					? new PlayerPosition(currentGame.getBlackPlayer(), currentGame.getCurrentPosition().getBlackPosition().getTile())
-							: new PlayerPosition(currentGame.getWhitePlayer(), currentGame.getCurrentPosition().getWhitePosition().getTile());
-					
 			GamePosition newGamePos = (rnd == 1)
-					? new GamePosition(currentGame.numberOfPositions() +1, newPos, opponentPos, currentGame.getBlackPlayer(), currentGame)
-									: new GamePosition(currentGame.numberOfPositions() +1, opponentPos, newPos, currentGame.getWhitePlayer(), currentGame);
+					? new GamePosition(currentGame.numberOfPositions() +1, playerPos, opponentPos, currentGame.getBlackPlayer(), currentGame)
+									: new GamePosition(currentGame.numberOfPositions() +1, opponentPos, playerPos, currentGame.getWhitePlayer(), currentGame);
 
 			for (Wall wall : currentGamePos.getBlackWallsInStock()) {
 				newGamePos.addBlackWallsInStock(wall);
@@ -2286,16 +2306,8 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The next move shall be {int}.{int}")
 	public void theNextMoveShallBe(int movno, int rndno) {
-		//TODO: check logic for this
-		// get the next move number and round number from the current position and add 1 if needed
-		int totalMoves = QuoridorApplication.getQuoridor().getCurrentGame().numberOfMoves();
-		int nextRoundNumber = (QuoridorApplication.getQuoridor().getCurrentGame().getMove(totalMoves-1).getRoundNumber() == 1) ? 2 : 1;
-		int nextMoveNumber;
-		//if next is a new round rather than round 2, it is a new move number
-		nextMoveNumber = (nextRoundNumber == 1) ?
-				QuoridorApplication.getQuoridor().getCurrentGame().getMove(totalMoves-1).getMoveNumber() +1 
-				: QuoridorApplication.getQuoridor().getCurrentGame().getMove(totalMoves-1).getMoveNumber();
-		
+		int nextMoveNumber = QuoridorController.getNextMoveInReplay();
+		int nextRoundNumber = QuoridorController.getNextRoundInReplay();
 		assertEquals(movno, nextMoveNumber);
 		assertEquals(rndno, nextRoundNumber);
 	}
@@ -2339,10 +2351,10 @@ public class CucumberStepDefinitions {
 	 * @param wwallno number of white walls still in stock
 	 * @author Helen Lin, 260715521
 	 */
-	@And ("White has <wwallno> on stock")
+	@And ("White has {int} on stock")
 	public void whiteHasWwallsOnStock(int wwallno) {
 		int wallNum = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfWhiteWallsInStock();
-		assertEquals(wallNum, wwallno);
+		assertEquals(wwallno, wallNum);
 	}
 	
 	/**
@@ -2354,7 +2366,7 @@ public class CucumberStepDefinitions {
 	@And ("Black has {int} on stock")
 	public void blackHasWwallsOnStock(int bwallno) {
 		int wallNum = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfBlackWallsInStock();
-		assertEquals(wallNum, bwallno);
+		assertEquals(bwallno, wallNum);
 	}
 	
 	
@@ -2362,57 +2374,40 @@ public class CucumberStepDefinitions {
 	
 	/**
 	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
 	 */
 	@When("Jump to start position is initiated")
-	public void jumpToStartPositionIsInitiated() {
-		try {
-			QuoridorController.jumpToStart();
-		} catch (InvalidInputException e) {
-			e.printStackTrace();
-			fail();
-		}
-		//TODO create UI implementation of this (button, action listeners)
+	public void jumpToStartPositionIsInitiated() throws InvalidInputException {
+		QuoridorController.jumpToStart();
 	}
 	
 	/**
 	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
 	 */
 	@When("Jump to final position is initiated")
-	public void jumpToFinalPositionIsInitiated() {
-		try {
-			QuoridorController.jumpToFinal();
-		} catch (InvalidInputException e) {
-			e.printStackTrace();
-			fail();
-		}
-		//TODO create UI implementation of this (button, action listeners)
-	}
-	
-	/**
-	 * @author Helen Lin, 260715521
-	 */
-	@When("Step backward is initiated")
-	public void stepBackwardIsInitiated() {
-		try {
-			QuoridorController.stepBackward();
-		} catch (InvalidInputException e) {
-			e.printStackTrace();
-			fail();
-		}
+	public void jumpToFinalPositionIsInitiated() throws InvalidInputException {
+		QuoridorController.jumpToFinal();
 		
 	}
 	
 	/**
 	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
+	 */
+	@When("Step backward is initiated")
+	public void stepBackwardIsInitiated() throws InvalidInputException {
+		QuoridorController.stepBackward();
+		
+	}
+	
+	/**
+	 * @author Helen Lin, 260715521
+	 * @throws InvalidInputException 
 	 */
 	@When("Step forward is initiated")
-	public void stepForwardIsInitiated() {
-		try {
-			QuoridorController.stepForward();
-		} catch (InvalidInputException e) {
-			e.printStackTrace();
-			fail();
-		}
+	public void stepForwardIsInitiated() throws InvalidInputException {
+		QuoridorController.stepForward();
 		
 	}
 
