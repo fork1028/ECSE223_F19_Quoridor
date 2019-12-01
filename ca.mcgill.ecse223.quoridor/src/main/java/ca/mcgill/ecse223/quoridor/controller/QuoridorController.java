@@ -1943,6 +1943,8 @@ public class QuoridorController {
 	 * This method loads a game
 	 * @author Shayne Leitman
 	 * @param filename	name of the file you wish to load
+	 * @param whiteUser name of the white user
+	 * @param blackUser name of the black user
 	 * @return boolean	returns true if successful loading, false if failed
 	 * @throws InvalidInputException 
 	 * @throws IOException 
@@ -2028,6 +2030,26 @@ public class QuoridorController {
 					return false;
 				}
 			}
+			
+		}
+		
+		//END OF LOOP.
+		
+		if (!result) {
+			return result;
+		}
+		
+		if (getCurrentRowForPawn(true) == 1) {
+			newGame.setGameStatus(GameStatus.Replay);
+		} else if (getCurrentRowForPawn(false) == 9) {
+			newGame.setGameStatus(GameStatus.Replay);
+		} else {
+			newGame.setGameStatus(GameStatus.Running);
+		}
+		
+		if (newGame.getGameStatus().equals(GameStatus.Replay)) {
+			//ENTER REPLAY MODE!
+			enterReplayMode();
 			
 		}
 
@@ -2169,7 +2191,6 @@ public class QuoridorController {
 			PlayerPosition opponentPos = (isBlackTurn())
 					? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
 							: new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile());
-
 
 
 					GamePosition newGamePos = (isBlackTurn()) 

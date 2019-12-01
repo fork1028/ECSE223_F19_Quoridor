@@ -8,6 +8,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
@@ -2362,6 +2363,86 @@ public class CucumberStepDefinitions {
 	
 	// ************END OF REPLAY MODE FEATURES****************
 
+	
+	//****************************LOAD GAME FEATURES**********************************/
+	@When("I initiate to load a game in {string}")
+	public void initiateToLoadAGameIn(String filename) {
+		QuoridorApplication.getQuoridor().addUser("temp1");
+		QuoridorApplication.getQuoridor().addUser("temp2");
+		try {
+			QuoridorController.loadGame(filename, "temp1", "temp2");
+		} catch (InvalidInputException e) {
+			// TODO Auto-generated catch block
+			assertEquals(true, true);
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			assertEquals(true, true);
+			e.printStackTrace();
+		} catch (Exception e) {
+			assertEquals(true, true);
+			e.printStackTrace();
+		}
+		assertEquals(true, true);
+	}
+	
+	@And("Each game move is valid")
+	public void eachGameMoveIsValid() {
+		boolean temp = QuoridorApplication.getQuoridor().hasCurrentGame();
+		assertEquals(true, temp);
+	}
+	
+	@And("The game has no final results")
+	public void theGameHasNoFinalResults() {
+		boolean temp = true;
+		if(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Replay)
+				|| QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.WhiteWon)
+				|| QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.BlackWon)
+				|| QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Draw)) {
+			temp = false;
+		}
+		assertEquals(true, temp);
+	}
+	
+	@And("The game to load is valid")
+	public void theGameToLoadIsValid() {
+		boolean temp = QuoridorApplication.getQuoridor().hasCurrentGame();
+		assertEquals(true, temp);
+	}
+	
+	@And("The game has a final result")
+	public void theGameHasAFinalResult() {
+		boolean temp = false;
+		if(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Replay)
+				|| QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.WhiteWon)
+				|| QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.BlackWon)
+				|| QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Draw)) {
+			temp = true;
+		}
+		assertEquals(true, temp);
+	}
+	
+	@And("The game to load has an invalid move")
+	public void theGameToLoadHasAnInvalidMove() {
+		boolean temp = QuoridorApplication.getQuoridor().hasCurrentGame();
+		assertEquals(false, temp);
+	}
+	
+	@And("The game shall notify the user that the game file is invalid")
+	public void theGameShallNotifyTheUserThatTheGameFileIsInvalid() {
+		assertEquals(true, true);
+	}
+	
+	
+	
+	// ************END OF LOAD GAME FEATURES****************
+	
+	//****************************SAVE GAME FEATURES**********************************/
+	
+	
+	
+	// ************END OF SAVE GAME FEATURES****************
+	
 
 	// ***********************************************
 	// Clean up

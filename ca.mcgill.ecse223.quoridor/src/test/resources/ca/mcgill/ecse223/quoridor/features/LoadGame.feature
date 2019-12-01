@@ -10,7 +10,7 @@ Feature: Load Game
     When I initiate to load a game in "<filename>"
     And Each game move is valid
     And The game has no final results
-    And The position to load is valid
+    And The game to load is valid
     Then It shall be "<player>"'s turn
     And "<player>" shall be at <p_row>:<p_col>
     And "<opponent>" shall be at <o_row>:<o_col>
@@ -28,7 +28,7 @@ Feature: Load Game
     When I initiate to load a game in "<filename>"
     And Each game move is valid
     And The game has a final result
-    And The position to load is valid
+    And The game to load is valid
     Then The game shall be in replay mode 
 
     Examples: 
@@ -36,7 +36,7 @@ Feature: Load Game
       | quoridor_test_game_3.mov |  
 
   Scenario Outline: Invalid move in game file
-    When I initiate to load a saved game "<filename>"
+    When I initiate to load a game in "<filename>"
     And The game to load has an invalid move
     Then The game shall notify the user that the game file is invalid
 

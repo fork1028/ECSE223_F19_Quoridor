@@ -266,6 +266,7 @@ public class QuoridorStartGame extends JFrame {
 		try {
 			//QuoridorController.loadSavedPosition(loadGameTextField.getText());
 			QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
+			QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
 			new QuoridorGamePage().setVisible(true);
 		} catch (UnsupportedOperationException | IOException | InvalidInputException e) {
 			error = e.getMessage();
