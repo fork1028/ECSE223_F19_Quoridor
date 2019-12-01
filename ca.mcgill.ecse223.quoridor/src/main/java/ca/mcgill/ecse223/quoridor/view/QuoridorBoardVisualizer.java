@@ -543,6 +543,11 @@ public class QuoridorBoardVisualizer extends JPanel {
 
 	}
 
+	/**
+	 * this method draws rotated walls on board
+	 * @author Xinyue Chen
+	 * @param g
+	 */
 	public void drawRotate(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g.create();
 		g2d.setStroke(thinStroke);
