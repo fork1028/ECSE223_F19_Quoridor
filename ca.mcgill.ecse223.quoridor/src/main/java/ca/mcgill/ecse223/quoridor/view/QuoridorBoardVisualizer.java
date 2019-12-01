@@ -299,12 +299,12 @@ public class QuoridorBoardVisualizer extends JPanel {
 					int h = 0;
 					
 					if (wall.getIsHorizontal()) {
-						x = -SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING);
+						x = -SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING)+WALLSPACING;
 						y = SQUAREWIDTH/2 + wall.getRow()*(SQUAREWIDTH + SPACING);
 						w = WALLHEIGHT;
 						h = WALLWIDTH;
 					} else {
-						x = SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING);
+						x = SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING)+WALLSPACING;
 						y = -SQUAREWIDTH/2 + wall.getRow()*(SQUAREWIDTH + SPACING);
 						w = WALLWIDTH;
 						h = WALLHEIGHT;
@@ -333,12 +333,12 @@ public class QuoridorBoardVisualizer extends JPanel {
 					int h = 0;
 					
 					if (wall.getIsHorizontal()) {
-						x = -SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING);
+						x = -SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING)+WALLSPACING;
 						y = SQUAREWIDTH/2 + wall.getRow()*(SQUAREWIDTH + SPACING);
 						w = WALLHEIGHT;
 						h = WALLWIDTH;
 					} else {
-						x = SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING);
+						x = SQUAREWIDTH/2 + wall.getCol()*(SQUAREWIDTH + SPACING)+WALLSPACING;
 						y = -SQUAREWIDTH/2 + wall.getRow()*(SQUAREWIDTH + SPACING);
 						w = WALLWIDTH;
 						h = WALLHEIGHT;
@@ -848,7 +848,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		doDrawingForBoardAndTiles(g);
-//		doDrawingForWallsOnLoad(g);
+		//doDrawingForWallsOnLoad(g);
 
 //		// drawDrop(g);
 //		if (grabIsClicked == true) {

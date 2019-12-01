@@ -282,8 +282,10 @@ public class QuoridorStartGame extends JFrame {
 				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
 				QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
 				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
-				new QuoridorGamePage().setVisible(true);
-				repaint();
+				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
+				gamePage.setVisible(true);
+				//gamePage.repaint();
+				//gamePage.refreshData();
 				refreshData();
 				return;
 			} catch (UnsupportedOperationException | IOException | InvalidInputException e) {

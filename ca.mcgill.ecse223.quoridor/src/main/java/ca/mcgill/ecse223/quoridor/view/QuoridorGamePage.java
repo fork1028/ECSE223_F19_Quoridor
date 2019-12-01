@@ -572,7 +572,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	 * This method refreshes any components on the game page.
 	 * @author Helen Lin, 260715521
 	 */
-	private static void refreshData() {
+	public static void refreshData() {
 		// TODO ???
 		// update error message
 		errorMsg.setText(error);
