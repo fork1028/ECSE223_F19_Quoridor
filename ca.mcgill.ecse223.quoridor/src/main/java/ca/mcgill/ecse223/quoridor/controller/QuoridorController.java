@@ -19,6 +19,7 @@ import ca.mcgill.ecse223.quoridor.model.Game.MoveMode;
 import ca.mcgill.ecse223.quoridor.view.QuoridorGamePage;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
+import ca.mcgill.ecse223.quoridor.controller.Graph;
 
 /**
  * @author user
@@ -35,7 +36,7 @@ public class QuoridorController {
 
 	private static GameStatus status;
 
-
+	static Graph graph = new Graph();
 
 	/**
 	 * This method initializes a game that is ready to start. The game is
@@ -535,6 +536,7 @@ public class QuoridorController {
 					isValid = false;
 				}
 			}
+			
 
 		}
 		//System.out.println("isvalid:" + isValid);
@@ -558,9 +560,11 @@ public class QuoridorController {
 
 			if (playerToMove == whitePlayer) {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().addWhiteWallsOnBoard(wall);
+				graph.wallAdded(row, row, wall.getMove().getWallDirection());
 			}
 			if (playerToMove == blackPlayer) {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
+				graph.wallAdded(row, row, wall.getMove().getWallDirection());
 			}
 		} else {
 			throw new java.lang.UnsupportedOperationException("You can't drop the wall here.");
@@ -1260,6 +1264,22 @@ public class QuoridorController {
 
 	/********** SECOND SET OF FEATURES **********/
 
+	/** 3. Identify Game Drawn
+	 * 
+	 * This method checks if a player has repeated the same move 3 times in a row, which indicates a draw.
+	 * 
+	 * @return boolean  true if valid position, false if invalid position
+	 * @author Sami Junior Kahil, 260834568
+	 */
+	public static String checkIfPathExists() {
+		
+		
+		
+		return "both";
+		//return "none";
+		//return "white";
+		//return "black";
+	}
 
 	/** 5. Identify Game Drawn
 	 * 
@@ -1300,7 +1320,7 @@ public class QuoridorController {
 			currentGame.setGameStatus(GameStatus.Running);
 			return false;
 		}
-		
+
 		List<Move> listOfMoves = currentGame.getMoves();
 		List<Move> subListOfMoves = listOfMoves.subList(listOfMoves.size() - 9, listOfMoves.size());
 
@@ -1315,7 +1335,7 @@ public class QuoridorController {
 				) {
 			currentGame.setGameStatus(GameStatus.Draw);
 			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
-			
+
 			return true;
 		}
 
@@ -1871,7 +1891,7 @@ public class QuoridorController {
 		//check both players!
 		//current position
 		GamePosition position = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		
+
 		if (getCurrentRowForPawn(true) == 1) { //check black
 			//set status of game
 			//stop clock etc...
@@ -1879,7 +1899,7 @@ public class QuoridorController {
 			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 			QuoridorGamePage.setBlackWon(true);
 		}
-		
+
 		if (getCurrentRowForPawn(false) == 9) { //check white
 			//set status of game
 			//stop clock etc...
@@ -1887,7 +1907,7 @@ public class QuoridorController {
 			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 			QuoridorGamePage.setWhiteWon(true);
 		} 
-		
+
 		Time blackRemainingTime=getTimeForPlayer(true);
 		Time whiteRemainingTime=getTimeForPlayer(false);
 		if(blackRemainingTime.getMinutes()+blackRemainingTime.getSeconds()==0) {
@@ -1900,12 +1920,12 @@ public class QuoridorController {
 			QuoridorGamePage.setWhiteWon(true);
 			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 		}
-		
+
 		if (identifyGameDrawn() == true) {
 			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Draw);
 			QuoridorGamePage.setDraw(true);
 		}
-		
+
 		//not sure if you should check running or set running, it should be already at that state.
 	}
 
@@ -1916,8 +1936,8 @@ public class QuoridorController {
 	public static GameStatus getGameResult() {
 		return QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
 	}
-	
-	
+
+
 	/**
 	 * This method loads a game
 	 * @author Shayne Leitman
@@ -1947,7 +1967,7 @@ public class QuoridorController {
 		Player blackPl = newGame.getBlackPlayer();
 		initializeBoard();
 		pawnBehaviourSetUp();
-		
+
 		//Now get the move info into a list
 		ArrayList<String> gameData = new ArrayList<String>();
 		String line = null;
@@ -1965,7 +1985,7 @@ public class QuoridorController {
 		} catch (IOException e) {
 			return false;
 		}
-		
+
 		String[] curMoves = null;
 		int roundNum = 0;
 		int wMoveNum = 0;
@@ -1977,18 +1997,18 @@ public class QuoridorController {
 			roundNum = Integer.parseInt(curMoves[0].replace(".", ""));
 			wMoveNum = 2 * roundNum - 1;
 			bMoveNum = 2 * roundNum;
-			
-			
-			
-			
+
+
+
+
 			loadGameMovePawn(curMoves[2]);
 			loadGameMovePawn(curMoves[1]);
-			
+
 		}
 
 		return false;
 	}
-	
+
 	public static boolean loadGameMovePawn(String move) {
 		boolean result = false;
 		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
@@ -2013,19 +2033,19 @@ public class QuoridorController {
 		if (blackPlayer.equals(curPlayer)) {
 			isCurBlack = true;
 		}
-		
+
 		int checkRow = getCurrentRowForPawn(isCurBlack);
 		int checkCol = getCurrentColForPawn(isCurBlack);
-		
+
 		if (checkRow == newRow && checkCol == newCol) {
 			result = true;
 		}
-		
+
 		return result;
 	}
-	
+
 	public static MoveDirection getMoveDirection(int curRow, int curCol, int newCol, int newRow) {
-		
+
 		MoveDirection moveDir = null;
 		//First, case of same column, then case of same row, then, 4 corner moves!
 		if (curCol == newCol) {
@@ -2034,14 +2054,14 @@ public class QuoridorController {
 			} else {
 				moveDir = MoveDirection.South;
 			}
-			
+
 		} else if (curRow == newRow) {
 			if (curCol == newCol + 1) {
 				moveDir = MoveDirection.West;
 			} else {
 				moveDir = MoveDirection.East;
 			}
-			
+
 		} else if (curCol == newCol + 1 && curRow == newRow + 1) {
 			moveDir = MoveDirection.NorthWest;
 		} else if (curCol == newCol + 1 && curRow + 1 == newRow) {
@@ -2051,10 +2071,10 @@ public class QuoridorController {
 		} else if (curCol + 1 == newCol + 1 && curRow == newRow + 1) {
 			moveDir = MoveDirection.NorthEast;
 		}
-		
+
 		return moveDir;
 	}
-	
+
 	public static boolean loadGamePlaceWall(String move) throws InvalidInputException {
 		boolean result = false;
 		boolean hasWallsToPlace = false;
@@ -2067,17 +2087,17 @@ public class QuoridorController {
 		} else if (move.substring(2, 3).equals("h")){
 			wallDir = Direction.Horizontal;
 		}
-		
+
 		if (isWhiteTurn()) {
 			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasWhiteWallsInStock();
 		} else {
 			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasBlackWallsInStock();
 		}
-		
+
 		if (!hasWallsToPlace) {
 			return false;
 		}
-		
+
 		Tile newTile = null;
 
 		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
@@ -2090,7 +2110,7 @@ public class QuoridorController {
 		if (newTile == null) {
 			throw new InvalidInputException("Unable to find the tile for a new pawn move!");
 		}
-		
+
 		boolean validPlace = validatingWallPlacement(wallRow, wallCol, wallDir);
 		if (validPlace) {
 			//Need to update gameposition AND create a new move!
@@ -2102,7 +2122,7 @@ public class QuoridorController {
 			} else {
 				wallToBePlaced = curGame.getCurrentPosition().getBlackWallsInStock(curGame.getCurrentPosition().numberOfBlackWallsInStock()-1);
 			}
-			
+
 			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1,
 					((curGame.numberOfMoves()) / 2) + 1, curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
 			curGame.addMove(newWallMove);
@@ -2134,7 +2154,7 @@ public class QuoridorController {
 					for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
 						newGamePos.addWhiteWallsOnBoard(wall);
 					}
-					
+
 					if (isBlackTurn()) {
 						curGamePos.removeBlackWallsInStock(wallToBePlaced);
 						curGamePos.addBlackWallsOnBoard(wallToBePlaced);
@@ -2145,21 +2165,21 @@ public class QuoridorController {
 
 					curGame.addPosition(newGamePos);
 					curGame.setCurrentPosition(newGamePos);
-			
-			result = true;
-			
+
+					result = true;
+
 		} else {
 			return false;
 		}
-		
+
 		return result;
-		
+
 	}
-	
+
 	public static boolean validatingWallPlacement(int row, int col, Direction dir) {
 		boolean result = true;
 		GamePosition curPos = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition();
-		
+
 		ArrayList<Wall> wallList = new ArrayList<Wall>();
 		if (curPos.numberOfBlackWallsOnBoard() > 0) {
 			for (Wall wall : curPos.getBlackWallsOnBoard()) {
@@ -2171,21 +2191,21 @@ public class QuoridorController {
 				wallList.add(wall);
 			}
 		}
-		
+
 		if (wallList.isEmpty()) {
 			return true;
 		}
-		
+
 		int curRow = 0;
 		int curCol = 0;
 		Direction curDir = null;
-		
+
 		//Now loop through the wall and check if they interfere with this new one!
 		for (Wall wall : wallList) {
 			curCol = wall.getMove().getTargetTile().getColumn();
 			curRow = wall.getMove().getTargetTile().getRow();
 			curDir = wall.getMove().getWallDirection();
-			
+
 			if (dir.equals(Direction.Horizontal)) {
 				//HORIZONTAL CASE
 				//First check if directions are the same!
@@ -2198,7 +2218,7 @@ public class QuoridorController {
 						result = false;
 					}
 				}
-				
+
 			} else {
 				//VERTICAL CASE
 				//First check if directions are the same!
@@ -2211,11 +2231,11 @@ public class QuoridorController {
 						result = false;
 					}
 				}
-				
+
 			}
-			
+
 		}
-		
+
 		return result;
 	}
 
