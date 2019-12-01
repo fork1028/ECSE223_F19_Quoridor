@@ -2,6 +2,7 @@
 package ca.mcgill.ecse223.quoridor.features;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -9,14 +10,12 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.sql.Time;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import javax.swing.Timer;
 
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
-import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.*;
 import ca.mcgill.ecse223.quoridor.model.Board;
@@ -34,7 +33,6 @@ import ca.mcgill.ecse223.quoridor.model.Tile;
 import ca.mcgill.ecse223.quoridor.model.User;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
-import ca.mcgill.ecse223.quoridor.view.QuoridorBoardVisualizer;
 import ca.mcgill.ecse223.quoridor.view.QuoridorGamePage;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
@@ -43,7 +41,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-import junit.framework.Assert;
 
 public class CucumberStepDefinitions {
 
@@ -222,7 +219,7 @@ public class CucumberStepDefinitions {
 	/** @author matteo barbieri 260805184 */
 	@Then("The game shall be running")
 	public void theGameShallBeRunning() {
-		assert (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus() == GameStatus.Running);
+		assertEquals (QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.Running);
 	}
 
 	/**
@@ -535,10 +532,10 @@ public class CucumberStepDefinitions {
 		// assert(blackWalls.isEmpty());
 		/// assert(whiteWalls.isEmpty());
 		if (whiteWalls.isEmpty()) {
-			Assert.assertEquals(whiteWalls.size(), 0);
+			assertEquals(whiteWalls.size(), 0);
 		}
 		if (blackWalls.isEmpty()) {
-			Assert.assertEquals(blackWalls.size(), 0);
+			assertEquals(blackWalls.size(), 0);
 		}
 		// assert(whiteWalls.size()==0);
 
@@ -2008,6 +2005,98 @@ public class CucumberStepDefinitions {
 	// ************ END OF RESIGNGAME ****************
 	
 	
+	
+	
+	
+	//*********************ENTER REPLAY MODE***************************/
+	
+			//scenario 1) entering replay mode
+	/**
+	 * @author Helen Lin, 260715521
+	 */
+	@When("I initiate replay mode")
+	public void iInitiateReplayMode() {
+		try {
+			QuoridorController.enterReplayMode();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * @author Helen Lin, 260715521
+	 */
+	@Then("The game shall be in replay mode")
+	public void theGameShallBeInReplayMode() {
+		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.Replay);
+	}
+	
+	
+			//scenario 2) continue unfinished game
+	/**
+	 * Pre-condition for Enter Replay Mode's "continue unfinished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@Given("The game is replay mode")
+	public void theGameIsReplayMode() {
+		try {
+			theGameIsNotRunning();
+			QuoridorController.enterReplayMode();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
+		}
+		
+	}
+	
+	/**
+	 * Part of pre-condition for Enter Replay Mode's "continue unfinished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@And("The game does not have a final result")
+	public void theGameDoesNotHaveAFinalResult() {
+		QuoridorController.initiateGameResult();
+		GameStatus status = QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus();
+		assertNotEquals(status, GameStatus.BlackWon);
+		assertNotEquals(status, GameStatus.WhiteWon);
+		assertNotEquals(status, GameStatus.Draw);
+		
+	}
+	
+	/**
+	 * Condition for Enter Replay Mode's "continue unfinished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@When("I initiate to continue game")
+	public void iInitiateToContinueGame() {
+		try {
+			QuoridorController.continueGameFromCurrent();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
+		}
+	}
+	
+	/**
+	 * Part of post-condition for Enter Replay Mode's "continue unfinished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@And("The remaining moves of the game shall be removed")
+	public void theRemainingMovesOfTheGameShallBeRemoved() {
+		//assert the remaining moves do not exist
+		//get move of latest played move
+		List<Move> allMoves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
+		for (Move move: allMoves) {
+			assertTrue(move.getMoveNumber() <= QuoridorController.getNextMoveInReplay());
+			if (move.getMoveNumber() == QuoridorController.getNextMoveInReplay()) {
+				assertTrue(move.getRoundNumber() < QuoridorController.getNextMoveInReplay());
+			}
+			
+		}
+	}
+	
+	
 	//****************************REPLAY MODE FEATURES**********************************/
 	
 	/**
@@ -2017,8 +2106,7 @@ public class CucumberStepDefinitions {
 	 */
 	@Given("The game is in replay mode")
 	public void theGameIsInReplayMode() throws InvalidInputException {
-		theGameIsRunning();
-		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
+		theGameIsReplayMode();
 	}
 	
 	/**
@@ -2148,9 +2236,9 @@ public class CucumberStepDefinitions {
 	 */
 	@And ("The next move is {int}.{int}")
 	public void theNextMoveIsMovnoRndNo(int movno, int rndno) {
-		//TODO set replay mode's next move CAUTION ONLY FOR REPLAY MODE
+		//set replay mode's next move params
+		QuoridorController.setNextMoveRoundInReplay(movno, rndno);
 	}
-	
 	
 
 	/**
@@ -2240,7 +2328,12 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Jump to start position is initiated")
 	public void jumpToStartPositionIsInitiated() {
-		//TODO call controller method to jump to start position
+		try {
+			QuoridorController.jumpToStart();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
+		}
 		//TODO create UI implementation of this (button, action listeners)
 	}
 	
@@ -2249,46 +2342,17 @@ public class CucumberStepDefinitions {
 	 */
 	@When("Jump to final position is initiated")
 	public void jumpToFinalPositionIsInitiated() {
-		//TODO call controller method to jump to finalposition
-		//TODO create UI implementation of this (button, action listeners)
-		
-		//find last move info and move
-		int lastMoveNum = 1;
-		int lastRoundNum = 1;
-		Move lastMove = null;
-		List<Move> moves =  QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
-		Collections.sort(moves, (move1, move2) -> {
-			return move1.getMoveNumber() - move2.getMoveNumber();
-		});
-		
-		for (Move move : moves) {
-			System.out.println(move.getMoveNumber() + ", " + move.getRoundNumber());
-//			if (move.getMoveNumber() >= lastMoveNum) {
-//				lastMoveNum = move.getMoveNumber();
-//				lastRoundNum = move.getRoundNumber();
-//				lastMove = move;
-//				if (lastRoundNum == 2) {
-//					break;
-//				}
-//			}
+		try {
+			QuoridorController.jumpToFinal();
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			fail();
 		}
 		
-		//set as current game position
-		for (GamePosition position : QuoridorApplication.getQuoridor().getCurrentGame().getPositions()) {
-			//find the last move
-
-
-		}
-//		currentGame.addPosition(newGamePos);
-//		currentGame.setCurrentPosition(newGamePos);
 	}
 
 	
-	// ************END OF JUMPTOFINAL****************
-	
-	// ************START OF JUMPTOSTART****************
-	
-	// ************END OF JUMPTOSTART****************
+	// ************END OF REPLAY MODE FEATURES****************
 
 
 	// ***********************************************

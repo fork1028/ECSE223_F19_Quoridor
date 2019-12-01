@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.model.*;
@@ -330,16 +332,15 @@ public class QuoridorController {
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		Game game = QuoridorApplication.getQuoridor().getCurrentGame();
 		int wallIdxForPlayer = 1;
-		System.out.println(player);
 		if (player == whitePlayer) {
 			// Tile whiteStart = QuoridorApplication.getQuoridor().getBoard().getTile(36);
 			Tile whiteStart = new Tile(5, 4, QuoridorApplication.getQuoridor().getBoard());
-			System.out.println("whiteStockSize:" + QuoridorApplication.getQuoridor().getCurrentGame()
-					.getCurrentPosition().getWhiteWallsInStock().size());
+			//System.out.println("whiteStockSize:" + QuoridorApplication.getQuoridor().getCurrentGame()
+					//.getCurrentPosition().getWhiteWallsInStock().size());
 			Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 					.getWhiteWallsInStock(wallIdxForPlayer);
 
-			System.out.println(wall);
+			//System.out.println(wall);
 			WallMove nextmove = new WallMove(0, 0, player, whiteStart, game, startDir, wall);
 
 			QuoridorApplication.getQuoridor().getCurrentGame().setWallMoveCandidate(nextmove);
@@ -420,7 +421,7 @@ public class QuoridorController {
 		boolean movable = true;
 		Board board = QuoridorApplication.getQuoridor().getBoard();
 		WallMove candidate = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
-		System.out.println(candidate);
+		//System.out.println(candidate);
 		// Wall
 		// wall=QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate();
 		if (candidate == null) {
@@ -1952,6 +1953,7 @@ public class QuoridorController {
 		//set the users to player, then save players as variables.
 		//Net we need to initialize the board and walls into players stock
 		//
+		boolean result = true;
 		Game oldGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Game newGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
 		QuoridorApplication.getQuoridor().setCurrentGame(newGame);
@@ -1985,28 +1987,51 @@ public class QuoridorController {
 		} catch (IOException e) {
 			return false;
 		}
+		
+		boolean lastRound = false;
 
 		String[] curMoves = null;
-		int roundNum = 0;
-		int wMoveNum = 0;
-		int bMoveNum = 0;
 		//Now, for each entry in the list, we should split on " ", giving us the move(s) separated.
 		for (String moves : gameData) {
 			//For each move, we split first.
 			curMoves = moves.split(" ");
-			roundNum = Integer.parseInt(curMoves[0].replace(".", ""));
-			wMoveNum = 2 * roundNum - 1;
-			bMoveNum = 2 * roundNum;
-
-
-
-
-			loadGameMovePawn(curMoves[2]);
-			loadGameMovePawn(curMoves[1]);
-
+			
+			if (curMoves.length < 3) {
+				lastRound = true;
+			}
+			
+			//First do white player's move
+			if (curMoves[1].length() == 2) {
+				result = loadGameMovePawn(curMoves[1]);
+			} else if (curMoves[1].length() == 3) {
+				result = loadGamePlaceWall(curMoves[1]);
+			} else {
+				return false;
+			}
+			
+			if (!result) {
+				return false;
+			}
+			
+			
+			if (!lastRound) {
+				//Next do black player's move
+				if (curMoves[2].length() == 2) {
+					result = loadGameMovePawn(curMoves[2]);
+				} else if (curMoves[2].length() == 3) {
+					result = loadGamePlaceWall(curMoves[2]);
+				} else {
+					return false;
+				}
+				
+				if (!result) {
+					return false;
+				}
+			}
+			
 		}
 
-		return false;
+		return result;
 	}
 
 	public static boolean loadGameMovePawn(String move) {
@@ -2049,14 +2074,14 @@ public class QuoridorController {
 		MoveDirection moveDir = null;
 		//First, case of same column, then case of same row, then, 4 corner moves!
 		if (curCol == newCol) {
-			if (curRow == newRow + 1) {
+			if (curRow == newRow + 1 || curRow == newRow + 2) {
 				moveDir = MoveDirection.North;
 			} else {
 				moveDir = MoveDirection.South;
 			}
 
 		} else if (curRow == newRow) {
-			if (curCol == newCol + 1) {
+			if (curCol == newCol + 1 || curCol == newCol + 2) {
 				moveDir = MoveDirection.West;
 			} else {
 				moveDir = MoveDirection.East;
@@ -2113,7 +2138,7 @@ public class QuoridorController {
 
 		boolean validPlace = validatingWallPlacement(wallRow, wallCol, wallDir);
 		if (validPlace) {
-			//Need to update gameposition AND create a new move!
+			//Need to update game position AND create a new move!
 			//First let's create the move. Get the wall being placed, create the new wall move, add the move to the game
 			Wall wallToBePlaced = null;
 			if (isWhiteTurn()) {
@@ -2122,25 +2147,34 @@ public class QuoridorController {
 			} else {
 				wallToBePlaced = curGame.getCurrentPosition().getBlackWallsInStock(curGame.getCurrentPosition().numberOfBlackWallsInStock()-1);
 			}
-
-			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1,
-					((curGame.numberOfMoves()) / 2) + 1, curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
-			curGame.addMove(newWallMove);
+			
 			Move recentMove = null;
 			if (curGame.hasMoves()) {
 				recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
 			}
+			
+			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1,
+					((curGame.numberOfMoves()) / 2) + 1, curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
+			curGame.addMove(newWallMove);
+
 			recentMove.setNextMove(newWallMove);
 			newWallMove.setPrevMove(recentMove);
+			
 			//Next, we need to create a new game position!
 			GamePosition curGamePos = curGame.getCurrentPosition();
-			PlayerPosition curPPos = curGamePos.getBlackPosition();
-			PlayerPosition nextPPos = curGamePos.getWhitePosition();
+			Tile curPlayerTile = (isBlackTurn())
+					? curGame.getCurrentPosition().getBlackPosition().getTile()
+						: curGame.getCurrentPosition().getWhitePosition().getTile();
+			PlayerPosition newPos = new PlayerPosition(curGame.getCurrentPosition().getPlayerToMove(), curPlayerTile);
+			PlayerPosition opponentPos = (isBlackTurn())
+					? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
+							: new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile());
 
 
-			GamePosition newGamePos = (isBlackTurn()) 
-					? new GamePosition(curGame.numberOfPositions() + 1, nextPPos, curPPos, curGame.getWhitePlayer(), curGame)
-							: new GamePosition(curGame.numberOfPositions() + 1, nextPPos, curPPos, curGame.getBlackPlayer(), curGame);
+
+					GamePosition newGamePos = (isBlackTurn()) 
+							? new GamePosition(curGame.numberOfPositions() + 1, opponentPos, newPos, curGame.getWhitePlayer(), curGame)
+									: new GamePosition(curGame.numberOfPositions() + 1, newPos, opponentPos, curGame.getBlackPlayer(), curGame);
 
 					for (Wall wall : curGamePos.getBlackWallsInStock()) {
 						newGamePos.addBlackWallsInStock(wall);
@@ -2156,11 +2190,11 @@ public class QuoridorController {
 					}
 
 					if (isBlackTurn()) {
-						curGamePos.removeBlackWallsInStock(wallToBePlaced);
-						curGamePos.addBlackWallsOnBoard(wallToBePlaced);
+						newGamePos.removeBlackWallsInStock(wallToBePlaced);
+						newGamePos.addBlackWallsOnBoard(wallToBePlaced);
 					} else {
-						curGamePos.removeWhiteWallsInStock(wallToBePlaced);
-						curGamePos.addWhiteWallsOnBoard(wallToBePlaced);
+						newGamePos.removeWhiteWallsInStock(wallToBePlaced);
+						newGamePos.addWhiteWallsOnBoard(wallToBePlaced);
 					}
 
 					curGame.addPosition(newGamePos);
@@ -2237,6 +2271,173 @@ public class QuoridorController {
 		}
 
 		return result;
+	}
+	
+	
+	//**********************REPLAY MODE CONTROLLER METHODS********************/
+	
+	private static int nextMoveInReplayMode;
+	private static int nextRoundInReplayMode;
+	
+	/**
+	 * Helper method to allow controller and test methods
+	 * to access the next move and round number for tests
+	 * @param movNo Move number of next move
+	 * @param rndNo Round number of next move (1 for white and 2 for black)
+	 * @author Helen Lin, 260715521
+	 */
+	public static void setNextMoveRoundInReplay(int movNo, int rndNo) {
+		nextMoveInReplayMode = movNo;
+		nextRoundInReplayMode = rndNo;
+	}
+	
+	/**
+	 * Helper method to allow test methods
+	 * to access the next move number for tests
+	 * @return nextMoveInReplayMode
+	 * @author Helen Lin, 260715521
+	 */
+	public static int getNextMoveInReplay() {
+		return nextMoveInReplayMode;
+	}
+	
+	/**
+	 * Helper method to allow test methods
+	 * to access the next round number for tests
+	 * @return nextRoundInReplayMode
+	 * @author Helen Lin, 260715521
+	 */
+	public static int getNextRoundInReplay() {
+		return nextRoundInReplayMode;
+	}
+	
+	/**
+	 * This method starts replay mode for a game
+	 * 
+	 * @throws InvalidInputException
+	 * @author Helen Lin, 260715521
+	 */
+	public static void enterReplayMode() throws InvalidInputException {
+		//set game status to replay mode if game is not running
+		QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Replay);
+		
+		//TODO: probably need to pause timers for game if game was still running
+	}
+	
+	/**
+	 * This method allows the users to continue a game when the game is in replay mode,
+	 * from the current replay mode step (only if the game is still unfinished)
+	 * 
+	 * @throws InvalidInputException
+	 * @author Helen Lin, 260715521
+	 */
+	public static void continueGameFromCurrent() throws InvalidInputException {
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		//check game is unfinished
+		initiateGameResult();
+		
+		GameStatus status = currentGame.getGameStatus();
+		if (status.equals(GameStatus.BlackWon) || status.equals(GameStatus.WhiteWon) || status.equals(GameStatus.Draw)) {
+			return;
+		}
+		
+		//otherwise, continue game from this current step
+		
+		//1) set game to be running
+		currentGame.setGameStatus(GameStatus.Running);
+		
+		//2) remove remaining moves of the game starting at Next move and round #
+		List<Move> movesToRemove = new ArrayList<Move>();
+		
+		//first go through moveList in game and remove links between moves that we do not need
+		for (Move move : currentGame.getMoves()) {
+			//if current move in list is equal or after the desired next move,
+			//then we do not need it anymore and can delete it
+			if (move.getMoveNumber() > nextMoveInReplayMode
+					|| move.getMoveNumber() == nextMoveInReplayMode && move.getRoundNumber() == nextRoundInReplayMode) {
+				Move newNext = move.getNextMove();
+				Move newPrevious = move.getPrevMove();
+				if (newPrevious != null && newNext != null) {
+					//both previous and next exist, link them
+					newNext.setPrevMove(newPrevious);
+					newPrevious.setNextMove(newNext);
+				} else if (newNext != null) {
+					//only next move exists, remove its previous move link
+					newNext.setPrevMove(null);
+				} else if (newPrevious != null) {
+					//there is no next move, remove its next move link
+					newPrevious.setNextMove(null);
+				}
+				//add it to a List of moves to remove
+				movesToRemove.add(move);
+			} 
+			
+		}
+		
+		//now remove all the moves we do not need from the game
+		for (Move move : movesToRemove) {
+			currentGame.removeMove(move);
+		}
+		
+		//return current game's current Position to the desired position and delete the other ones
+		
+		//assuming game position ID starts at 1 for each move/round,
+		//then the current game position should be:
+		
+		int posID = (nextRoundInReplayMode == 1) ? (nextMoveInReplayMode * 2 - 2) : (nextMoveInReplayMode * 2 - 1);
+		
+		//remove all saved game positions that are after desired move, and save current position for desired continue game position
+		for (GamePosition pos : currentGame.getPositions()) {
+			if (pos.getId() > posID) 
+				currentGame.removePosition(pos);
+			if (pos.getId() == posID) {
+				currentGame.setCurrentPosition(pos);
+			}
+		}
+		
+		
+		//TODO: check timers for game etc have been restarted
+	}
+	
+
+	/**
+	 * This method fast-forwards the game to the final position played when the game is in Replay Mode
+	 * @throws InvalidInputException
+	 * @author Helen Lin, 260715521
+	 */
+	public static void jumpToFinal() throws InvalidInputException {
+		// find last move info and move
+		int lastMoveNum = 1;
+		int lastRoundNum = 1;
+		Move lastMove = null;
+		List<Move> moves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
+		Collections.sort(moves, (move1, move2) -> {
+			return move1.getMoveNumber() - move2.getMoveNumber();
+		});
+
+		for (Move move : moves) {
+			System.out.println(move.getMoveNumber() + ", " + move.getRoundNumber());
+//					if (move.getMoveNumber() >= lastMoveNum) {
+//						lastMoveNum = move.getMoveNumber();
+//						lastRoundNum = move.getRoundNumber();
+//						lastMove = move;
+//						if (lastRoundNum == 2) {
+//							break;
+//						}
+//					}
+		}
+
+		// set as current game position
+		for (GamePosition position : QuoridorApplication.getQuoridor().getCurrentGame().getPositions()) {
+			// find the last move
+
+		}
+//				currentGame.addPosition(newGamePos);
+//				currentGame.setCurrentPosition(newGamePos);
+	}
+
+	public static void jumpToStart() throws InvalidInputException {
+
 	}
 
 }
