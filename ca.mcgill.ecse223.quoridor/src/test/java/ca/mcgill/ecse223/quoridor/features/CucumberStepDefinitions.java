@@ -1445,7 +1445,7 @@ public class CucumberStepDefinitions {
 	public void blackPlayerLocatedAt (int row, int col) {
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		int id = QuoridorApplication.getQuoridor().getCurrentGame().getPositions().size();
+		int id = QuoridorApplication.getQuoridor().getCurrentGame().numberOfPositions() +1;
 		PlayerPosition whitePosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
 		Tile targetTile = QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1);
 		PlayerPosition blackPosition = new PlayerPosition(blackPlayer, targetTile);
@@ -1459,7 +1459,7 @@ public class CucumberStepDefinitions {
 	public void whitePlayerLocatedAt (int row, int col) {
 		Player blackPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
 		Player whitePlayer = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-		int id = QuoridorApplication.getQuoridor().getCurrentGame().getPositions().size();
+		int id = QuoridorApplication.getQuoridor().getCurrentGame().numberOfPositions() +1;
 		PlayerPosition blackPosition = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition();
 		Tile targetTile = QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1);
 		PlayerPosition whitePosition = new PlayerPosition(whitePlayer, targetTile);
@@ -2151,8 +2151,8 @@ public class CucumberStepDefinitions {
 							: new PlayerPosition(currentGame.getWhitePlayer(), currentGame.getCurrentPosition().getWhitePosition().getTile());
 					
 			GamePosition newGamePos = (rnd == 1)
-					? new GamePosition(currentGame.numberOfPositions() + 1, newPos, opponentPos, currentGame.getBlackPlayer(), currentGame)
-									: new GamePosition(currentGame.numberOfPositions() + 1, opponentPos, newPos, currentGame.getWhitePlayer(), currentGame);
+					? new GamePosition(currentGame.numberOfPositions() +1, newPos, opponentPos, currentGame.getBlackPlayer(), currentGame)
+									: new GamePosition(currentGame.numberOfPositions() +1, opponentPos, newPos, currentGame.getWhitePlayer(), currentGame);
 
 			for (Wall wall : currentGamePos.getBlackWallsInStock()) {
 				newGamePos.addBlackWallsInStock(wall);
@@ -2211,8 +2211,8 @@ public class CucumberStepDefinitions {
 	 */
 	@And("The remaining moves of the game shall be removed")
 	public void theRemainingMovesOfTheGameShallBeRemoved() {
-		//assert the remaining moves do not exist
-		//get move of latest played move
+		//assert the remaining moves do not exist after and including the desired "next move"
+		//from test
 		List<Move> allMoves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
 		for (Move move: allMoves) {
 			assertTrue(move.getMoveNumber() <= QuoridorController.getNextMoveInReplay());
@@ -2463,6 +2463,14 @@ public class CucumberStepDefinitions {
 				wall.delete();
 			}
 		}
+		//also delete game positions
+		for (int i = 0; i < 20; i++) {
+			GamePosition position = GamePosition.getWithId(i);
+			if (position != null) {
+				position.delete();
+			}
+		}
+		
 	}
 
 	// ***********************************************
@@ -2542,7 +2550,7 @@ public class CucumberStepDefinitions {
 		PlayerPosition player2Position = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(),
 				player2StartPos);
 
-		GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, players.get(0), game);
+		GamePosition gamePosition = new GamePosition(1, player1Position, player2Position, players.get(0), game);
 		// Now, we need to add all 20 walls to the game position, first by creating
 		// them.
 		// We need to add some walls to each player's stock.

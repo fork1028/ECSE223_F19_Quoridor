@@ -236,22 +236,21 @@ public class QuoridorController {
 		try {
 			Player white = quoridor.getCurrentGame().getWhitePlayer();
 
-
 			// white initial position
 			Tile whiteStart = (white.getDestination().getDirection().equals(Direction.Horizontal))
 					? quoridor.getBoard().getTile(36)
-							: quoridor.getBoard().getTile(4);
+					: quoridor.getBoard().getTile(4);
 
-					PlayerPosition whitePos = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), whiteStart);
+			PlayerPosition whitePos = new PlayerPosition(quoridor.getCurrentGame().getWhitePlayer(), whiteStart);
 
-					// black initial position
-					Tile blackStart = (white.getDestination().getDirection().equals(Direction.Horizontal))
-							? quoridor.getBoard().getTile(41)
-									: quoridor.getBoard().getTile(76);
-							PlayerPosition blackPos = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), blackStart);
+			// black initial position
+			Tile blackStart = (white.getDestination().getDirection().equals(Direction.Horizontal))
+					? quoridor.getBoard().getTile(41)
+					: quoridor.getBoard().getTile(76);
+			PlayerPosition blackPos = new PlayerPosition(quoridor.getCurrentGame().getBlackPlayer(), blackStart);
 
-							GamePosition gamePosition = new GamePosition(0, whitePos, blackPos, white, quoridor.getCurrentGame());
-							quoridor.getCurrentGame().setCurrentPosition(gamePosition);
+			GamePosition gamePosition = new GamePosition(1, whitePos, blackPos, white, quoridor.getCurrentGame());
+			quoridor.getCurrentGame().setCurrentPosition(gamePosition);
 
 		} catch (RuntimeException e) {
 			throw new InvalidInputException("Unable to add white player as next player to move");
@@ -953,7 +952,7 @@ public class QuoridorController {
 				startingMovePlayer = player2;
 			}
 
-			GamePosition gamePosition = new GamePosition(0, player1Position, player2Position, startingMovePlayer, game);
+			GamePosition gamePosition = new GamePosition(1, player1Position, player2Position, startingMovePlayer, game);
 
 			int whiteWallsPlaced = 0;
 			int blackWallsPlaced = 0;
@@ -1663,167 +1662,188 @@ public class QuoridorController {
 
 	/**
 	 * Controller method to move or jump the current player's pawn
+	 * 
 	 * @Author Shayne, Helen
 	 * @param dir
-	 * @throws InvalidInputException 
+	 * @throws InvalidInputException
 	 */
 	public static boolean movePawn(MoveDirection dir) throws InvalidInputException {
 
 		PawnBehavior pb = (isBlackTurn()) ? blackPB : whitePB;
 
-		//current game objects
+		// current game objects
 		Player curPlayer = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
-		PlayerPosition curPPos = (isBlackTurn()) 
+		PlayerPosition curPPos = (isBlackTurn())
 				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
-						: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
-				Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
-				GamePosition curGamePos = curGame.getCurrentPosition();
+				: QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition();
+		Game curGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		GamePosition curGamePos = curGame.getCurrentPosition();
 
-				//get last move. if this is the first move, allow it to stay null;
-				Move recentMove = null;
-				if (curGame.hasMoves()) {
-					recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
-				}
+		// get last move. if this is the first move, allow it to stay null;
+		Move recentMove = null;
+		if (curGame.hasMoves()) {
+			recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
+		}
 
-				//current player and opponent pawn locations
-				int curRow, curCol, opRow , opCol;
-				if (isBlackTurn()) {
-					curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-					opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-				} else {
-					curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getRow();
-					curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile().getColumn();
-					opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getRow();
-					opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile().getColumn();
-				}
+		// current player and opponent pawn locations
+		int curRow, curCol, opRow, opCol;
+		if (isBlackTurn()) {
+			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+					.getTile().getRow();
+			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition()
+					.getTile().getColumn();
+			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile()
+					.getRow();
+			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition().getTile()
+					.getColumn();
+		} else {
+			curRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+					.getTile().getRow();
+			curCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhitePosition()
+					.getTile().getColumn();
+			opRow = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile()
+					.getRow();
+			opCol = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackPosition().getTile()
+					.getColumn();
+		}
 
-				//1) run the pawn behavior method associated with the direction. It updates SM state and returns true if the move valid.
-				//also get the row offset and column offset for a successful move according to direction
-				int rowOffset = 0;
-				int colOffset = 0;
-				boolean isLegalMove = false; //default false
-				switch (dir) {
-				case North:
-					isLegalMove = pb.moveUp();
-					if (curCol == opCol && curRow == opRow + 1) {
-						rowOffset = -2;
-					} else {
-						rowOffset = -1;
-					}
-					break;
-				case South:
-					isLegalMove = pb.moveDown();
-					if (curCol == opCol && curRow == opRow - 1) {
-						rowOffset = 2;
-					} else {
-						rowOffset = 1;
-					}
-					break;
-				case West:
-					isLegalMove = pb.moveLeft();
-					if (curRow == opRow && curCol == opCol + 1) {
-						colOffset = -2;
-					} else {
-						colOffset = -1;
-					}
-					break;
-				case East:
-					isLegalMove = pb.moveRight();
-					if (curRow == opRow && curCol == opCol - 1) {
-						colOffset = 2;
-					} else {
-						colOffset = 1;
-					}
-					break;
-				case NorthWest:
-					isLegalMove = pb.moveUpLeft();
-					rowOffset = -1;
-					colOffset = -1;
-					break;
-				case SouthWest:
-					isLegalMove = pb.moveDownLeft();
-					rowOffset = 1;
-					colOffset = -1;
-					break;
-				case NorthEast:
-					isLegalMove = pb.moveUpRight();
-					rowOffset = -1;
-					colOffset = 1;
-					break;
-				case SouthEast:
-					isLegalMove = pb.moveDownRight();
-					rowOffset = 1;
-					colOffset = 1;
-					break;
-				}
+		// 1) run the pawn behavior method associated with the direction. It updates SM
+		// state and returns true if the move valid.
+		// also get the row offset and column offset for a successful move according to
+		// direction
+		int rowOffset = 0;
+		int colOffset = 0;
+		boolean isLegalMove = false; // default false
+		switch (dir) {
+		case North:
+			isLegalMove = pb.moveUp();
+			if (curCol == opCol && curRow == opRow + 1) {
+				rowOffset = -2;
+			} else {
+				rowOffset = -1;
+			}
+			break;
+		case South:
+			isLegalMove = pb.moveDown();
+			if (curCol == opCol && curRow == opRow - 1) {
+				rowOffset = 2;
+			} else {
+				rowOffset = 1;
+			}
+			break;
+		case West:
+			isLegalMove = pb.moveLeft();
+			if (curRow == opRow && curCol == opCol + 1) {
+				colOffset = -2;
+			} else {
+				colOffset = -1;
+			}
+			break;
+		case East:
+			isLegalMove = pb.moveRight();
+			if (curRow == opRow && curCol == opCol - 1) {
+				colOffset = 2;
+			} else {
+				colOffset = 1;
+			}
+			break;
+		case NorthWest:
+			isLegalMove = pb.moveUpLeft();
+			rowOffset = -1;
+			colOffset = -1;
+			break;
+		case SouthWest:
+			isLegalMove = pb.moveDownLeft();
+			rowOffset = 1;
+			colOffset = -1;
+			break;
+		case NorthEast:
+			isLegalMove = pb.moveUpRight();
+			rowOffset = -1;
+			colOffset = 1;
+			break;
+		case SouthEast:
+			isLegalMove = pb.moveDownRight();
+			rowOffset = 1;
+			colOffset = 1;
+			break;
+		}
 
-				//if it was invalid, simply return from this method. The move was illegal, and it is still that player's turn :)
-				if (!isLegalMove) {
-					moveWasMade = false; //note this is only for gherkin tests to be able to check which player attempted a move
-					return isLegalMove;
-				}
+		// if it was invalid, simply return from this method. The move was illegal, and
+		// it is still that player's turn :)
+		if (!isLegalMove) {
+			moveWasMade = false; // note this is only for gherkin tests to be able to check which player
+									// attempted a move
+			return isLegalMove;
+		}
 
-				//2) If it returns true, then we create a new StepMove:
+		// 2) If it returns true, then we create a new StepMove:
 
-				//a) find the tile associated with new move
-				Tile newTile = null;
-				int newCol = curPPos.getTile().getColumn() + colOffset;
-				int newRow = curPPos.getTile().getRow() + rowOffset;
+		// a) find the tile associated with new move
+		Tile newTile = null;
+		int newCol = curPPos.getTile().getColumn() + colOffset;
+		int newRow = curPPos.getTile().getRow() + rowOffset;
 
-				for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
-					if (tile.getRow() == newRow && tile.getColumn() == newCol) {
-						newTile = tile;
-						break;
-					}
-				}
-				//if did not find correct tile, something went wrong, return error
-				if (newTile == null) {
-					throw new InvalidInputException("Unable to find the tile for a new pawn move!");
-				}
+		for (Tile tile : QuoridorApplication.getQuoridor().getBoard().getTiles()) {
+			if (tile.getRow() == newRow && tile.getColumn() == newCol) {
+				newTile = tile;
+				break;
+			}
+		}
+		// if did not find correct tile, something went wrong, return error
+		if (newTile == null) {
+			throw new InvalidInputException("Unable to find the tile for a new pawn move!");
+		}
 
-				//b) create new PlayerPositions for BOTH players - important to not overwrite old positions!
-				PlayerPosition newPos = new PlayerPosition(curPlayer, newTile);
-				PlayerPosition opponentPos = (isBlackTurn())
-						? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
-								: new PlayerPosition(curGame.getBlackPlayer(), curGame.getCurrentPosition().getBlackPosition().getTile());
+		// b) create new PlayerPositions for BOTH players - important to not overwrite
+		// old positions!
+		PlayerPosition newPos = new PlayerPosition(curPlayer, newTile);
+		PlayerPosition opponentPos = (isBlackTurn())
+				? new PlayerPosition(curGame.getWhitePlayer(),
+						curGame.getCurrentPosition().getWhitePosition().getTile())
+				: new PlayerPosition(curGame.getBlackPlayer(),
+						curGame.getCurrentPosition().getBlackPosition().getTile());
 
-						//c) create a new pawn move
-						//TODO: check that the stepMove id is correct. did we start from moveID= 0 or from 1 at initial?
-						StepMove newMove = new StepMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves()) / 2) + 1, curPlayer, newTile, curGame);
+		// c) create a new pawn move
+		int newMoveNo = (curGame.numberOfMoves() / 2) + 1; // NOTE: stepMove # starts at 1 for each player
+		int newRoundNo = (isWhiteTurn()) ? 1 : 2;// round number is 1 for white, and 2 for black
 
-						if (recentMove !=null) { //if this is NOT the first move
-							recentMove.setNextMove(newMove);
-							newMove.setPrevMove(recentMove);
-						}
-						curGame.addMove(newMove);
+		StepMove newMove = new StepMove(newMoveNo, newRoundNo, curPlayer, newTile, curGame);
 
-						//d) create a new GamePosition, add all walls, set new game position for game
-						//TODO: also check that the gamePos id is correct. did we start from ID= 0 or from 1 at initial?
-						GamePosition newGamePos = (isBlackTurn()) 
-								? new GamePosition(curGame.numberOfPositions() + 1, opponentPos, newPos, curGame.getWhitePlayer(), curGame)
-										: new GamePosition(curGame.numberOfPositions() + 1, newPos, opponentPos, curGame.getBlackPlayer(), curGame);
+		if (recentMove != null) { // if this is NOT the first move
+			recentMove.setNextMove(newMove);
+			newMove.setPrevMove(recentMove);
+		}
+		curGame.addMove(newMove);
 
-								for (Wall wall : curGamePos.getBlackWallsInStock()) {
-									newGamePos.addBlackWallsInStock(wall);
-								}
-								for (Wall wall : curGamePos.getWhiteWallsInStock()) {
-									newGamePos.addWhiteWallsInStock(wall);
-								}
-								for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
-									newGamePos.addBlackWallsOnBoard(wall);
-								}
-								for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
-									newGamePos.addWhiteWallsOnBoard(wall);
-								}
+		// d) create a new GamePosition, add all walls, set new game position for game
+		// NOTE: game position ID starts at 0 when game is initiated at default places,
+		// then game position ID increments by 1 for EVERY moveAND round played
+		GamePosition newGamePos = (isBlackTurn())
+				? new GamePosition(curGame.numberOfPositions() +1, opponentPos, newPos, curGame.getWhitePlayer(), curGame)
+				: new GamePosition(curGame.numberOfPositions() +1, newPos, opponentPos, curGame.getBlackPlayer(), curGame);
 
-								curGame.addPosition(newGamePos);
-								curGame.setCurrentPosition(newGamePos);
+		for (Wall wall : curGamePos.getBlackWallsInStock()) {
+			newGamePos.addBlackWallsInStock(wall);
+		}
+		for (Wall wall : curGamePos.getWhiteWallsInStock()) {
+			newGamePos.addWhiteWallsInStock(wall);
+		}
+		for (Wall wall : curGamePos.getBlackWallsOnBoard()) {
+			newGamePos.addBlackWallsOnBoard(wall);
+		}
+		for (Wall wall : curGamePos.getWhiteWallsOnBoard()) {
+			newGamePos.addWhiteWallsOnBoard(wall);
+		}
 
-								moveWasMade = true; //note this is only for gherkin tests to be able to check which player attempted a move
-								//NOTE : do NOT need to call switchCurrentPlayer because by creating new CurrentGame and Current Game Position, we already set a new player to move :)
-								return true;
+		curGame.addPosition(newGamePos);
+		curGame.setCurrentPosition(newGamePos);
+
+		moveWasMade = true; // note this is only for gherkin tests to be able to check which player
+							// attempted a move
+		// NOTE : do NOT need to call switchCurrentPlayer because by creating new
+		// CurrentGame and Current Game Position, we already set a new player to move :)
+		return true;
 	}
 
 	/**
@@ -2131,14 +2151,16 @@ public class QuoridorController {
 		Direction wallDir = null;
 		if (move.substring(2, 3).equals("v")) {
 			wallDir = Direction.Vertical;
-		} else if (move.substring(2, 3).equals("h")){
+		} else if (move.substring(2, 3).equals("h")) {
 			wallDir = Direction.Horizontal;
 		}
 
 		if (isWhiteTurn()) {
-			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasWhiteWallsInStock();
+			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+					.hasWhiteWallsInStock();
 		} else {
-			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().hasBlackWallsInStock();
+			hasWallsToPlace = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+					.hasBlackWallsInStock();
 		}
 
 		if (!hasWallsToPlace) {
@@ -2153,40 +2175,42 @@ public class QuoridorController {
 				break;
 			}
 		}
-		//if did not find correct tile, something went wrong, return error
+		// if did not find correct tile, something went wrong, return error
 		if (newTile == null) {
 			throw new InvalidInputException("Unable to find the tile for a new pawn move!");
 		}
 
 		boolean validPlace = validatingWallPlacement(wallRow, wallCol, wallDir);
 		if (validPlace) {
-			//Need to update game position AND create a new move!
-			//First let's create the move. Get the wall being placed, create the new wall move, add the move to the game
+			// Need to update game position AND create a new move!
+			// First let's create the move. Get the wall being placed, create the new wall
+			// move, add the move to the game
 			Wall wallToBePlaced = null;
 			if (isWhiteTurn()) {
-				wallToBePlaced = curGame.getCurrentPosition().getWhiteWallsInStock(curGame.getCurrentPosition().numberOfWhiteWallsInStock()-1);
+				wallToBePlaced = curGame.getCurrentPosition()
+						.getWhiteWallsInStock(curGame.getCurrentPosition().numberOfWhiteWallsInStock() - 1);
 
 			} else {
-				wallToBePlaced = curGame.getCurrentPosition().getBlackWallsInStock(curGame.getCurrentPosition().numberOfBlackWallsInStock()-1);
+				wallToBePlaced = curGame.getCurrentPosition()
+						.getBlackWallsInStock(curGame.getCurrentPosition().numberOfBlackWallsInStock() - 1);
 			}
-			
+
 			Move recentMove = null;
 			if (curGame.hasMoves()) {
 				recentMove = curGame.getMove(curGame.numberOfMoves() - 1);
 			}
-			
-			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1,
-					((curGame.numberOfMoves()) / 2) + 1, curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
+
+			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves()) / 2) + 1,
+					curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
 			curGame.addMove(newWallMove);
 
 			recentMove.setNextMove(newWallMove);
 			newWallMove.setPrevMove(recentMove);
-			
-			//Next, we need to create a new game position!
+
+			// Next, we need to create a new game position!
 			GamePosition curGamePos = curGame.getCurrentPosition();
-			Tile curPlayerTile = (isBlackTurn())
-					? curGame.getCurrentPosition().getBlackPosition().getTile()
-						: curGame.getCurrentPosition().getWhitePosition().getTile();
+			Tile curPlayerTile = (isBlackTurn()) ? curGame.getCurrentPosition().getBlackPosition().getTile()
+					: curGame.getCurrentPosition().getWhitePosition().getTile();
 			PlayerPosition newPos = new PlayerPosition(curGame.getCurrentPosition().getPlayerToMove(), curPlayerTile);
 			PlayerPosition opponentPos = (isBlackTurn())
 					? new PlayerPosition(curGame.getWhitePlayer(), curGame.getCurrentPosition().getWhitePosition().getTile())
@@ -2210,18 +2234,18 @@ public class QuoridorController {
 						newGamePos.addWhiteWallsOnBoard(wall);
 					}
 
-					if (isBlackTurn()) {
-						newGamePos.removeBlackWallsInStock(wallToBePlaced);
-						newGamePos.addBlackWallsOnBoard(wallToBePlaced);
-					} else {
-						newGamePos.removeWhiteWallsInStock(wallToBePlaced);
-						newGamePos.addWhiteWallsOnBoard(wallToBePlaced);
-					}
+			if (isBlackTurn()) {
+				newGamePos.removeBlackWallsInStock(wallToBePlaced);
+				newGamePos.addBlackWallsOnBoard(wallToBePlaced);
+			} else {
+				newGamePos.removeWhiteWallsInStock(wallToBePlaced);
+				newGamePos.addWhiteWallsOnBoard(wallToBePlaced);
+			}
 
-					curGame.addPosition(newGamePos);
-					curGame.setCurrentPosition(newGamePos);
+			curGame.addPosition(newGamePos);
+			curGame.setCurrentPosition(newGamePos);
 
-					result = true;
+			result = true;
 
 		} else {
 			return false;
@@ -2407,18 +2431,25 @@ public class QuoridorController {
 		
 		//return current game's current Position to the desired position and delete the other ones
 		
-		//assuming game position ID starts at 1 for each move/round,
+		//assuming game position ID starts at 1 on default, and increments by 1 for each move/round,
 		//then the current game position should be:
 		
-		int posID = (nextRoundInReplayMode == 1) ? (nextMoveInReplayMode * 2 - 2) : (nextMoveInReplayMode * 2 - 1);
+		int posID = (nextRoundInReplayMode == 1) ? (nextMoveInReplayMode * 2 -1) : (nextMoveInReplayMode * 2);
 		
-		//remove all saved game positions that are after desired move, and save current position for desired continue game position
+		//first find all saved game positions that are after desired move
+		List<GamePosition> posToDelete = new ArrayList<GamePosition>();
 		for (GamePosition pos : currentGame.getPositions()) {
 			if (pos.getId() > posID) 
-				currentGame.removePosition(pos);
+				posToDelete.add(pos);
 			if (pos.getId() == posID) {
 				currentGame.setCurrentPosition(pos);
 			}
+		}
+		
+		//now delete them from game
+		for (GamePosition pos : posToDelete) {
+			currentGame.removePosition(pos);
+			pos.delete();
 		}
 		
 		
