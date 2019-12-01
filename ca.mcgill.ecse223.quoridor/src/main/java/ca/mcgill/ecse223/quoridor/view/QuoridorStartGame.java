@@ -27,6 +27,7 @@ public class QuoridorStartGame extends JFrame {
 	// JLabels
 	private JLabel errorMsg;
 	private JLabel welcomeMsg;
+	private JLabel loadPositionLabel;
 	private JLabel loadGameLabel;
 	private JLabel createUserLabel;
 	private JLabel blackPlayerLabel;
@@ -35,6 +36,7 @@ public class QuoridorStartGame extends JFrame {
 
 	// JButton
 	private JButton createNewGameButton;
+	private JButton loadPositionButton;
 	private JButton loadGameButton;
 	private JButton resumeGameButton;
 	private JButton createUserButton;
@@ -47,8 +49,9 @@ public class QuoridorStartGame extends JFrame {
 
 	// JTextField
 	private JTextField createUserTextField;
+	private JTextField loadPositionTextField;
 	private JTextField loadGameTextField;
-
+	
 	// data elements
 	private String error = null;
 
@@ -61,7 +64,7 @@ public class QuoridorStartGame extends JFrame {
 
 	/** This method is called from within the constructor to initialize the form. */
 	private void initComponents() {
-		this.setSize(900,600);
+		this.setSize(900,700);
 		this.setLocation(100,40);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.WHITE);
@@ -69,6 +72,8 @@ public class QuoridorStartGame extends JFrame {
 		// JLabels
 		welcomeMsg = new JLabel("Quoridor");
 		welcomeMsg.setFont(new Font("Verdana", Font.BOLD, 50));
+		loadPositionLabel = new JLabel("Load Position File Name");
+		loadPositionLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
 		loadGameLabel = new JLabel("Load Game File Name");
 		loadGameLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
 		createUserLabel = new JLabel("Create New Player: ");
@@ -87,6 +92,9 @@ public class QuoridorStartGame extends JFrame {
 		createNewGameButton = new JButton("Start Game");
 		createNewGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
 		createNewGameButton.setBackground(new Color(99,255,252));
+		loadPositionButton = new JButton("Load Position");
+		loadPositionButton.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadPositionButton.setBackground(new Color(99,255,252));
 		loadGameButton = new JButton("Load Game");
 		loadGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
 		loadGameButton.setBackground(new Color(99,255,252));
@@ -97,6 +105,8 @@ public class QuoridorStartGame extends JFrame {
 		// JTextFields
 		createUserTextField = new JTextField();
 		createUserTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadPositionTextField = new JTextField();
+		loadPositionTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
 		loadGameTextField = new JTextField();
 		loadGameTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
 
@@ -115,7 +125,7 @@ public class QuoridorStartGame extends JFrame {
 		mainContainer.setBackground(Color.white);
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(7,3,5,10));
+		panel.setLayout(new GridLayout(9,3,5,10));
 		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		panel.add(new JLabel(""));
 		panel.add(welcomeMsg);
@@ -135,6 +145,10 @@ public class QuoridorStartGame extends JFrame {
 		panel.add(new JLabel(""));
 		panel.add(createNewGameButton);
 		panel.add(new JLabel(""));
+		panel.add(loadPositionLabel);
+		panel.add(loadPositionTextField);
+		panel.add(loadPositionButton);
+		//panel.add(new JLabel(""));
 		panel.add(loadGameLabel);
 		panel.add(loadGameTextField);
 		panel.add(loadGameButton);
@@ -152,6 +166,12 @@ public class QuoridorStartGame extends JFrame {
 			}
 		});
 
+		loadPositionButton.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				loadPositionButtonActionPerformed(evt);
+			}
+		});
+		
 		loadGameButton.addActionListener(new java.awt.event.ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
 				loadGameButtonActionPerformed(evt);
@@ -180,7 +200,7 @@ public class QuoridorStartGame extends JFrame {
 		errorMsg.setText(error);
 
 		//set all text fields to be empty.
-		loadGameTextField.setText("");
+		loadPositionTextField.setText("");
 		createUserTextField.setText("");
 
 		//Filling minutes and seconds list
@@ -259,6 +279,43 @@ public class QuoridorStartGame extends JFrame {
 
 	}
 
+	private void loadPositionButtonActionPerformed(java.awt.event.ActionEvent evt) {
+		//Clear error msg
+		error = null;
+		//controller method
+		if (minuteList.getSelectedIndex() <0 || secondList.getSelectedIndex() <0 || blackUserList.getSelectedIndex() <0 || whiteUserList.getSelectedIndex() <0 ) {
+			error = "You must select a username for both players and select a total thinking time!";
+			refreshData();
+			return;
+		} else if (blackUserList.getSelectedIndex() == whiteUserList.getSelectedIndex()) {
+			//index of users is always the same because they are readded in refreshData each time
+			error = ("You cannot select the same user for both players!");
+			refreshData();
+			return;
+		} else if (minuteList.getSelectedIndex() == 0 && secondList.getSelectedIndex() == 0) {
+			//cannot select 00:00 for thinking time
+			error = ("You cannot select 00:00 as the total thinking time!");
+			refreshData();
+			return;
+		}else {
+			try {
+				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
+				QuoridorController.loadGame(loadPositionTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
+				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
+				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
+				gamePage.setVisible(true);
+				//gamePage.repaint();
+				//gamePage.refreshData();
+				refreshData();
+				return;
+			} catch (UnsupportedOperationException | IOException | InvalidInputException e) {
+				error = e.getMessage();
+				refreshData();
+				return;
+			}
+		}
+	}
+
 	private void loadGameButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//Clear error msg
 		error = null;
@@ -280,7 +337,7 @@ public class QuoridorStartGame extends JFrame {
 		}else {
 			try {
 				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
-				QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
+				QuoridorController.loadGame(loadPositionTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
 				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
 				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
 				gamePage.setVisible(true);
@@ -295,7 +352,7 @@ public class QuoridorStartGame extends JFrame {
 			}
 		}
 	}
-
+	
 	private void createUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
 		//Clear error msg
 		error = null;
