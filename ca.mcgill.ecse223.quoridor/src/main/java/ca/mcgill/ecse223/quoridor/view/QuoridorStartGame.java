@@ -341,8 +341,6 @@ public class QuoridorStartGame extends JFrame {
 				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
 				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
 				gamePage.setVisible(true);
-				//gamePage.repaint();
-				//gamePage.refreshData();
 				refreshData();
 				return;
 			} catch (UnsupportedOperationException | IOException | InvalidInputException e) {

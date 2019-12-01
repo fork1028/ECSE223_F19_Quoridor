@@ -1062,7 +1062,7 @@ public class CucumberStepDefinitions {
 	 */
 	/** @author Shayne Leitman, 260688512 */
 	@And("{string} shall have a {string} wall at {int}:{int}")
-	public void shalls_have_a_wall_at(String player, String orientation, Integer row, Integer col) {
+	public void shall_have_a_wall_at(String player, String orientation, Integer row, Integer col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();

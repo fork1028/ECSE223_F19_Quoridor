@@ -2403,6 +2403,103 @@ public class QuoridorController {
 		return result;
 	}
 	
+	/**
+	 * This method enables the user to overwrite an existing file
+	 * 
+	 * @param newFileName String representing the name to be given to the text file
+	 *                    being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static boolean overWriteSaveGame(String newFileName, boolean overWrite)
+			throws UnsupportedOperationException {
+
+		if (overWrite) {
+			return saveGame(newFileName);
+		}
+
+		return overWrite;
+	}
+	
+	
+	/**
+	 * This method attempts to save the current game as a text file.
+	 * 
+	 * @param newFileName String representing the name to be given to the text file
+	 *                    being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static Boolean attemptToSaveGame(String newFileName) {
+		Boolean fileExists = fileAlreadyExists(newFileName);
+
+		if (fileExists) {
+			return false;
+		}
+
+		return saveGame(newFileName);
+	}
+	
+	//SAVE GAME FEATURE!
+	public static boolean saveGame(String filename) {
+		boolean result = true;
+
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			Game curGame = quoridor.getCurrentGame();
+			GamePosition curGamePos = curGame.getCurrentPosition();
+
+			ArrayList<String> gameMoves = new ArrayList<String>();
+			String moveStr = "";
+			String tempDir = "";
+			
+			List<Move> moveList = curGame.getMoves();
+			for (Move move : moveList) {
+				
+				int col = move.getTargetTile().getColumn();
+				char curCol = (char) (col + 96);
+				moveStr = Character.toString(curCol) + move.getTargetTile().getRow();
+				
+				if (move instanceof WallMove) {
+					if (((WallMove) move).getWallDirection().equals(Direction.Horizontal)) {
+						tempDir = "h";
+					} else {
+						tempDir = "v";
+					}
+					moveStr = moveStr + tempDir;
+				}
+				gameMoves.add(moveStr);
+			}
+			
+			int roundCount = 1;
+			boolean reset = false;
+			
+			try {
+				FileWriter write = new FileWriter(filename, false);
+				PrintWriter printW = new PrintWriter(write);
+				
+				//PRINT EVERYTHING TO FILE!
+				for (String curMove : gameMoves) {
+					//First print line num
+					if (!reset) {
+						printW.print(roundCount + ". " + curMove);
+						reset = true;
+					} else {
+						printW.println(" " + curMove);
+						reset = false;
+					}
+				}
+				write.close();
+				printW.close();
+			} catch (Exception e ) {
+				e.printStackTrace();
+				return false;
+			}
+			
+		return result;
+		
+	}
+	
+	
 	
 	//**********************REPLAY MODE CONTROLLER METHODS********************/
 	
