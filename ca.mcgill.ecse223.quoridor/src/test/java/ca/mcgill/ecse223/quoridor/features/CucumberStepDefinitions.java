@@ -2467,7 +2467,7 @@ public class CucumberStepDefinitions {
 	}
 	
 	@And("The game has a final result")
-	public void theGameHasAFinalResult() {
+	public void theGameHasAFinalResult2() {
 		boolean temp = false;
 		if(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.Replay)
 				|| QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus().equals(GameStatus.WhiteWon)

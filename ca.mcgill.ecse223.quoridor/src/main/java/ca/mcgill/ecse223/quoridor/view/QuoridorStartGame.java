@@ -263,17 +263,35 @@ public class QuoridorStartGame extends JFrame {
 		//Clear error msg
 		error = null;
 		//controller method
-		try {
-			//QuoridorController.loadSavedPosition(loadGameTextField.getText());
-			QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
-			QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
-			new QuoridorGamePage().setVisible(true);
-		} catch (UnsupportedOperationException | IOException | InvalidInputException e) {
-			error = e.getMessage();
+		if (minuteList.getSelectedIndex() <0 || secondList.getSelectedIndex() <0 || blackUserList.getSelectedIndex() <0 || whiteUserList.getSelectedIndex() <0 ) {
+			error = "You must select a username for both players and select a total thinking time!";
 			refreshData();
 			return;
+		} else if (blackUserList.getSelectedIndex() == whiteUserList.getSelectedIndex()) {
+			//index of users is always the same because they are readded in refreshData each time
+			error = ("You cannot select the same user for both players!");
+			refreshData();
+			return;
+		} else if (minuteList.getSelectedIndex() == 0 && secondList.getSelectedIndex() == 0) {
+			//cannot select 00:00 for thinking time
+			error = ("You cannot select 00:00 as the total thinking time!");
+			refreshData();
+			return;
+		}else {
+			try {
+				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
+				QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
+				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
+				new QuoridorGamePage().setVisible(true);
+				repaint();
+				refreshData();
+				return;
+			} catch (UnsupportedOperationException | IOException | InvalidInputException e) {
+				error = e.getMessage();
+				refreshData();
+				return;
+			}
 		}
-
 	}
 
 	private void createUserButtonActionPerformed(java.awt.event.ActionEvent evt) {
