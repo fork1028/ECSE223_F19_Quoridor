@@ -2038,9 +2038,8 @@ public class CucumberStepDefinitions {
 	 */
 	@Then("The game shall be in replay mode")
 	public void theGameShallBeInReplayMode() {
-		assertEquals(QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus(), GameStatus.Replay);
+		assertEquals(GameStatus.Replay, QuoridorApplication.getQuoridor().getCurrentGame().getGameStatus());
 	}
-	
 	
 			//scenario 2) continue unfinished game
 	/**
@@ -2080,6 +2079,20 @@ public class CucumberStepDefinitions {
 			Integer mv = Integer.decode(moveMap.get("mv"));
 			Integer rnd = Integer.decode(moveMap.get("rnd"));
 			String move = moveMap.get("move");
+			
+			//case of a game is finished (e.g. move would say 0-1)
+			if (move.charAt(1) == '-') {
+				int whiteResult = Integer.parseInt(move.substring(0,1));
+				int blackResult = Integer.parseInt(move.substring(2,3));
+				if (whiteResult == 1) {
+					//assume it is a resign game for the sake of the test
+					QuoridorController.setOriginalGameStatus(GameStatus.WhiteWon);
+				} else if (blackResult == 1) {
+					QuoridorController.setOriginalGameStatus(GameStatus.WhiteWon);
+				}
+				break;
+			} 
+			
 			int col = ((int) move.charAt(0)) - 96;
 			int row = Integer.parseInt(move.substring(1,2));
 			
@@ -2223,6 +2236,32 @@ public class CucumberStepDefinitions {
 		}
 	}
 	
+			//scenario 3) continue a FINISHED game
+	/**
+	 * Part of pre-condition for Enter Replay Mode's "continue finished game" scenario
+	 * @author Helen Lin, 260715521
+	 */
+	@And("The game has a final result")
+	public void theGameHasAFinalResult() {
+		GameStatus status = QuoridorController.getOriginalGameStatus();
+		boolean result = status.equals(GameStatus.BlackWon) || status.equals(GameStatus.WhiteWon) || status.equals(GameStatus.Draw);
+		
+		assertTrue(result);
+		
+	}
+
+	/**
+	 * Part of ost-condition for Enter Replay Mode's "continue finished game"
+	 * scenario
+	 * 
+	 * @author Helen Lin, 260715521
+	 */
+	@And("I shall be notified that finished games cannot be continued")
+	public void notifyCannotContinueGame() {
+		//todo: implement GUI notification for continue game
+		//assert status
+
+	}
 	
 	//****************************REPLAY MODE FEATURES**********************************/
 	
