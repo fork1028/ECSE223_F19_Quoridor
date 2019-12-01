@@ -850,21 +850,21 @@ public class QuoridorBoardVisualizer extends JPanel {
 		doDrawingForBoardAndTiles(g);
 		//doDrawingForWallsOnLoad(g);
 
-//		// drawDrop(g);
-//		if (grabIsClicked == true) {
-//			drawGrab(g);
-//			grabIsClicked = false;
-//		}
-//		if (rotateIsClicked == true) {
-//			drawRotate(g);
-//			rotateIsClicked = false;
-//		}
-//
-//		if (moveIsClicked == true) {
-//			drawMove(g, QuoridorGamePage.getDirection());
-//
-//			moveIsClicked = false;
-//		}
+		 drawDrop(g);
+		if (grabIsClicked == true) {
+			drawGrab(g);
+			grabIsClicked = false;
+		}
+		if (rotateIsClicked == true) {
+			drawRotate(g);
+			rotateIsClicked = false;
+		}
+
+		if (moveIsClicked == true) {
+			drawMove(g, QuoridorGamePage.getDirection());
+
+			moveIsClicked = false;
+		}
 
 
 
