@@ -1264,15 +1264,15 @@ public class QuoridorController {
 
 	/********** SECOND SET OF FEATURES **********/
 
-	/** 3. Identify Game Drawn
+	/**
 	 * 
-	 * This method checks if a player has repeated the same move 3 times in a row, which indicates a draw.
+	 * This method checks if a valid path exists for the players
 	 * 
 	 * @return boolean  true if valid position, false if invalid position
 	 * @author Sami Junior Kahil, 260834568
 	 */
 	public static String checkIfPathExists() {
-		
+		//TODO
 		
 		
 		return "both";
