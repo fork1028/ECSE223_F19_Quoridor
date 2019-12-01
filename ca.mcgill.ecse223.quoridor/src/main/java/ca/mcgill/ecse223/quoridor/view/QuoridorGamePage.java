@@ -607,6 +607,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	/************ ACTION PERFORMED METHODS ***************/
 
 
+	/**
+	 * action method for grabbing a wall
+	 * @author Xinyue Chen
+	 * @param evt
+	 */
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
 		grabClickedTimes++;
 		if(grabClickedTimes>1) {
@@ -622,6 +627,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	}
 
+	/**
+	 * action method for rotating the wall
+	 * @author Xinyue Chen
+	 * @param evt
+	 */
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
 
 		try {
@@ -698,6 +708,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	}
 
+	/**
+	 * method for canceling grabbing a wall
+	 * @author Xinyue Chen
+	 * @param evt
+	 */
 	private void cancelIsClicked(java.awt.event.ActionEvent evt) {
 		cancelIsClicked=true;
 		repaint();

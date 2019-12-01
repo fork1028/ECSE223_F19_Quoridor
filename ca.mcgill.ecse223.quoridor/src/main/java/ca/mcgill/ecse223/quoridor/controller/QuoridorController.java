@@ -1987,6 +1987,7 @@ public class QuoridorController {
 	}
 
 	/**
+	 * IdentifyIfGameWon
 	 * This method initiates a check for the current game to see if a player has won or if a player was won the game or if the game is a draw
 	 * @author Xinyue Chen
 	 * @param currentPlayer
@@ -2031,10 +2032,10 @@ public class QuoridorController {
 			QuoridorGamePage.setDraw(true);
 		}
 
-		//not sure if you should check running or set running, it should be already at that state.
 	}
 
 	/**
+	 * helper method for tests to get game result
 	 * @author Xinyue Chen
 	 * @return
 	 */
