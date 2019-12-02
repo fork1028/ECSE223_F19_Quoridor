@@ -81,6 +81,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JButton resignGame;
 	private JButton pauseGame;
 	
+	// step backward
+	private static JButton stepBackward;
+	private static JButton stepForward;
+	
+
+
+	
 	//replay mode
 	private JButton replayMode;
 	private JButton jumpToFinal;
@@ -313,6 +320,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		resignGame.setText("RESIGN GAME");
 		resignGame.setFont(NORMAL_FONT);
 		resignGame.setBackground(BUTTON_COLOUR_DEFAULT);
+
+
+		
+
+
 		
 		pauseGame = new JButton();
 		pauseGame.setText("PAUSE");
@@ -333,6 +345,14 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		jumpToStart.setText("JUMP TO START");
 		jumpToStart.setFont(NORMAL_FONT);
 		jumpToStart.setBackground(BUTTON_COLOUR_DEFAULT);
+		stepBackward = new JButton();
+		stepBackward.setText("STEP BACKWARD");
+		stepBackward.setFont(NORMAL_FONT);
+		stepBackward.setBackground(BUTTON_COLOUR_DEFAULT);
+		stepForward = new JButton();
+		stepForward.setText("STEP FORWARD");
+		stepForward.setFont(NORMAL_FONT);
+		stepForward.setBackground(BUTTON_COLOUR_DEFAULT);
 
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
@@ -474,6 +494,18 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				overwriteCancelIsClicked(evt);
 			}
 		});
+		
+		stepForward.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				stepForwardIsClicked(evt);
+				}
+		});
+				
+		stepBackward.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				stepBackwardIsClicked(evt);
+				}
+		});
 
 		/**
 		 * Timer to decrement remaining player time for current player, and also to set counter ui.
@@ -553,7 +585,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 						.addComponent(pauseGame)
 						.addComponent(replayMode)
 						.addComponent(jumpToStart)
-						.addComponent(jumpToFinal))
+						.addComponent(jumpToFinal)
+				.addComponent(stepBackward)
+				.addComponent(stepForward)
+				)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(blackWon)
 						.addComponent(whiteWon)
@@ -591,7 +626,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addComponent(playerBlackTurnLabel)
 								.addComponent(playerBlackClockLabel)
 								))
-
+					
 				.addGroup(layout.createSequentialGroup()
 						// error msg
 						.addComponent(errorMsg)));
@@ -613,7 +648,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 						.addComponent(pauseGame)
 						.addComponent(replayMode)
 						.addComponent(jumpToStart)
-						.addComponent(jumpToFinal))
+						.addComponent(jumpToFinal)
+						.addComponent(stepBackward)
+						.addComponent(stepForward))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(blackWon)
 						.addComponent(whiteWon)
@@ -1056,6 +1093,25 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		}
 
 
+	}
+	
+	/** 
+	 * Replay
+	 * 
+	 * */
+	private void stepForwardIsClicked(java.awt.event.ActionEvent evt) {
+		try{QuoridorController.stepForward();}
+		catch (Exception e) {
+			error = "The user is not in replay mode";
+		}
+		
+	}
+	
+	private void stepBackwardIsClicked(java.awt.event.ActionEvent evt) {
+		try{QuoridorController.stepBackward();}
+		catch (Exception e) {
+			error = "The user is not in replay mode";
+		}
 	}
 
 	/**

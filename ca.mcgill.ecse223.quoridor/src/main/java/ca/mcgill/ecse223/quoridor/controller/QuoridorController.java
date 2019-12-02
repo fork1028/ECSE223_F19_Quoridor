@@ -2025,6 +2025,7 @@ public class QuoridorController {
 
 		if (identifyGameDrawn() == true) {
 			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Draw);
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 			QuoridorGamePage.setDraw(true);
 		}
 
@@ -2511,8 +2512,6 @@ public class QuoridorController {
 		
 	}
 	
-	
-	
 	//**********************REPLAY MODE CONTROLLER METHODS********************/
 	
 	private static int nextMoveInReplayMode;
@@ -2759,14 +2758,89 @@ public class QuoridorController {
 		
 	}
 	
-	public static void stepForward() throws InvalidInputException {
-		//TODO
-		throw new InvalidInputException("To be implemented");
+	public static boolean stepForward() {
+		
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return false;
+		}
+		else {
+			//Determine which move is the next move
+			// nextMoveInReplayMode = QuoridorApplication.getQuoridor().getCurrentGame().getMove(nextMoveInReplayMode).getMoveNumber();
+			//nextRoundInReplayMode = 1;
+			
+		
+		GamePosition pos = currentGame.getCurrentPosition();
+		int currentMove = pos.getId();
+	//	List<Move> moves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
+		Move move = QuoridorApplication.getQuoridor().getCurrentGame().getMove(currentMove);
+		/*for(Move move: currentGame.getMoves())
+			*/
+		
+
+		//Set current move to next move
+			//if (currentMove == posID) 
+				currentGame.setCurrentPosition(pos);
+				Move newNext = move.getNextMove();
+		int newNextNumber = newNext.getMoveNumber();
+		int nextRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newNextNumber).getRoundNumber();
+			
+				nextMoveInReplayMode = (newNextNumber + 1 );
+		if(currentMove>=currentGame.getMoves().size()+1) {
+						}
+		else{
+				currentGame.getMove(currentMove).setPrevMove(currentGame.getMove(currentMove+1));
+				}
+	
+		}
+		return true;
 	}
 	
-	public static void stepBackward() throws InvalidInputException {
-		//TODO
-		throw new InvalidInputException("To be implemented");
+	public static boolean stepBackward()  {
+		
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		WallMove Move= currentGame.getWallMoveCandidate();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return false;
+		}
+		else {
+		//Determine which move is the previous move
+
+	//	int nextMoveInReplayMode = QuoridorApplication.getQuoridor().getCurrentGame().getMove(nextMoveInReplayMode).getMoveNumber();
+		
+		//currentGame.getPositions();
+			
+		GamePosition currPos = currentGame.getCurrentPosition();
+		int currentMove = currPos.getId();
+		GamePosition prevPos= currentGame.getPosition(currentMove-1);
+	
+		//int posID = (nextRoundInReplayMode - 1);
+		Move move = QuoridorApplication.getQuoridor().getCurrentGame().getMove(currentMove);
+	// if the position is at start
+		if (currPos.getId()==0) {
+			return false ;
+		}
+		int prevMove = move.getPrevMove().getMoveNumber();
+		/*if (prevMove==0) {
+		}*/
+		
+		
+
+		
+		//Set current move to previous move
+		//if (currentMove == posID) 
+		currentGame.setCurrentPosition(currPos);
+		Move newPrevious = move.getPrevMove();
+		int newPreviousNumber = newPrevious.getMoveNumber();
+		int previousRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newPreviousNumber).getRoundNumber();
+		nextMoveInReplayMode = (newPreviousNumber - 1 );
+		if(currentMove>=currentGame.getMoves().size()-1) {
+			
+		}else{
+		currentGame.getMove(currentMove).setPrevMove(currentGame.getMove(currentMove-1));
+		}
+		}
+		return true;
 	}
 	
 	
