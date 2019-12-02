@@ -1002,15 +1002,22 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 	
 	/** 
-	 * replay
-	 * @throws InvalidInputException 
+	 * Replay
+	 * 
 	 * */
 	private void stepForwardIsClicked(java.awt.event.ActionEvent evt) {
-		QuoridorController.stepForward();
+		try{QuoridorController.stepForward();}
+		catch (Exception e) {
+			error = "The user is not in replay mode";
+		}
+		
 	}
 	
 	private void stepBackwardIsClicked(java.awt.event.ActionEvent evt) {
-		QuoridorController.stepBackward();
+		try{QuoridorController.stepBackward();}
+		catch (Exception e) {
+			error = "The user is not in replay mode";
+		}
 	}
 
 	/**

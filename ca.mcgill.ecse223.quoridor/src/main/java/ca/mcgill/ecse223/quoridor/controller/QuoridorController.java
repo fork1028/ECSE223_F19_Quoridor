@@ -2774,11 +2774,15 @@ public class QuoridorController {
 			//if (currentMove == posID) 
 				currentGame.setCurrentPosition(pos);
 				Move newNext = move.getNextMove();
-				int newNextNumber = newNext.getMoveNumber();
-				int nextRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newNextNumber).getRoundNumber();
+		int newNextNumber = newNext.getMoveNumber();
+		int nextRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newNextNumber).getRoundNumber();
 			
 				nextMoveInReplayMode = (newNextNumber + 1 );
-			
+		if(currentMove>=currentGame.getMoves().size()+1) {
+						}
+		else{
+				currentGame.getMove(currentMove).setPrevMove(currentGame.getMove(currentMove+1));
+				}
 	
 		}
 	}
@@ -2786,6 +2790,7 @@ public class QuoridorController {
 	public static void stepBackward()  {
 		
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		WallMove Move= currentGame.getWallMoveCandidate();
 		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
 			return;
 		}
@@ -2809,7 +2814,11 @@ public class QuoridorController {
 		int newPreviousNumber = newPrevious.getMoveNumber();
 		int previousRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newPreviousNumber).getRoundNumber();
 		nextMoveInReplayMode = (newPreviousNumber - 1 );
-		
+		if(currentMove>=currentGame.getMoves().size()-1) {
+			
+		}else{
+		currentGame.getMove(currentMove).setPrevMove(currentGame.getMove(currentMove-1));
+		}
 		}
 	}
 	
