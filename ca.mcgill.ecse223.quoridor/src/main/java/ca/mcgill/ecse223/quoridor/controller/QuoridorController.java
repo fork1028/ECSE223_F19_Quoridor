@@ -1266,7 +1266,7 @@ public class QuoridorController {
 			PlayerPosition player2Position = new PlayerPosition(player2, player2StartPos);
 
 			Player startingMovePlayer = player1;
-			if (!whitePlayersTurn) {
+			if (false) {
 				startingMovePlayer = player2;
 			}
 
