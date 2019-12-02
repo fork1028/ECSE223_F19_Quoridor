@@ -1060,9 +1060,10 @@ public class CucumberStepDefinitions {
 	 * playerPos.getTile(); assertEquals(row, curTile.getRow()); assertEquals(col,
 	 * curTile.getColumn()); }
 	 */
+	
 	/** @author Shayne Leitman, 260688512 */
-	@And("{string} shall have a {string} wall at {int}:{int}")
-	public void shall_have_a_wall_at(String player, String orientation, Integer row, Integer col) {
+	@And("{string} shall have a {word} wall at {int}:{int}")
+	public void playerShallHaveAWallAt(String player, String orientation, int pw_row, int pw_col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
@@ -1085,14 +1086,49 @@ public class CucumberStepDefinitions {
 		}
 
 		for (Wall curWall : wallList) {
-			if (curWall.getMove().getWallDirection().equals(curDir) && curWall.getMove().getTargetTile().getRow() == row
-					&& curWall.getMove().getTargetTile().getColumn() == col) {
+			if (curWall.getMove().getWallDirection().equals(curDir) && curWall.getMove().getTargetTile().getRow() == pw_row
+					&& curWall.getMove().getTargetTile().getColumn() == pw_col) {
 				foundWall = true;
 			}
 		}
 		assertEquals(true, foundWall);
 
 	}
+	
+	/** @author Shayne Leitman, 260688512 */
+	@And("\"<opponent>\" shall have a <ow_orientation> wall at <ow_row>:<ow_col>")
+	public void opponentShallHaveAWallAt(String opponent, String orientation, int ow_row, int ow_col) {
+		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
+		Game loadedGame = newQuoridor.getCurrentGame();
+		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
+		// Player curPlayer = loadedGamePosition.getPlayerToMove();
+		List<Wall> wallList = null;
+		if (opponent.equals("white")) {
+			// Player is White
+			wallList = loadedGamePosition.getWhiteWallsOnBoard();
+		} else {
+			// Player is Black
+			wallList = loadedGamePosition.getBlackWallsOnBoard();
+		}
+		String tempDir = orientation;
+		Boolean foundWall = false;
+		Direction curDir = null;
+		if (tempDir.equals("vertical")) {
+			curDir = Direction.Vertical;
+		} else {
+			curDir = Direction.Horizontal;
+		}
+
+		for (Wall curWall : wallList) {
+			if (curWall.getMove().getWallDirection().equals(curDir) && curWall.getMove().getTargetTile().getRow() == ow_row
+					&& curWall.getMove().getTargetTile().getColumn() == ow_col) {
+				foundWall = true;
+			}
+		}
+		assertEquals(true, foundWall);
+
+	}
+
 
 	/** @author Shayne Leitman, 260688512 */
 	/*
