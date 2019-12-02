@@ -1182,9 +1182,8 @@ public class QuoridorController {
 	}
 	
 	/**
-	 * 11. Validate Position
 	 * 
-	 * This method (along with the helper methods it calls) validates a potential pawn or wall move position.
+	 * This method loads a position
 	 * 
 	 * @param filename  name of the file to be loaded
 	 * @return boolean  true if valid position, false if a bad position
@@ -1192,8 +1191,104 @@ public class QuoridorController {
 	 */
 	public static boolean loadPosition(String fileName) {
 		boolean result = true;
-		
-		
+		BufferedReader reader;
+		String whitePlayerStr = "";
+		String blackPlayerStr = "";
+		try {
+				reader = new BufferedReader(new FileReader(fileName));
+				String fileLine = reader.readLine();
+				Boolean whitePlayersTurn = false;
+				// First, check if first line is white or black
+				// Sort their line into the correct string variable
+				if (fileLine.substring(0, 1).equals("W")) {
+					whitePlayersTurn = true;
+					whitePlayerStr = fileLine;
+					fileLine = reader.readLine();
+					blackPlayerStr = fileLine;
+				} else {
+					blackPlayerStr = fileLine;
+					fileLine = reader.readLine();
+					whitePlayerStr = fileLine;
+				}
+				reader.close();
+			} catch (Exception e) {
+				
+			}
+			Quoridor tempQ = new Quoridor();
+			// Now, cut the front part, and find the tile each player is on.
+			whitePlayerStr = whitePlayerStr.substring(3);
+			blackPlayerStr = blackPlayerStr.substring(3);
+			String whitePlayerTile = whitePlayerStr.substring(0, 2);
+			String blackPlayerTile = blackPlayerStr.substring(0, 2);
+			int whitePawnCol = ((int) whitePlayerTile.charAt(0)) - 96;
+			int whitePawnRow = Integer.parseInt(whitePlayerTile.substring(1, 2));
+			int blackPawnCol = ((int) blackPlayerTile.charAt(0)) - 96;
+			int blackPawnRow = Integer.parseInt(blackPlayerTile.substring(1, 2));
+
+			Boolean statusOfPosition = true;
+			if (whitePawnRow > 9 || whitePawnRow < 1 || whitePawnCol > 9 || whitePawnCol < 1) {
+				statusOfPosition = false;
+				return statusOfPosition;
+			} else if (blackPawnRow > 9 || blackPawnRow < 1 || blackPawnCol > 9 || blackPawnCol < 1) {
+				statusOfPosition = false;
+				return statusOfPosition;
+			}
+			
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			User user1 = quoridor.addUser("tmpUser1");
+			User user2 = quoridor.addUser("tmpUser2");
+			Player player1 = new Player(new Time(180), user1, 9, Direction.Horizontal);
+			Player player2 = new Player(new Time(180), user2, 1, Direction.Horizontal);
+			List<Player> players = new ArrayList<Player>();
+			players.add(player1);
+			players.add(player2);
+			Time time = getIntToTime(10, 0);
+			player1.setRemainingTime(time);
+			player2.setRemainingTime(time);
+			Tile player1StartPos = tempQ.getBoard().getTile(36);
+			Tile player2StartPos = tempQ.getBoard().getTile(44);
+
+			// We want to set the players at the actual tiles they are on:
+			List<Tile> tempTileList = tempQ.getBoard().getTiles();
+			for (Tile curTile : tempTileList) {
+				if (curTile.getColumn() == whitePawnCol && curTile.getRow() == whitePawnRow) {
+					player1StartPos = curTile;
+				}
+				if (curTile.getColumn() == blackPawnCol && curTile.getRow() == blackPawnRow) {
+					player2StartPos = curTile;
+				}
+			}
+			Game game = new Game(GameStatus.Running, MoveMode.PlayerMove, tempQ);
+			game.setWhitePlayer(player1);
+			game.setBlackPlayer(player2);
+
+			PlayerPosition player1Position = new PlayerPosition(player1, player1StartPos);
+			PlayerPosition player2Position = new PlayerPosition(player2, player2StartPos);
+
+			Player startingMovePlayer = player1;
+			if (!whitePlayersTurn) {
+				startingMovePlayer = player2;
+			}
+
+			GamePosition gamePosition = new GamePosition(1, player1Position, player2Position, startingMovePlayer, game);
+
+			int whiteWallsPlaced = 0;
+			int blackWallsPlaced = 0;
+			// Wall stock and placement on board.
+			// First, get 2 lists for all walls.
+			String[] whiteWalls = null;
+			String[] blackWalls = null;
+
+			if (whitePlayerStr.length() > 2) {
+				whiteWalls = whitePlayerStr.substring(3).replace(" ", "").split(",");
+				whiteWallsPlaced = whiteWalls.length;
+			}
+			if (blackPlayerStr.length() > 2) {
+				blackWalls = blackPlayerStr.substring(3).replace(" ", "").split(",");
+				blackWallsPlaced = blackWalls.length;
+			}
+			
+			
 		return result;
 	}
 
