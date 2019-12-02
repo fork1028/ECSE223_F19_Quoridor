@@ -57,6 +57,12 @@ public class QuoridorStartGame extends JFrame {
 	
 	// data elements
 	private String error = "Welcome to Quoridor!";
+	
+	//graphics
+	private static final Font BIG_FONT = new Font("Verdana", Font.BOLD, 50);
+	private static final Font NORMAL_FONT = new Font("Verdana", Font.PLAIN, 18);
+	private static final Font SMALL_FONT = new Font("Verdana", Font.PLAIN, 14);
+	private static final Color BUTTON_COLOUR = new Color(99,255,252);
 
 	/** Creates new QuoridorPage */
 	public QuoridorStartGame() {
@@ -74,48 +80,48 @@ public class QuoridorStartGame extends JFrame {
 		
 		// JLabels
 		welcomeMsg = new JLabel("Quoridor");
-		welcomeMsg.setFont(new Font("Verdana", Font.BOLD, 50));
+		welcomeMsg.setFont(BIG_FONT);
 		loadPositionLabel = new JLabel("Load Position File Name");
-		loadPositionLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadPositionLabel.setFont(NORMAL_FONT);
 		loadGameLabel = new JLabel("Load Game File Name");
-		loadGameLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadGameLabel.setFont(NORMAL_FONT);
 		createUserLabel = new JLabel("Create New Player: ");
-		createUserLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		createUserLabel.setFont(NORMAL_FONT);
 		whitePlayerLabel = new JLabel("Set White Player: ");
-		whitePlayerLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		whitePlayerLabel.setFont(NORMAL_FONT);
 		blackPlayerLabel = new JLabel("Set Black Player: ");
-		blackPlayerLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		blackPlayerLabel.setFont(NORMAL_FONT);
 		timerLabel = new JLabel("Set Thinking Time (min:sec): ");
-		timerLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		timerLabel.setFont(NORMAL_FONT);
 		errorMsg = new JLabel();
-		errorMsg.setFont(new Font("Verdana", Font.BOLD, 14));
+		errorMsg.setFont(SMALL_FONT);
 		errorMsg.setForeground(Color.BLUE);
 		errorMsg.setBackground(Color.GRAY);
 		
 		// JButtons
 		createUserButton = new JButton("Create Player");
-		createUserButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		createUserButton.setBackground(new Color(99,255,252));
+		createUserButton.setFont(NORMAL_FONT);
+		createUserButton.setBackground(BUTTON_COLOUR);
 		createNewGameButton = new JButton("Start Game");
-		createNewGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		createNewGameButton.setBackground(new Color(99,255,252));
+		createNewGameButton.setFont(NORMAL_FONT);
+		createNewGameButton.setBackground(BUTTON_COLOUR);
 		loadPositionButton = new JButton("Load Position");
-		loadPositionButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		loadPositionButton.setBackground(new Color(99,255,252));
+		loadPositionButton.setFont(NORMAL_FONT);
+		loadPositionButton.setBackground(BUTTON_COLOUR);
 		loadGameButton = new JButton("Load Game");
-		loadGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		loadGameButton.setBackground(new Color(99,255,252));
+		loadGameButton.setFont(NORMAL_FONT);
+		loadGameButton.setBackground(BUTTON_COLOUR);
 		resumeGameButton = new JButton("Resume Game");
-		resumeGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		resumeGameButton.setBackground(new Color(99,255,252));
+		resumeGameButton.setFont(NORMAL_FONT);
+		resumeGameButton.setBackground(BUTTON_COLOUR);
 
 		// JTextFields
 		createUserTextField = new JTextField();
-		createUserTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
+		createUserTextField.setFont(NORMAL_FONT);
 		loadPositionTextField = new JTextField();
-		loadPositionTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadPositionTextField.setFont(NORMAL_FONT);
 		loadGameTextField = new JTextField();
-		loadGameTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadGameTextField.setFont(NORMAL_FONT);
 
 		// JComboBoxs
 		whiteUserList = new JComboBox<String>(new String[0]);
