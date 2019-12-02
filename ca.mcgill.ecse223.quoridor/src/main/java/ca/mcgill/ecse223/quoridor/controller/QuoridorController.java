@@ -2117,7 +2117,7 @@ public class QuoridorController {
 			}
 			
 			if (!result) {
-				QuoridorApplication.getQuoridor().setCurrentGame(null);
+				//QuoridorApplication.getQuoridor().setCurrentGame(null);
 				return false;
 			}
 			
@@ -2133,7 +2133,7 @@ public class QuoridorController {
 				}
 				
 				if (!result) {
-					QuoridorApplication.getQuoridor().setCurrentGame(null);
+					//QuoridorApplication.getQuoridor().setCurrentGame(null);
 					return false;
 				}
 			}
@@ -2296,8 +2296,11 @@ public class QuoridorController {
 			WallMove newWallMove = new WallMove(curGame.numberOfMoves() + 1, ((curGame.numberOfMoves()) / 2) + 1,
 					curGame.getCurrentPosition().getPlayerToMove(), newTile, curGame, wallDir, wallToBePlaced);
 			curGame.addMove(newWallMove);
-
-			recentMove.setNextMove(newWallMove);
+			if (curGame.numberOfMoves() > 1) {
+				recentMove.setNextMove(newWallMove);
+				newWallMove.setPrevMove(recentMove);
+			}
+			
 			newWallMove.setPrevMove(recentMove);
 
 			// Next, we need to create a new game position!

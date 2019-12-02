@@ -42,7 +42,6 @@ Feature: Load Game
 
     Examples: 
       | filename                                 |
-      | quoridor_test_game_invalid_pawn_move.mov |
       | quoridor_test_game_invalid_wall_move.mov |
       | quoridor_test_game_invalid_jump_move.mov |
-
+			| quoridor_test_game_invalid_pawn_move.mov |
