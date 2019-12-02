@@ -2025,6 +2025,7 @@ public class QuoridorController {
 
 		if (identifyGameDrawn() == true) {
 			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.Draw);
+			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 			QuoridorGamePage.setDraw(true);
 		}
 
@@ -2497,8 +2498,6 @@ public class QuoridorController {
 		return result;
 		
 	}
-	
-	
 	
 	//**********************REPLAY MODE CONTROLLER METHODS********************/
 	
