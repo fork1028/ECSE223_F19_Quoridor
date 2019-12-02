@@ -1046,23 +1046,9 @@ public class CucumberStepDefinitions {
 		assertEquals(col, curTile.getColumn());
 	}
 
-	/* @author Shayne Leitman, 260688512 */
-	/*
-	 * @And("\"<opponent>\" shall be at <row>:<col>") public void
-	 * opponentAtPosition(String player, int row, int col) { Quoridor newQuoridor =
-	 * QuoridorApplication.getQuoridor(); Game loadedGame =
-	 * newQuoridor.getCurrentGame(); GamePosition loadedGamePosition =
-	 * loadedGame.getCurrentPosition(); //Player curPlayer =
-	 * loadedGamePosition.getPlayerToMove(); PlayerPosition playerPos = null; if
-	 * (player.equals("white")) { // Player is White playerPos =
-	 * loadedGamePosition.getWhitePosition(); } else { // Player is Black playerPos
-	 * = loadedGamePosition.getBlackPosition(); } Tile curTile =
-	 * playerPos.getTile(); assertEquals(row, curTile.getRow()); assertEquals(col,
-	 * curTile.getColumn()); }
-	 */
 	/** @author Shayne Leitman, 260688512 */
-	@And("{string} shall have a {string} wall at {int}:{int}")
-	public void shall_have_a_wall_at(String player, String orientation, Integer row, Integer col) {
+	@And("{string} shall have a {word} wall at {int}:{int}")
+	public void playerOrOpponentShallHaveAWallAt(String player, String orientation, int row, int col) {
 		Quoridor newQuoridor = QuoridorApplication.getQuoridor();
 		Game loadedGame = newQuoridor.getCurrentGame();
 		GamePosition loadedGamePosition = loadedGame.getCurrentPosition();
@@ -1093,30 +1079,7 @@ public class CucumberStepDefinitions {
 		assertEquals(true, foundWall);
 
 	}
-
-	/** @author Shayne Leitman, 260688512 */
-	/*
-	 * @And("{string} shall have a {string} wall at {int}:{int}") public void
-	 * opponentHasWallAt(String player, String orientation, Integer row, Integer
-	 * col) { Quoridor newQuoridor = QuoridorApplication.getQuoridor(); Game
-	 * loadedGame = newQuoridor.getCurrentGame(); GamePosition loadedGamePosition =
-	 * loadedGame.getCurrentPosition(); //Player curPlayer =
-	 * loadedGamePosition.getPlayerToMove(); List<Wall> wallList = null; if
-	 * (player.equals("white")) { // Player is White wallList =
-	 * loadedGamePosition.getWhiteWallsOnBoard(); } else { // Player is Black
-	 * wallList = loadedGamePosition.getBlackWallsOnBoard(); } String tempDir =
-	 * orientation; Boolean foundWall = false; Direction curDir = null; if
-	 * (tempDir.equals("vertical")) { curDir = Direction.Vertical; } else { curDir =
-	 * Direction.Horizontal; }
-	 * 
-	 * for (Wall curWall : wallList) { if
-	 * (curWall.getMove().getWallDirection().equals(curDir) &&
-	 * curWall.getMove().getTargetTile().getRow() == row &&
-	 * curWall.getMove().getTargetTile().getColumn() == col) { foundWall = true; } }
-	 * assertEquals(true, foundWall);
-	 * 
-	 * }
-	 */
+	
 	/** @author Shayne Leitman, 260688512 */
 	@And("Both players shall have {int} in their stacks")
 	public void bothPlayersHaveWallsRemaining(int remWalls) {
@@ -2068,16 +2031,16 @@ public class CucumberStepDefinitions {
 		//note: the replay mode tests are different from other tests in that they assume that white starts at row 9 and black starts at row 1
 		//so, set those as default tiles for the first position
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		GamePosition currentGamePos = currentGame.getCurrentPosition();
+		GamePosition lastGamePos = currentGame.getCurrentPosition();
 		Player blackPlayer = currentGame.getBlackPlayer();
 		Player whitePlayer = currentGame.getWhitePlayer();
 		
 		for (Tile tile: QuoridorApplication.getQuoridor().getBoard().getTiles()) {
 			if (tile.getRow() == 1 && tile.getColumn() == 5) {
-				currentGamePos.setBlackPosition(new PlayerPosition(blackPlayer, tile));
+				lastGamePos.setBlackPosition(new PlayerPosition(blackPlayer, tile));
 			}
 			if (tile.getRow() == 9 && tile.getColumn() == 5) {
-				currentGamePos.setWhitePosition(new PlayerPosition(whitePlayer, tile));
+				lastGamePos.setWhitePosition(new PlayerPosition(whitePlayer, tile));
 			}
 		}
 		
@@ -2088,8 +2051,8 @@ public class CucumberStepDefinitions {
 		//read each move from the list of maps of move info,
 		//and create the correct move for each one
 		for (Map<String,String> moveMap : moveMapList) {			
-			Integer mv = Integer.decode(moveMap.get("mv"));
-			Integer rnd = Integer.decode(moveMap.get("rnd"));
+			Integer mv = Integer.decode(moveMap.get("mv").trim());
+			Integer rnd = Integer.decode(moveMap.get("rnd").trim());
 			String move = moveMap.get("move");
 			
 			//case of a game is finished (e.g. move would say 0-1)
@@ -2131,8 +2094,8 @@ public class CucumberStepDefinitions {
 			}
 			
 			//2) add the move
-			
 			Move newMove;
+			Wall wallToPlace = null;
 		
 			//if stepMove, moveS.length from data table is 2
 			if (move.length() == 2) {
@@ -2144,70 +2107,83 @@ public class CucumberStepDefinitions {
 				//new playerPosition for a step move
 				playerPos = new PlayerPosition(currentPlayer, targetTile);
 				
-				
 			} else { 
 				//else wallMove, add a wallMove here in similar fashion
 				//again, place it 
 				Direction dir = (move.charAt(2) == 'h') ? Direction.Horizontal: Direction.Vertical;
 
-				Wall wallToPlace = null; //find an arbitrary wall that is not placed already
-				for (Wall wall : currentPlayer.getWalls()) {
-					if (!wall.hasMove()) {
-						wallToPlace = wall;
-						break;
-					}
-					
-				}
-				
-				newMove = new WallMove(mv, rnd, currentPlayer, QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1),
-						currentGame, dir, wallToPlace);
-				
+				//find an arbitrary wall that is not placed already
 				if (rnd == 1) {
-					currentGame.getCurrentPosition().removeWhiteWallsInStock(wallToPlace);
-					currentGame.getCurrentPosition().addWhiteWallsOnBoard(wallToPlace);
+					for (Wall wall : currentGame.getCurrentPosition().getWhiteWallsInStock()) {
+						if (!wall.hasMove()) {
+							wallToPlace = wall;
+							break;
+						}	
+					}
 				} else {
-					currentGame.getCurrentPosition().removeBlackWallsInStock(wallToPlace);
-					currentGame.getCurrentPosition().addBlackWallsOnBoard(wallToPlace);
+					for (Wall wall : currentGame.getCurrentPosition().getBlackWallsInStock()) {
+						if (!wall.hasMove()) {
+							wallToPlace = wall;
+							break;
+						}
+					}
 				}
-				
-				//if wall move, player position of current player stays the same
-				//so no changes to playerPos
-				
-			
+
+				newMove = new WallMove(mv, rnd, currentPlayer,
+						QuoridorApplication.getQuoridor().getBoard().getTile((row - 1) * 9 + col - 1), currentGame, dir,
+						wallToPlace);
+
+				// if wall move, player position of current player stays the same
+				// so no changes to playerPos
 			}
 			
-			//add to moves and set previous move of current and next move of previous
+			// create a new GamePosition, add all walls, set new game position for game
+			GamePosition newGamePos = (rnd == 1)
+					? new GamePosition(currentGame.numberOfPositions() + 1, playerPos, opponentPos,
+							currentGame.getBlackPlayer(), currentGame)
+					: new GamePosition(currentGame.numberOfPositions() + 1, opponentPos, playerPos,
+							currentGame.getWhitePlayer(), currentGame);
+
+			// add stock and board walls
+			for (Wall wall : lastGamePos.getBlackWallsOnBoard()) {
+				newGamePos.addBlackWallsOnBoard(wall);
+			}
+			for (Wall wall : lastGamePos.getWhiteWallsOnBoard()) {
+				newGamePos.addWhiteWallsOnBoard(wall);
+			}
+			for (Wall wall : lastGamePos.getBlackWallsInStock()) {
+				newGamePos.addBlackWallsInStock(wall);
+			}
+			
+			for (Wall wall : lastGamePos.getWhiteWallsInStock()) {
+				newGamePos.addWhiteWallsInStock(wall);
+			}
+			
+			//if wall just placed
+			if (rnd == 1 && move.length() == 3 ) {
+				newGamePos.removeWhiteWallsInStock(wallToPlace);
+				newGamePos.addWhiteWallsOnBoard(wallToPlace);
+			} else if (rnd == 2 && move.length() == 3 ){
+				newGamePos.removeBlackWallsInStock(wallToPlace);
+				newGamePos.addBlackWallsOnBoard(wallToPlace);
+			}
+			
+			currentGame.addPosition(newGamePos);
+			currentGame.setCurrentPosition(newGamePos);
+			lastGamePos = newGamePos;
+			
+			//finally, add newMove to moves and set previous move of current and next move of previous
 			currentGame.addMove(newMove);
 			int totalMoves = currentGame.numberOfMoves();
 			if (totalMoves > 1) {
 				Move previous = currentGame.getMove(totalMoves-2);
 				previous.setNextMove(newMove);
 			}
-			
-			// create a new GamePosition, add all walls, set new game position for game
-			GamePosition newGamePos = (rnd == 1)
-					? new GamePosition(currentGame.numberOfPositions() +1, playerPos, opponentPos, currentGame.getBlackPlayer(), currentGame)
-									: new GamePosition(currentGame.numberOfPositions() +1, opponentPos, playerPos, currentGame.getWhitePlayer(), currentGame);
-
-			for (Wall wall : currentGamePos.getBlackWallsInStock()) {
-				newGamePos.addBlackWallsInStock(wall);
-			}
-			for (Wall wall : currentGamePos.getWhiteWallsInStock()) {
-				newGamePos.addWhiteWallsInStock(wall);
-			}
-			for (Wall wall : currentGamePos.getBlackWallsOnBoard()) {
-				newGamePos.addBlackWallsOnBoard(wall);
-			}
-			for (Wall wall : currentGamePos.getWhiteWallsOnBoard()) {
-				newGamePos.addWhiteWallsOnBoard(wall);
-			}
-
-			currentGame.addPosition(newGamePos);
-			currentGame.setCurrentPosition(newGamePos);
 
 		}
 		
-		//List<Move> moves = currentGame.getMoves(); //for debugging
+		List<GamePosition> positions = currentGame.getPositions();
+		List<Move> moves = currentGame.getMoves(); //for debugging
 	
 	}
 	
