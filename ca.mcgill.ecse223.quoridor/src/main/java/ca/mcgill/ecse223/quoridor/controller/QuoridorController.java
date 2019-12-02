@@ -925,7 +925,6 @@ public class QuoridorController {
 	 * @throws UnsupportedOperationException
 	 * @author Shayne Leitman, 260688512
 	 */
-
 	public static boolean loadSavedPosition(String fileName) throws UnsupportedOperationException {
 
 		BufferedReader reader;
@@ -991,7 +990,7 @@ public class QuoridorController {
 			Time time = getIntToTime(10, 0);
 			player1.setRemainingTime(time);
 			player2.setRemainingTime(time);
-
+			/*
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 10; j++) {
 					if (Wall.hasWithId(i * 10 + j)) {
@@ -1010,12 +1009,14 @@ public class QuoridorController {
 					board.addTile(i, j);
 				}
 			}
+			*/
+			initializeBoard();
 
 			Tile player1StartPos = tempQ.getBoard().getTile(36);
 			Tile player2StartPos = tempQ.getBoard().getTile(44);
 
 			// We want to set the players at the actual tiles they are on:
-			List<Tile> tempTileList = board.getTiles();
+			List<Tile> tempTileList = tempQ.getBoard().getTiles();
 			for (Tile curTile : tempTileList) {
 				if (curTile.getColumn() == whitePawnCol && curTile.getRow() == whitePawnRow) {
 					player1StartPos = curTile;
@@ -1163,7 +1164,7 @@ public class QuoridorController {
 			// into REAL quoridor object and set currentGame. If not, return false?
 			if (statusOfPosition) {
 				quoridor.setCurrentGame(game);
-				quoridor.setBoard(board);
+				quoridor.setBoard(tempQ.getBoard());
 			} else {
 				throw new UnsupportedOperationException(" * Invalid position being loaded...");
 			}
@@ -1173,8 +1174,27 @@ public class QuoridorController {
 
 		} catch (IOException e) {
 			throw new UnsupportedOperationException(" * Invalid position being loaded...");
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+			return false;
 		}
 
+	}
+	
+	/**
+	 * 11. Validate Position
+	 * 
+	 * This method (along with the helper methods it calls) validates a potential pawn or wall move position.
+	 * 
+	 * @param filename  name of the file to be loaded
+	 * @return boolean  true if valid position, false if a bad position
+	 * @author Shayne Leitman
+	 */
+	public static boolean loadPosition(String fileName) {
+		boolean result = true;
+		
+		
+		return result;
 	}
 
 	/**
