@@ -181,10 +181,10 @@ public class QuoridorBoardVisualizer extends JPanel {
 					g2d.fill(square);
 					g2d.setColor(Color.BLACK);
 					g2d.draw(square);
-					String testLabel = "[" + tile.getRow() + ", " + tile.getColumn() + "]";
-					g2d.drawString(testLabel,
-							-SQUAREWIDTH/4 + tile.getColumn()* (SQUAREWIDTH + SPACING)+WALLSPACING,
-							-SQUAREWIDTH/4 + tile.getRow()* (SQUAREWIDTH + SPACING));
+//					String testLabel = "[" + tile.getRow() + ", " + tile.getColumn() + "]";
+//					g2d.drawString(testLabel,
+//							-SQUAREWIDTH/4 + tile.getColumn()* (SQUAREWIDTH + SPACING)+WALLSPACING,
+//							-SQUAREWIDTH/4 + tile.getRow()* (SQUAREWIDTH + SPACING));
 
 					//if currently selected, highlight it in yellow
 //					if (selectedTileRow == tile.getRow() && selectedTileCol == tile.getColumn()) {

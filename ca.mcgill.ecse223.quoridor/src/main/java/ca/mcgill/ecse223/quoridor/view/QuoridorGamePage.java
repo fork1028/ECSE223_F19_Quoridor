@@ -77,23 +77,25 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JButton overwriteYes;
 	private JButton overwriteCancel;
 
-	// resign game
+	// game controls
 	private JButton resignGame;
+	private JButton pauseGame;
 	
 	// step backward
 	private static JButton stepBackward;
 	private static JButton stepForward;
 	
-	// board visualizer
-	private QuoridorBoardVisualizer boardVisualizer;
+
+
 	
 	//replay mode
 	private JButton replayMode;
 	private JButton jumpToFinal;
 	private JButton jumpToStart;
 	
-	private static final int WIDTH_BOARD = 850;
-	private static final int HEIGHT_BOARD = 600;
+	
+	// board visualizer
+	private QuoridorBoardVisualizer boardVisualizer;
 
 	// data elements
 	private static String error = "Welcome to Quoridor!";
@@ -127,7 +129,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 
 	// graphics
-	
+	private static final int WIDTH_BOARD = 900;
+	private static final int HEIGHT_BOARD = 600;
+	private static final int WIDTH_GAME_PAGE= 1500;
+	private static final int HEIGHT_GAMEPAGE = 900;
 	private static final Font BIGGEST_FONT = new Font("Verdana", Font.BOLD, 50);
 	private static final Font BIG_FONT = new Font("Verdana", Font.PLAIN, 30);
 	private static final Font NORMAL_FONT = new Font("Verdana", Font.PLAIN, 18);
@@ -172,6 +177,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	 */
 	private void initComponents() {
 		this.getContentPane().setBackground(Color.WHITE);
+		this.setMinimumSize(new Dimension(WIDTH_GAME_PAGE, HEIGHT_GAMEPAGE));
 		// elements for error message
 		errorMsg = new JLabel();
 		errorMsg.setText(error);
@@ -309,48 +315,58 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		saveTypeList.addItem("Game");
 		saveTypeList.setSelectedIndex(-1);
 
-		// resign game
+		// game controls
 		resignGame = new JButton();
 		resignGame.setText("RESIGN GAME");
 		resignGame.setFont(NORMAL_FONT);
 		resignGame.setBackground(BUTTON_COLOUR_DEFAULT);
 
+
 		
-		//forward & backward
-		stepBackward = new JButton();
-		stepBackward.setText("Previous step");
-		stepForward = new JButton();
-		stepForward.setText("Next step");
 
 
+		
+		pauseGame = new JButton();
+		pauseGame.setText("PAUSE");
+		pauseGame.setFont(NORMAL_FONT);
+		pauseGame.setBackground(BUTTON_COLOUR_DEFAULT);
 
-		// visualizer for board
-		boardVisualizer = new QuoridorBoardVisualizer();
-		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
-
-//		//replay mode
+		
+		//replay mode
 		replayMode = new JButton();
 		replayMode.setText("REPLAY MODE");
 		replayMode.setFont(NORMAL_FONT);
-		replayMode.setBackground(BUTTON_COLOUR_GREEN);
+		replayMode.setBackground(BUTTON_COLOUR_DEFAULT);
 		jumpToFinal = new JButton();
 		jumpToFinal.setText("JUMP TO FINAL");
 		jumpToFinal.setFont(NORMAL_FONT);
 		jumpToFinal.setBackground(BUTTON_COLOUR_DEFAULT);
 		jumpToStart = new JButton();
-		jumpToStart.setText("JUMP TO FINAL");
+		jumpToStart.setText("JUMP TO START");
 		jumpToStart.setFont(NORMAL_FONT);
 		jumpToStart.setBackground(BUTTON_COLOUR_DEFAULT);
-		
+		stepBackward = new JButton();
+		stepBackward.setText("STEP BACKWARD");
+		stepBackward.setFont(NORMAL_FONT);
+		stepBackward.setBackground(BUTTON_COLOUR_DEFAULT);
+		stepForward = new JButton();
+		stepForward.setText("STEP FORWARD");
+		stepForward.setFont(NORMAL_FONT);
+		stepForward.setBackground(BUTTON_COLOUR_DEFAULT);
+
+		// visualizer for board
+		boardVisualizer = new QuoridorBoardVisualizer();
+		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
+
 		// global settings
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Quoridor Board and Game - Group 13");
 
-		//***************action listeners************************
+		// ***************action listeners************************
 
 		moveWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
-				if(gameStopped==false) {
+				if (gameStopped==false) {
 					if (evt.getActionCommand().equals("MOVE")) {
 						// TODO make a wall appear at the default location on the board
 						error = "I have a wall in my hand now";
@@ -557,9 +573,26 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// board in middle
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				// main controls (save, pause)
-				.addGroup(layout.createSequentialGroup().addComponent(savePositionAs).addComponent(savePosition).addComponent(resignGame)
-						.addComponent(saveTypeLabel).addComponent(saveTypeList).addComponent(overwriteYes).addComponent(overwriteCancel))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon).addComponent(draw))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(savePositionAs)
+						.addComponent(savePosition)
+						.addComponent(saveTypeLabel)
+						.addComponent(saveTypeList)
+						.addComponent(overwriteYes)
+						.addComponent(overwriteCancel))
+				.addGroup(layout.createSequentialGroup()
+						.addComponent(resignGame)
+						.addComponent(pauseGame)
+						.addComponent(replayMode)
+						.addComponent(jumpToStart)
+						.addComponent(jumpToFinal)
+				.addComponent(stepBackward)
+				.addComponent(stepForward)
+				)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(blackWon)
+						.addComponent(whiteWon)
+						.addComponent(draw))
 				// player1, board, player2
 				.addGroup(layout.createSequentialGroup()
 						// player1 controls etc on left
@@ -574,35 +607,54 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addComponent(boardVisualizer)
 								.addGroup(layout.createSequentialGroup()
 										// walls and pawn buttons
-										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall).addComponent(cancel))
-								.addGroup(layout.createSequentialGroup().addComponent(moveUp).addComponent(moveDown).addComponent(moveLeft).addComponent(moveRight))
-								.addGroup(layout.createSequentialGroup().addComponent(moveUpLeft).addComponent(moveUpRight).addComponent(moveDownLeft).addComponent(moveDownRight)))
-						//.addComponent(wallVisualizer)
+										.addComponent(grabWall)
+										.addComponent(rotateWall)
+										.addComponent(dropWall)
+										.addComponent(cancel))
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(moveUp)
+										.addComponent(moveDown)
+										.addComponent(moveLeft)
+										.addComponent(moveRight))
+								.addGroup(layout.createSequentialGroup()
+										.addComponent(moveUpLeft)
+										.addComponent(moveUpRight)
+										.addComponent(moveDownLeft).addComponent(moveDownRight)))
 						// player2 controls etc on right
 						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 								.addComponent(playerBlackNameLabel)
 								.addComponent(playerBlackTurnLabel)
 								.addComponent(playerBlackClockLabel)
 								))
-					/*.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-						.addComponent(stepBackward)
-						.addComponent(stepForward)
-						)*/
+					
 				.addGroup(layout.createSequentialGroup()
 						// error msg
 						.addComponent(errorMsg)));
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				// main controls (save, pause)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(savePositionAs)
-						.addComponent(saveTypeLabel).addComponent(saveTypeList)
-						.addComponent(savePosition).addComponent(resignGame)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(savePositionAs)
+						.addComponent(saveTypeLabel)
+						.addComponent(saveTypeList)
+						.addComponent(savePosition)
+						.addComponent(resignGame)
+						.addComponent(overwriteYes)
+						.addComponent(overwriteCancel)
 						// TODO save game name
 						)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(overwriteYes)
-						.addComponent(overwriteCancel))
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon).addComponent(draw))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(resignGame)
+						.addComponent(pauseGame)
+						.addComponent(replayMode)
+						.addComponent(jumpToStart)
+						.addComponent(jumpToFinal)
+						.addComponent(stepBackward)
+						.addComponent(stepForward))
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(blackWon)
+						.addComponent(whiteWon)
+						.addComponent(draw))
 				// player1, board, player2
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
 						// player1 controls etc on left
@@ -612,14 +664,25 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								)
 
 						// board in middle
-						.addGroup(layout.createSequentialGroup().addComponent(boardVisualizer)
+						.addGroup(layout.createSequentialGroup()
+								.addComponent(boardVisualizer)
 								// buttons and error msg
 								.addGroup(layout.createParallelGroup()
 										// walls and pawn buttons
-										.addComponent(grabWall).addComponent(rotateWall)
-										.addComponent(dropWall).addComponent(cancel))
-								.addGroup(layout.createParallelGroup().addComponent(moveUp).addComponent(moveDown).addComponent(moveLeft).addComponent(moveRight))
-								.addGroup(layout.createParallelGroup().addComponent(moveUpLeft).addComponent(moveUpRight).addComponent(moveDownLeft).addComponent(moveDownRight)))
+										.addComponent(grabWall)
+										.addComponent(rotateWall)
+										.addComponent(dropWall)
+										.addComponent(cancel))
+								.addGroup(layout.createParallelGroup()
+										.addComponent(moveUp)
+										.addComponent(moveDown)
+										.addComponent(moveLeft)
+										.addComponent(moveRight))
+								.addGroup(layout.createParallelGroup()
+										.addComponent(moveUpLeft)
+										.addComponent(moveUpRight)
+										.addComponent(moveDownLeft)
+										.addComponent(moveDownRight)))
 						//.addComponent(wallVisualizer)
 						// player2 controls etc on right
 						.addGroup(layout.createSequentialGroup().addComponent(playerBlackNameLabel)
