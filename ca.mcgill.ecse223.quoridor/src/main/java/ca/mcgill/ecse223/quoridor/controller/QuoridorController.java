@@ -2056,6 +2056,10 @@ public class QuoridorController {
 		//set the users to player, then save players as variables.
 		//Net we need to initialize the board and walls into players stock
 		//
+		if (filename.equals("")) {
+			return false;
+		}
+		
 		boolean result = true;
 		Game oldGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		Game newGame = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
