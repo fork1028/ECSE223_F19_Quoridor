@@ -2473,7 +2473,12 @@ public class CucumberStepDefinitions {
 	
 	@And("The game to load has an invalid move")
 	public void theGameToLoadHasAnInvalidMove() {
-		boolean temp = QuoridorApplication.getQuoridor().hasCurrentGame();
+		boolean temp = false;
+		try {
+			temp = QuoridorController.loadGame("", "","");
+		} catch (InvalidInputException | IOException e) {
+			e.printStackTrace();
+		}
 		assertEquals(false, temp);
 	}
 	

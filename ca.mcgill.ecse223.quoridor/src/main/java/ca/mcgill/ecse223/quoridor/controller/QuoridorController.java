@@ -2057,9 +2057,13 @@ public class QuoridorController {
 		//set the users to player, then save players as variables.
 		//Net we need to initialize the board and walls into players stock
 		//
+		if (filename.equals("")) {
+			return false;
+		}
+		
 		boolean result = true;
 		Game oldGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		Game newGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
+		Game newGame = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
 		QuoridorApplication.getQuoridor().setCurrentGame(newGame);
 		if (!setUserToPlayer(whiteUser, false)) {
 			QuoridorApplication.getQuoridor().setCurrentGame(oldGame);
@@ -2148,7 +2152,7 @@ public class QuoridorController {
 		} else if (getCurrentRowForPawn(false) == 9) {
 			newGame.setGameStatus(GameStatus.Replay);
 		} else {
-			newGame.setGameStatus(GameStatus.Running);
+			newGame.setGameStatus(GameStatus.ReadyToStart);
 		}
 		
 		if (newGame.getGameStatus().equals(GameStatus.Replay)) {
@@ -2192,6 +2196,12 @@ public class QuoridorController {
 			result = true;
 		}
 
+		try {
+			setTotalThinkingTime(10,0);
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+		}
+		
 		return result;
 	}
 
