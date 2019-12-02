@@ -320,17 +320,24 @@ public class QuoridorStartGame extends JFrame {
 			error = ("You cannot select 00:00 as the total thinking time!");
 			refreshData();
 			return;
-		}else {
+		} else {
 			try {
 				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
-				QuoridorController.loadSavedPosition(loadPositionTextField.getText());
-				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
-				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
-				gamePage.setVisible(true);
-				//gamePage.repaint();
-				//gamePage.refreshData();
-				refreshData();
-				return;
+				boolean temp = QuoridorController.loadSavedPosition(loadPositionTextField.getText());
+				if (temp) {
+					QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
+					QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
+					gamePage.setVisible(true);
+					//gamePage.repaint();
+					//gamePage.refreshData();
+					refreshData();
+					return;
+				} else {
+					error = ("The file you are attempting to load contains an invalid move!");
+					refreshData();
+					return;
+				}
+				
 			} catch (UnsupportedOperationException | InvalidInputException e) {
 				error = e.getMessage();
 				refreshData();
@@ -357,15 +364,21 @@ public class QuoridorStartGame extends JFrame {
 			error = ("You cannot select 00:00 as the total thinking time!");
 			refreshData();
 			return;
-		}else {
+		} else {
 			try {
 				//QuoridorController.loadSavedPosition(loadGameTextField.getText());
-				QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
-				QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
-				QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
-				gamePage.setVisible(true);
-				refreshData();
-				return;
+				boolean temp = QuoridorController.loadGame(loadGameTextField.getText(), whiteUserList.getSelectedItem().toString(), blackUserList.getSelectedItem().toString());
+				if (temp) {
+					QuoridorController.setTotalThinkingTime(minuteList.getSelectedIndex(), secondList.getSelectedIndex());
+					QuoridorGamePage gamePage = new QuoridorGamePage(); //create and display new GamePage!
+					gamePage.setVisible(true);
+					refreshData();
+					return;
+				} else {
+					error = ("The file you are attempting to load contains an invalid move!");
+					refreshData();
+					return;
+				}
 			} catch (UnsupportedOperationException | IOException | InvalidInputException e) {
 				error = e.getMessage();
 				refreshData();
