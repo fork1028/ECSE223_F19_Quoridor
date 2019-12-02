@@ -2750,11 +2750,11 @@ public class QuoridorController {
 		
 	}
 	
-	public static void stepForward() {
+	public static boolean stepForward() {
 		
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
-			return;
+			return false;
 		}
 		else {
 			//Determine which move is the next move
@@ -2785,14 +2785,15 @@ public class QuoridorController {
 				}
 	
 		}
+		return true;
 	}
 	
-	public static void stepBackward()  {
+	public static boolean stepBackward()  {
 		
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		WallMove Move= currentGame.getWallMoveCandidate();
 		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
-			return;
+			return false;
 		}
 		else {
 		//Determine which move is the previous move
@@ -2800,16 +2801,27 @@ public class QuoridorController {
 	//	int nextMoveInReplayMode = QuoridorApplication.getQuoridor().getCurrentGame().getMove(nextMoveInReplayMode).getMoveNumber();
 		
 		//currentGame.getPositions();
-		GamePosition pos = currentGame.getCurrentPosition();
-		int currentMove = pos.getId();
+			
+		GamePosition currPos = currentGame.getCurrentPosition();
+		int currentMove = currPos.getId();
+		GamePosition prevPos= currentGame.getPosition(currentMove-1);
+	
 		//int posID = (nextRoundInReplayMode - 1);
-		
 		Move move = QuoridorApplication.getQuoridor().getCurrentGame().getMove(currentMove);
+	// if the position is at start
+		if (currPos.getId()==0) {
+			return false ;
+		}
+		int prevMove = move.getPrevMove().getMoveNumber();
+		/*if (prevMove==0) {
+		}*/
+		
+		
 
 		
 		//Set current move to previous move
 		//if (currentMove == posID) 
-		currentGame.setCurrentPosition(pos);
+		currentGame.setCurrentPosition(currPos);
 		Move newPrevious = move.getPrevMove();
 		int newPreviousNumber = newPrevious.getMoveNumber();
 		int previousRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newPreviousNumber).getRoundNumber();
@@ -2820,6 +2832,7 @@ public class QuoridorController {
 		currentGame.getMove(currentMove).setPrevMove(currentGame.getMove(currentMove-1));
 		}
 		}
+		return true;
 	}
 	
 	
