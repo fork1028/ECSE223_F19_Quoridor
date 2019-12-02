@@ -79,19 +79,12 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	// game controls
 	private JButton resignGame;
-<<<<<<< Updated upstream
 	private JButton pauseGame;
+	private static boolean pauseGameOn = false;
 	
 	// step backward
 	private static JButton stepBackward;
 	private static JButton stepForward;
-	
-
-
-=======
-	private JButton pauseGame;
-	private static boolean pauseGameOn = false;
->>>>>>> Stashed changes
 	
 	//replay mode
 	private JButton replayMode;
@@ -324,26 +317,12 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		resignGame = new JButton();
 		resignGame.setText("RESIGN GAME");
 		resignGame.setFont(NORMAL_FONT);
-<<<<<<< Updated upstream
-		resignGame.setBackground(BUTTON_COLOUR_DEFAULT);
-
-
-		
-
-
-=======
-		resignGame.setBackground(BUTTON_COLOUR_RED);
->>>>>>> Stashed changes
+		resignGame.setBackground(BUTTON_COLOUR_PURPLE);
 		
 		pauseGame = new JButton();
 		pauseGame.setText("PAUSE");
 		pauseGame.setFont(NORMAL_FONT);
-<<<<<<< Updated upstream
-		pauseGame.setBackground(BUTTON_COLOUR_DEFAULT);
-=======
 		pauseGame.setBackground(BUTTON_COLOUR_PURPLE);
->>>>>>> Stashed changes
-
 		
 		//replay mode
 		replayMode = new JButton();
@@ -359,19 +338,19 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		jumpToStart.setText("JUMP TO START");
 		jumpToStart.setFont(NORMAL_FONT);
 		jumpToStart.setBackground(BUTTON_COLOUR_DEFAULT);
-<<<<<<< Updated upstream
+		jumpToStart.setEnabled(false);
+		
 		stepBackward = new JButton();
 		stepBackward.setText("STEP BACKWARD");
 		stepBackward.setFont(NORMAL_FONT);
 		stepBackward.setBackground(BUTTON_COLOUR_DEFAULT);
+		stepBackward.setEnabled(false);
 		stepForward = new JButton();
 		stepForward.setText("STEP FORWARD");
 		stepForward.setFont(NORMAL_FONT);
 		stepForward.setBackground(BUTTON_COLOUR_DEFAULT);
-=======
-		jumpToStart.setEnabled(false);
->>>>>>> Stashed changes
-
+		stepForward.setEnabled(false);
+		
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
@@ -518,7 +497,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			}
 		});
 		
-<<<<<<< Updated upstream
 		stepForward.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				stepForwardIsClicked(evt);
@@ -530,7 +508,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				stepBackwardIsClicked(evt);
 				}
 		});
-=======
+
 		replayMode.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				replayModeIsClicked(evt);
@@ -549,7 +527,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			}
 		});
 
->>>>>>> Stashed changes
 
 		/**
 		 * Timer to decrement remaining player time for current player, and also to set counter ui.
@@ -1109,6 +1086,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				QuoridorController.enterReplayMode();
 				jumpToFinal.setEnabled(true);
 				jumpToStart.setEnabled(true);
+				stepForward.setEnabled(true);
+				stepBackward.setEnabled(true);
 				
 				resignGame.setEnabled(false);
 				pauseGame.setEnabled(false);
@@ -1132,6 +1111,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				QuoridorController.continueGameFromCurrent();
 				jumpToFinal.setEnabled(false);
 				jumpToStart.setEnabled(false);
+				stepForward.setEnabled(false);
+				stepBackward.setEnabled(false);
 				
 				resignGame.setEnabled(true);
 				pauseGame.setEnabled(true);
@@ -1173,6 +1154,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			QuoridorController.jumpToFinal();
 			jumpToFinal.setEnabled(false);
 			jumpToStart.setEnabled(true);
+			stepForward.setEnabled(false);
+			stepBackward.setEnabled(true);
 		} catch (InvalidInputException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -1194,6 +1177,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			QuoridorController.jumpToStart();
 			jumpToFinal.setEnabled(true);
 			jumpToStart.setEnabled(false);
+			stepForward.setEnabled(true);
+			stepBackward.setEnabled(false);
 		} catch (InvalidInputException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
