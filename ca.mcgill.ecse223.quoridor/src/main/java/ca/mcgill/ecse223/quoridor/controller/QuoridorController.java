@@ -508,7 +508,7 @@ public class QuoridorController {
 		Player whitePlayer = game.getWhitePlayer();
 		Player blackPlayer = game.getBlackPlayer();
 
-		playerToMove = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getPlayerToMove();
+		playerToMove = game.getCurrentPosition().getPlayerToMove();
 
 		if (whitePlayer == null) {
 			throw new InvalidInputException("White player doesn't exist");
@@ -521,44 +521,46 @@ public class QuoridorController {
 		int row = wall.getMove().getTargetTile().getRow();
 		int col = wall.getMove().getTargetTile().getColumn();
 		Direction dir = wall.getMove().getWallDirection();
-		boolean isValid = true;
-		List<Wall> whiteWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
-				.getWhiteWallsOnBoard();
-		List<Wall> blackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
-				.getBlackWallsOnBoard();
+		
+		boolean isValid = validatePosition(row, col, dir.toString());
+		
+//		List<Wall> whiteWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+//				.getWhiteWallsOnBoard();
+//		List<Wall> blackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
+//				.getBlackWallsOnBoard();
 		//		System.out.println("testrow:" + row);
 		//		System.out.println("textcol:" + col);
-		for (int i = 0; i < whiteWallsOnBoard.size(); i++) {
-			if (row == whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
-				if (col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
-						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
-						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
-					isValid = false;
-				}
-			}
-			
-
-		}
+//		for (int i = 0; i < whiteWallsOnBoard.size(); i++) {
+//			if (row == whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
+//				if (col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
+//						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
+//						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
+//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+//					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+//					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+//					isValid = false;
+//				}
+//			}
+//			
+//
+//		}
 		//System.out.println("isvalid:" + isValid);
 
-		for (int i = 0; i < blackWallsOnBoard.size(); i++) {
-			if (row == blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
-				if (col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
-						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
-						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
-					isValid = false;
-				}
-			}
-
-		}
+//		for (int i = 0; i < blackWallsOnBoard.size(); i++) {
+//			if (row == blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
+//				if (col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
+//						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
+//						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
+//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
+//					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
+//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
+//					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
+//					isValid = false;
+//				}
+//			}
+//
+//		}
 		
 		if (isValid) {
 			int path = graph.wallAdded(row, col, wall.getMove().getWallDirection());
@@ -1354,14 +1356,8 @@ public class QuoridorController {
 	 * @return boolean  true if valid position, false if invalid position
 	 * @author Sami Junior Kahil, 260834568
 	 */
-	public static String checkIfPathExists() {
-		//TODO
-		
-		
-		return "both";
-		//return "none";
-		//return "white";
-		//return "black";
+	public static int checkIfPathExists(int row, int col, Wall wall) {
+		return graph.wallAdded(row, col, wall.getMove().getWallDirection());
 	}
 
 	/** 5. Identify Game Drawn
@@ -2062,7 +2058,7 @@ public class QuoridorController {
 		//
 		boolean result = true;
 		Game oldGame = QuoridorApplication.getQuoridor().getCurrentGame();
-		Game newGame = new Game(GameStatus.Initializing, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
+		Game newGame = new Game(GameStatus.ReadyToStart, MoveMode.PlayerMove, QuoridorApplication.getQuoridor());
 		QuoridorApplication.getQuoridor().setCurrentGame(newGame);
 		if (!setUserToPlayer(whiteUser, false)) {
 			QuoridorApplication.getQuoridor().setCurrentGame(oldGame);
@@ -2151,7 +2147,7 @@ public class QuoridorController {
 		} else if (getCurrentRowForPawn(false) == 9) {
 			newGame.setGameStatus(GameStatus.Replay);
 		} else {
-			newGame.setGameStatus(GameStatus.Running);
+			newGame.setGameStatus(GameStatus.ReadyToStart);
 		}
 		
 		if (newGame.getGameStatus().equals(GameStatus.Replay)) {
@@ -2195,6 +2191,12 @@ public class QuoridorController {
 			result = true;
 		}
 
+		try {
+			setTotalThinkingTime(10,0);
+		} catch (InvalidInputException e) {
+			e.printStackTrace();
+		}
+		
 		return result;
 	}
 

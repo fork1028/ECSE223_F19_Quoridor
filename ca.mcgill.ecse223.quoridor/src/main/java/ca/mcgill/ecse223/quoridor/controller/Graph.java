@@ -1,10 +1,8 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
-import java.io.*;
 import java.util.*;
 
 import ca.mcgill.ecse223.quoridor.model.Direction;
-import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
 
 class Edge {
@@ -141,8 +139,9 @@ public class Graph {
 
 	private boolean dfs(int coordinate, boolean isWhitePlayer) {
 		// Initially mark all vertices as not visited 
-		Vector<Boolean> visited = new Vector<Boolean>(nodes.size()); 
-		for (int i = 0; i < nodes.size(); i++) 
+		ArrayList<Boolean> visited = new ArrayList<Boolean>();
+		ArrayList<Integer> adj = new ArrayList<Integer>();
+		for (int i = 0; i <= 81; i++) 
 			visited.add(false); 
 
 		// Create a stack for DFS 
@@ -152,37 +151,44 @@ public class Graph {
 		stack.push(coordinate); 
 
 		while(stack.empty() == false) { 
-			// Pop a vertex from stack and print it 
-			coordinate = stack.peek(); 
-			stack.pop(); 
+			// Pop a vertex from stack
+			coordinate = stack.pop(); 
 
-			// Stack may contain same vertex twice. So 
-			// we need to print the popped item only 
-			// if it is not visited. 
 			if(visited.get(coordinate) == false)   
 				visited.set(coordinate, true); 
 
 			// Get all adjacent vertices of the popped vertex s 
 			// If a adjacent has not been visited, then push it 
 			// to the stack. 
-
-			Iterator<Edge> itr = edges.iterator();
-
+			
+			for (Edge e : edges) {
+				if (e.node_1 == coordinate) {
+					adj.add(e.node_2);
+				}
+				if (e.node_2 == coordinate) {
+					adj.add(e.node_1);
+				}
+			}
+			
+			Iterator<Integer> itr = adj.iterator();
+					
 			while (itr.hasNext()) { 
-				Edge v = itr.next(); 
-				if(!visited.get(v.node_1)) 
-					stack.push(v.node_1); 
+				int v = itr.next();
+				if(!visited.get(v)) 
+					stack.push(v); 
 			} 
+			
+			adj.clear();
 		}
 		
 		if (isWhitePlayer) {
-			for (int i = 72; i <= 80; i++) {
+			for (int i = 73; i <= 81; i++) {
 				if (visited.get(i) == false)
 					return false;
 			}
 		}
 		else {
-			for (int i = 1; i <= 8; i++) {
+			for (int i = 1; i <= 9; i++) {
 				if (visited.get(i) == false)
 					return false;
 			}

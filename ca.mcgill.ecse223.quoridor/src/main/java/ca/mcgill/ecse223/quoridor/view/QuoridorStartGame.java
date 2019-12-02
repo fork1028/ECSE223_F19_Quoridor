@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -15,7 +16,9 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
@@ -53,7 +56,13 @@ public class QuoridorStartGame extends JFrame {
 	private JTextField loadGameTextField;
 	
 	// data elements
-	private String error = null;
+	private String error = "Welcome to Quoridor!";
+	
+	//graphics
+	private static final Font BIG_FONT = new Font("Verdana", Font.BOLD, 50);
+	private static final Font NORMAL_FONT = new Font("Verdana", Font.PLAIN, 18);
+	private static final Font SMALL_FONT = new Font("Verdana", Font.PLAIN, 14);
+	private static final Color BUTTON_COLOUR = new Color(99,255,252);
 
 	/** Creates new QuoridorPage */
 	public QuoridorStartGame() {
@@ -68,47 +77,51 @@ public class QuoridorStartGame extends JFrame {
 		this.setLocation(100,40);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.getContentPane().setBackground(Color.WHITE);
-
+		
 		// JLabels
 		welcomeMsg = new JLabel("Quoridor");
-		welcomeMsg.setFont(new Font("Verdana", Font.BOLD, 50));
+		welcomeMsg.setFont(BIG_FONT);
 		loadPositionLabel = new JLabel("Load Position File Name");
-		loadPositionLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadPositionLabel.setFont(NORMAL_FONT);
 		loadGameLabel = new JLabel("Load Game File Name");
-		loadGameLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadGameLabel.setFont(NORMAL_FONT);
 		createUserLabel = new JLabel("Create New Player: ");
-		createUserLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		createUserLabel.setFont(NORMAL_FONT);
 		whitePlayerLabel = new JLabel("Set White Player: ");
-		whitePlayerLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		whitePlayerLabel.setFont(NORMAL_FONT);
 		blackPlayerLabel = new JLabel("Set Black Player: ");
-		blackPlayerLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
+		blackPlayerLabel.setFont(NORMAL_FONT);
 		timerLabel = new JLabel("Set Thinking Time (min:sec): ");
-		timerLabel.setFont(new Font("Verdana", Font.PLAIN, 18));
-
+		timerLabel.setFont(NORMAL_FONT);
+		errorMsg = new JLabel();
+		errorMsg.setFont(SMALL_FONT);
+		errorMsg.setForeground(Color.BLUE);
+		errorMsg.setBackground(Color.GRAY);
+		
 		// JButtons
 		createUserButton = new JButton("Create Player");
-		createUserButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		createUserButton.setBackground(new Color(99,255,252));
+		createUserButton.setFont(NORMAL_FONT);
+		createUserButton.setBackground(BUTTON_COLOUR);
 		createNewGameButton = new JButton("Start Game");
-		createNewGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		createNewGameButton.setBackground(new Color(99,255,252));
+		createNewGameButton.setFont(NORMAL_FONT);
+		createNewGameButton.setBackground(BUTTON_COLOUR);
 		loadPositionButton = new JButton("Load Position");
-		loadPositionButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		loadPositionButton.setBackground(new Color(99,255,252));
+		loadPositionButton.setFont(NORMAL_FONT);
+		loadPositionButton.setBackground(BUTTON_COLOUR);
 		loadGameButton = new JButton("Load Game");
-		loadGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		loadGameButton.setBackground(new Color(99,255,252));
+		loadGameButton.setFont(NORMAL_FONT);
+		loadGameButton.setBackground(BUTTON_COLOUR);
 		resumeGameButton = new JButton("Resume Game");
-		resumeGameButton.setFont(new Font("Verdana", Font.PLAIN, 18));
-		resumeGameButton.setBackground(new Color(99,255,252));
+		resumeGameButton.setFont(NORMAL_FONT);
+		resumeGameButton.setBackground(BUTTON_COLOUR);
 
 		// JTextFields
 		createUserTextField = new JTextField();
-		createUserTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
+		createUserTextField.setFont(NORMAL_FONT);
 		loadPositionTextField = new JTextField();
-		loadPositionTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadPositionTextField.setFont(NORMAL_FONT);
 		loadGameTextField = new JTextField();
-		loadGameTextField.setFont(new Font("Verdana", Font.PLAIN, 18));
+		loadGameTextField.setFont(NORMAL_FONT);
 
 		// JComboBoxs
 		whiteUserList = new JComboBox<String>(new String[0]);
@@ -125,7 +138,7 @@ public class QuoridorStartGame extends JFrame {
 		mainContainer.setBackground(Color.white);
 
 		JPanel panel = new JPanel();
-		panel.setLayout(new GridLayout(9,3,5,10));
+		panel.setLayout(new GridLayout(8,3,5,10));
 		panel.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 		panel.add(new JLabel(""));
 		panel.add(welcomeMsg);
@@ -148,16 +161,27 @@ public class QuoridorStartGame extends JFrame {
 		panel.add(loadPositionLabel);
 		panel.add(loadPositionTextField);
 		panel.add(loadPositionButton);
-		//panel.add(new JLabel(""));
 		panel.add(loadGameLabel);
 		panel.add(loadGameTextField);
 		panel.add(loadGameButton);
 		panel.setBackground(Color.white);
-		this.add(panel, BorderLayout.CENTER);
 
-		// elements for error message
-		errorMsg = new JLabel();
-		errorMsg.setForeground(Color.red);
+		// bottom pane
+		JPanel bottom = new JPanel();
+		bottom.setLayout(new GridLayout(5, 1));
+		bottom.add(new JLabel());
+		bottom.add(errorMsg);
+		bottom.add(new JLabel());
+
+		// outer panel
+		JPanel outer = new JPanel();
+		outer.setLayout(new BorderLayout());
+		outer.add(panel, BorderLayout.NORTH);
+		
+		outer.add(new JSeparator(JSeparator.HORIZONTAL), BorderLayout.CENTER);
+		outer.add(bottom, BorderLayout.SOUTH);
+
+		this.add(outer, BorderLayout.CENTER);
 
 		// listeners for Game
 		createNewGameButton.addActionListener(new java.awt.event.ActionListener() {
@@ -221,7 +245,6 @@ public class QuoridorStartGame extends JFrame {
 		secondList.setSelectedIndex(-1);
 
 		whiteUserList.removeAllItems();
-		//TODO replace model obbj w controller method
 		for (String username : QuoridorController.getAllUsernames()) {
 			whiteUserList.addItem(username);
 		}

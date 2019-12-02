@@ -48,6 +48,7 @@ public class CucumberStepDefinitions {
 	// Private Variables
 	// ***********************************************
 	private boolean isValid;
+	private int resultPath;
 
 	// ***********************************************
 	// Background step definitions
@@ -1434,7 +1435,28 @@ public class CucumberStepDefinitions {
 	
 	@When("Check path existence is initiated")
 	public void pathExistenceIsInitiated() {
-		QuoridorController.checkIfPathExists();
+		int row = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getRow();
+		int col = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getTargetTile().getColumn();
+		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
+		resultPath = QuoridorController.checkIfPathExists(row, col, wall);
+	}
+	
+	@Then("Path is available for {string} player(s)")
+	public void pathIsAvailableFor(String result) {
+		if (resultPath == 00) {
+			assert(result.equals("none"));
+		}
+		
+		if (resultPath == 11) {
+			assert(result.equals("both"));
+		}
+		if (resultPath == 10) {
+			assert(result.equals("white"));
+		}
+		
+		if (resultPath == 01) {
+			assert(result.equals("black"));
+		}
 	}
 	
 	// ************END of CHECKIFPATHEXISTS**************

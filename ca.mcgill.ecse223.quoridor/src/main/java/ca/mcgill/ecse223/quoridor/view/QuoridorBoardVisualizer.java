@@ -70,6 +70,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 	//custom DRAW tools
 	private static final Color CUSTOM_GREEN = new Color(0, 204, 0);
 	private static final Color CUSTOM_LIGHT_YELLOW = new Color(255,255,153);
+	private static final Color CUSTOM_BROWN = new Color(181, 101, 29);
 	private static final BasicStroke thinStroke = new BasicStroke(1);
 	private static final BasicStroke mediumStroke = new BasicStroke(2);
 	private static final BasicStroke thickStroke = new BasicStroke(3);
@@ -176,7 +177,7 @@ public class QuoridorBoardVisualizer extends JPanel {
 					tiles.put(square, tile);
 
 					//set visuals for square tiles (grey)
-					g2d.setColor(Color.LIGHT_GRAY);
+					g2d.setColor(CUSTOM_BROWN);
 					g2d.fill(square);
 					g2d.setColor(Color.BLACK);
 					g2d.draw(square);
