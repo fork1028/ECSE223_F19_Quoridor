@@ -2117,6 +2117,7 @@ public class QuoridorController {
 			}
 			
 			if (!result) {
+				QuoridorApplication.getQuoridor().setCurrentGame(null);
 				return false;
 			}
 			
@@ -2132,6 +2133,7 @@ public class QuoridorController {
 				}
 				
 				if (!result) {
+					QuoridorApplication.getQuoridor().setCurrentGame(null);
 					return false;
 				}
 			}
@@ -2483,6 +2485,7 @@ public class QuoridorController {
 					if (!reset) {
 						printW.print(roundCount + ". " + curMove);
 						reset = true;
+						roundCount++;
 					} else {
 						printW.println(" " + curMove);
 						reset = false;
