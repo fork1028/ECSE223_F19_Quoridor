@@ -139,8 +139,9 @@ public class Graph {
 
 	private boolean dfs(int coordinate, boolean isWhitePlayer) {
 		// Initially mark all vertices as not visited 
-		ArrayList<Boolean> visited = new ArrayList<Boolean>(); 
-		for (int i = 0; i <= 82; i++) 
+		ArrayList<Boolean> visited = new ArrayList<Boolean>();
+		ArrayList<Integer> adj = new ArrayList<Integer>();
+		for (int i = 0; i <= 81; i++) 
 			visited.add(false); 
 
 		// Create a stack for DFS 
@@ -150,35 +151,34 @@ public class Graph {
 		stack.push(coordinate); 
 
 		while(stack.empty() == false) { 
-			// Pop a vertex from stack and print it 
-			coordinate = stack.peek(); 
-			stack.pop(); 
+			// Pop a vertex from stack
+			coordinate = stack.pop(); 
 
-			// Stack may contain same vertex twice. So 
-			// we need to print the popped item only 
-			// if it is not visited. 
 			if(visited.get(coordinate) == false)   
 				visited.set(coordinate, true); 
 
 			// Get all adjacent vertices of the popped vertex s 
 			// If a adjacent has not been visited, then push it 
 			// to the stack. 
-
-			Iterator<Edge> itr = edges.iterator();
 			
-			Edge e = edges.get(coordinate);
-			
-			while (itr.hasNext()) {
-				Edge v = itr.next();
-				if (v.node_1 == e.node_1 && v.node_2 == e.node_2)
-					break;
+			for (Edge e : edges) {
+				if (e.node_1 == coordinate) {
+					adj.add(e.node_2);
+				}
+				if (e.node_2 == coordinate) {
+					adj.add(e.node_1);
+				}
 			}
 			
+			Iterator<Integer> itr = adj.iterator();
+					
 			while (itr.hasNext()) { 
-				Edge v = itr.next();
-				if(!visited.get(v.node_1)) 
-					stack.push(v.node_1); 
+				int v = itr.next();
+				if(!visited.get(v)) 
+					stack.push(v); 
 			} 
+			
+			adj.clear();
 		}
 		
 		if (isWhitePlayer) {
