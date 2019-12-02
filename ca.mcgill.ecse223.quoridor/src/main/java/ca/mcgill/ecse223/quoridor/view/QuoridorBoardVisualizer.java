@@ -526,21 +526,21 @@ public class QuoridorBoardVisualizer extends JPanel {
 			grabIsClicked=true;
 
 		}
-		for(int i=0;i<timesWhiteGrabClicked;i++) {
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.fill(covers.get(i));
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.draw(covers.get(i));
-
-		}	
-		for(int i=0;i<timesBlackGrabClicked;i++) {
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.fill(covers.get(i+10));
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.draw(covers.get(i+10));
-			k++;
-
-		}
+//		for(int i=0;i<timesWhiteGrabClicked;i++) {
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.fill(covers.get(i));
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.draw(covers.get(i));
+//
+//		}	
+//		for(int i=0;i<timesBlackGrabClicked;i++) {
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.fill(covers.get(i+10));
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.draw(covers.get(i+10));
+//			k++;
+//
+//		}
 
 	}
 
@@ -775,22 +775,22 @@ public class QuoridorBoardVisualizer extends JPanel {
 
 
 		}
-		int k=0;
-		for(int i=0;i<timesWhiteGrabClicked;i++) {
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.fill(covers.get(i));
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.draw(covers.get(i));
-
-		}	
-		for(int i=0;i<timesBlackGrabClicked;i++) {
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.fill(covers.get(i+10));
-			g2d.setColor(Color.LIGHT_GRAY);
-			g2d.draw(covers.get(i+10));
-			k++;
-
-		}
+//		int k=0;
+//		for(int i=0;i<timesWhiteGrabClicked;i++) {
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.fill(covers.get(i));
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.draw(covers.get(i));
+//
+//		}	
+//		for(int i=0;i<timesBlackGrabClicked;i++) {
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.fill(covers.get(i+10));
+//			g2d.setColor(Color.LIGHT_GRAY);
+//			g2d.draw(covers.get(i+10));
+//			k++;
+//
+//		}
 
 	}
 

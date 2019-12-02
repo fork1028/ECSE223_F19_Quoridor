@@ -80,19 +80,17 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	// game controls
 	private JButton resignGame;
 	private JButton pauseGame;
+	private static boolean pauseGameOn = false;
 	
 	// step backward
 	private static JButton stepBackward;
 	private static JButton stepForward;
 	
-
-
-	
 	//replay mode
 	private JButton replayMode;
 	private JButton jumpToFinal;
 	private JButton jumpToStart;
-	
+	private static boolean replayModeOn = false;
 	
 	// board visualizer
 	private QuoridorBoardVisualizer boardVisualizer;
@@ -141,7 +139,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static final Color BUTTON_COLOUR_DEFAULT = new Color(99,255,252); //cyan blue colour
 	private static final Color BUTTON_COLOUR_RED = new Color(255,204,203); //light red colour
 	private static final Color BUTTON_COLOUR_GRAY = Color.LIGHT_GRAY; //light red colour
-
+	private static final Color BUTTON_COLOUR_PURPLE = new Color(229,204,255); //light purple
 	private static final Color BUTTON_COLOUR_GREEN = new Color(208,240,192); //light green
 	
 	/** Constructor to create QuoridorBoardPage */
@@ -162,10 +160,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	public void setUsernameToDisplay(String username, Boolean forBlackPlayer) {
 		if (forBlackPlayer) {
 			this.playerBlackUsername = username;
-			playerWhiteNameLabel.setText("<html><center><b><u>PLAYER BLACK</u></b><br/>Username: <b>" + username + "</b></html>");
+			playerBlackNameLabel.setText("<html><center><b><u>PLAYER BLACK</u></b><br/>Username: <b>" + username + "</b></html>");
 		} else {
 			this.playerWhiteUsername = username;
-			playerBlackNameLabel.setText("<html><center><b><u>PLAYER WHITE</u></b><br/>Username: <b>" + username + "</b></html>");
+			playerWhiteNameLabel.setText("<html><center><b><u>PLAYER WHITE</u></b><br/>Username: <b>" + username + "</b></html>");
 		}
 
 	}
@@ -308,7 +306,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		overwriteCancel = new JButton();
 		overwriteCancel.setText("Do NOT overwrite existing file");
 		overwriteCancel.setFont(NORMAL_FONT);
-		overwriteCancel.setBackground(BUTTON_COLOUR_RED);
+		overwriteCancel.setBackground(BUTTON_COLOUR_PURPLE);
 		//For save type combo box:
 		saveTypeList.removeAllItems();
 		saveTypeList.addItem("Position");
@@ -319,41 +317,40 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		resignGame = new JButton();
 		resignGame.setText("RESIGN GAME");
 		resignGame.setFont(NORMAL_FONT);
-		resignGame.setBackground(BUTTON_COLOUR_DEFAULT);
-
-
-		
-
-
+		resignGame.setBackground(BUTTON_COLOUR_PURPLE);
 		
 		pauseGame = new JButton();
 		pauseGame.setText("PAUSE");
 		pauseGame.setFont(NORMAL_FONT);
-		pauseGame.setBackground(BUTTON_COLOUR_DEFAULT);
-
+		pauseGame.setBackground(BUTTON_COLOUR_PURPLE);
 		
 		//replay mode
 		replayMode = new JButton();
 		replayMode.setText("REPLAY MODE");
 		replayMode.setFont(NORMAL_FONT);
-		replayMode.setBackground(BUTTON_COLOUR_DEFAULT);
+		replayMode.setBackground(BUTTON_COLOUR_PURPLE);
 		jumpToFinal = new JButton();
 		jumpToFinal.setText("JUMP TO FINAL");
 		jumpToFinal.setFont(NORMAL_FONT);
 		jumpToFinal.setBackground(BUTTON_COLOUR_DEFAULT);
+		jumpToFinal.setEnabled(false);
 		jumpToStart = new JButton();
 		jumpToStart.setText("JUMP TO START");
 		jumpToStart.setFont(NORMAL_FONT);
 		jumpToStart.setBackground(BUTTON_COLOUR_DEFAULT);
+		jumpToStart.setEnabled(false);
+		
 		stepBackward = new JButton();
 		stepBackward.setText("STEP BACKWARD");
 		stepBackward.setFont(NORMAL_FONT);
 		stepBackward.setBackground(BUTTON_COLOUR_DEFAULT);
+		stepBackward.setEnabled(false);
 		stepForward = new JButton();
 		stepForward.setText("STEP FORWARD");
 		stepForward.setFont(NORMAL_FONT);
 		stepForward.setBackground(BUTTON_COLOUR_DEFAULT);
-
+		stepForward.setEnabled(false);
+		
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
@@ -483,6 +480,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			}
 		});
 
+		pauseGame.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				pauseGameIsClicked(evt);
+			}
+		});
 		overwriteYes.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				overwriteYesIsClicked(evt);
@@ -506,6 +508,25 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				stepBackwardIsClicked(evt);
 				}
 		});
+
+		replayMode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				replayModeIsClicked(evt);
+			}
+		});
+		
+		jumpToFinal.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				jumpToFinalIsClicked(evt);
+			}
+		});
+		
+		jumpToStart.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				jumpToStartIsClicked(evt);
+			}
+		});
+
 
 		/**
 		 * Timer to decrement remaining player time for current player, and also to set counter ui.
@@ -638,7 +659,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 						.addComponent(saveTypeLabel)
 						.addComponent(saveTypeList)
 						.addComponent(savePosition)
-						.addComponent(resignGame)
 						.addComponent(overwriteYes)
 						.addComponent(overwriteCancel)
 						// TODO save game name
@@ -981,6 +1001,195 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	public static String getInfoMsg() {
 		return error;
 	}
+
+	/**
+	 * This method allows the user to pause or unpause a game
+	 * @param evt
+	 */
+	private void pauseGameIsClicked(java.awt.event.ActionEvent evt) {
+		
+		if (pauseGameOn) {
+			pauseGameOn = false;
+		} else {
+			pauseGameOn = true;
+		}
+		if (pauseGameOn && getTimer()!=null) {
+			//pause game and disable certain buttons
+			getTimer().stop();
+
+			resignGame.setEnabled(false);
+			moveUp.setEnabled(false);
+			moveDown.setEnabled(false);
+			moveLeft.setEnabled(false);
+			moveRight.setEnabled(false);
+			moveUpRight.setEnabled(false);
+			moveDownLeft.setEnabled(false);
+			moveUpLeft.setEnabled(false);
+			moveDownRight.setEnabled(false);
+			dropWall.setEnabled(false);
+			grabWall.setEnabled(false);
+			rotateWall.setEnabled(false);
+			dropWall.setEnabled(false);
+			cancel.setEnabled(false);
+			//change display to unpause
+			pauseGame.setText("UNPAUSE");
+		} else if (!pauseGameOn && getTimer()!=null){
+			//unpause game and disable certain buttons
+			getTimer().restart();
+			
+			resignGame.setEnabled(true);
+			pauseGame.setEnabled(true);
+			moveUp.setEnabled(true);
+			moveDown.setEnabled(true);
+			moveLeft.setEnabled(true);
+			moveRight.setEnabled(true);
+			moveUpRight.setEnabled(true);
+			moveDownLeft.setEnabled(true);
+			moveUpLeft.setEnabled(true);
+			moveDownRight.setEnabled(true);
+			dropWall.setEnabled(true);
+			grabWall.setEnabled(true);
+			rotateWall.setEnabled(true);
+			dropWall.setEnabled(true);
+			cancel.setEnabled(true);
+			//change display to REPLAY MODE
+			replayMode.setText("PAUSE");
+			
+		}
+		
+		repaint(); //refresh board
+		refreshData(); //update game page
+		
+	}
+	
+	/******************REPLAY MODE***********************************/
+	/**
+	 * This method allows a user to enter replay mode for a current game
+	 * @param evt
+	 * @author Helen Lin, 260715521
+	 */
+	private void replayModeIsClicked(java.awt.event.ActionEvent evt) {
+		//toggle replay mode status
+		if (replayModeOn) {
+			replayModeOn = false;
+		} else {
+			replayModeOn = true;
+		}
+		try {
+			if (replayModeOn) {
+				//if game was paused, reset it to default
+				if (pauseGameOn) {
+					pauseGameOn = false;
+					pauseGame.setText("PAUSE");
+				}
+				//start replay mode
+				QuoridorController.enterReplayMode();
+				jumpToFinal.setEnabled(true);
+				jumpToStart.setEnabled(true);
+				stepForward.setEnabled(true);
+				stepBackward.setEnabled(true);
+				
+				resignGame.setEnabled(false);
+				pauseGame.setEnabled(false);
+				moveUp.setEnabled(false);
+				moveDown.setEnabled(false);
+				moveLeft.setEnabled(false);
+				moveRight.setEnabled(false);
+				moveUpRight.setEnabled(false);
+				moveDownLeft.setEnabled(false);
+				moveUpLeft.setEnabled(false);
+				moveDownRight.setEnabled(false);
+				dropWall.setEnabled(false);
+				grabWall.setEnabled(false);
+				rotateWall.setEnabled(false);
+				dropWall.setEnabled(false);
+				cancel.setEnabled(false);
+				//change display to CONTINUE GAME
+				replayMode.setText("CONTINUE GAME FROM HERE");
+			} else {
+				//exit replay mode and continue game from here
+				QuoridorController.continueGameFromCurrent();
+				jumpToFinal.setEnabled(false);
+				jumpToStart.setEnabled(false);
+				stepForward.setEnabled(false);
+				stepBackward.setEnabled(false);
+				
+				resignGame.setEnabled(true);
+				pauseGame.setEnabled(true);
+				moveUp.setEnabled(true);
+				moveDown.setEnabled(true);
+				moveLeft.setEnabled(true);
+				moveRight.setEnabled(true);
+				moveUpRight.setEnabled(true);
+				moveDownLeft.setEnabled(true);
+				moveUpLeft.setEnabled(true);
+				moveDownRight.setEnabled(true);
+				dropWall.setEnabled(true);
+				grabWall.setEnabled(true);
+				rotateWall.setEnabled(true);
+				dropWall.setEnabled(true);
+				cancel.setEnabled(true);
+				//change display to REPLAY MODE
+				replayMode.setText("REPLAY MODE");
+				
+			}
+		} catch (InvalidInputException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		repaint(); //refresh board
+		refreshData(); //update game page
+		
+	}
+	
+	/**
+	 * This method allows the user to jump to the final position from the previous game
+	 * when in replay mode
+	 * @param evt
+	 * @author Helen Lin, 260715521
+	 */
+	private void jumpToFinalIsClicked(java.awt.event.ActionEvent evt) {
+		try {
+			QuoridorController.jumpToFinal();
+			jumpToFinal.setEnabled(false);
+			jumpToStart.setEnabled(true);
+			stepForward.setEnabled(false);
+			stepBackward.setEnabled(true);
+		} catch (InvalidInputException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		repaint(); //refresh board
+		refreshData(); //update game page
+		
+	}
+	
+	/**
+	 * This method allows the user to jump to the first position from the previous game
+	 * when in replay mode
+	 * @param evt
+	 * @author Helen Lin, 260715521
+	 */
+	private void jumpToStartIsClicked(java.awt.event.ActionEvent evt) {
+		try {
+			QuoridorController.jumpToStart();
+			jumpToFinal.setEnabled(true);
+			jumpToStart.setEnabled(false);
+			stepForward.setEnabled(true);
+			stepBackward.setEnabled(false);
+		} catch (InvalidInputException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		repaint(); //refresh board
+		refreshData(); //update game page
+	}
+	
+	
+	/*****************************************/
 
 	@Override
 	public void keyTyped(KeyEvent e) {

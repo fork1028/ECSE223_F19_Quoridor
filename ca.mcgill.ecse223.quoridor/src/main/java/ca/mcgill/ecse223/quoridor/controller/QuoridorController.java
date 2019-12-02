@@ -522,7 +522,7 @@ public class QuoridorController {
 		int col = wall.getMove().getTargetTile().getColumn();
 		Direction dir = wall.getMove().getWallDirection();
 		
-		boolean isValid = validatePosition(row, col, dir.toString());
+		boolean isValid = validatePosition(row, col, dir.toString()) && validateWallOverlapPosition(row, col, dir, QuoridorApplication.getQuoridor());
 		
 //		List<Wall> whiteWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 //				.getWhiteWallsOnBoard();
@@ -1322,8 +1322,10 @@ public class QuoridorController {
 		List<Wall> allWalls = new ArrayList<Wall>();
 		allWalls.addAll(blackWalls);
 		allWalls.addAll(whiteWalls);
-
-		for (int i = 0; i <= allWalls.size(); i++) {
+		
+		if (allWalls.size() == 0) return true;
+		
+		for (int i = 0; i < allWalls.size(); i++) {
 			int currRow = allWalls.get(i).getMove().getTargetTile().getRow();
 			int currCol = allWalls.get(i).getMove().getTargetTile().getColumn();
 			Direction currDir = allWalls.get(i).getMove().getWallDirection();
@@ -2640,8 +2642,9 @@ public class QuoridorController {
 			if (move.getMoveNumber() == nextMoveInReplayMode && move.getRoundNumber() == nextRoundInReplayMode) {
 				//set its previous move to have a null next move (because the game will continue from there
 				Move newPrevious = move.getPrevMove();
-				newPrevious.setNextMove(null);
-				move.setPrevMove(null);
+				if (newPrevious !=null) {
+					newPrevious.setNextMove(null);
+				}
 				//add it to a List of moves to remove
 				movesToRemove.add(move);
 			} else if (move.getMoveNumber() > nextMoveInReplayMode
