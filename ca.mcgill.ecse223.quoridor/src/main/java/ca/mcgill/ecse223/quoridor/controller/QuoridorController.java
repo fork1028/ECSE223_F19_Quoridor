@@ -2750,7 +2750,7 @@ public class QuoridorController {
 		
 	}
 	
-	public static void stepForward() throws InvalidInputException {
+	public static void stepForward() {
 		
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
@@ -2783,7 +2783,7 @@ public class QuoridorController {
 		}
 	}
 	
-	public static void stepBackward() throws InvalidInputException {
+	public static void stepBackward()  {
 		
 		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
 		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {

@@ -102,7 +102,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	// resign game
 	private JButton resignGame;
-
+	
+	// step backward
+	private static JButton stepBackward;
+	private static JButton stepForward;
+	
 	// board visualizer
 	private QuoridorBoardVisualizer boardVisualizer;
 	//private QuoridorWallMoveVisualizer wallVisualizer;
@@ -288,6 +292,13 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// resign game
 		resignGame = new JButton();
 		resignGame.setText("RESIGN GAME");
+		
+		//forward & backward
+		// resign game
+		stepBackward = new JButton();
+		stepBackward.setText("Previous step");
+		stepForward = new JButton();
+		stepForward.setText("Next step");
 
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
@@ -429,6 +440,18 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				overwriteCancelIsClicked(evt);
 			}
 		});
+		
+		stepForward.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				stepForwardIsClicked(evt);
+				}
+		});
+				
+		stepBackward.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent evt) {
+				stepBackwardIsClicked(evt);
+				}
+		});
 
 		/**
 		 * Timer to decrement remaining player time for current player, and also to set counter ui.
@@ -530,7 +553,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 								.addComponent(playerBlackTurnLabel)
 								.addComponent(playerBlackClockLabel)
 								))
-
+					/*.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(stepBackward)
+						.addComponent(stepForward)
+						)*/
 				.addGroup(layout.createSequentialGroup()
 						// error msg
 						.addComponent(errorMsg)));
@@ -973,6 +999,18 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		}
 
 
+	}
+	
+	/** 
+	 * replay
+	 * @throws InvalidInputException 
+	 * */
+	private void stepForwardIsClicked(java.awt.event.ActionEvent evt) {
+		QuoridorController.stepForward();
+	}
+	
+	private void stepBackwardIsClicked(java.awt.event.ActionEvent evt) {
+		QuoridorController.stepBackward();
 	}
 
 	/**
