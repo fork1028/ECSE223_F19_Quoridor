@@ -522,7 +522,7 @@ public class QuoridorController {
 		int col = wall.getMove().getTargetTile().getColumn();
 		Direction dir = wall.getMove().getWallDirection();
 		
-		boolean isValid = validatePosition(row, col, dir.toString());
+		boolean isValid = validatePosition(row, col, dir.toString()) && validateWallOverlapPosition(row, col, dir, QuoridorApplication.getQuoridor());
 		
 //		List<Wall> whiteWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
 //				.getWhiteWallsOnBoard();
@@ -1302,7 +1302,9 @@ public class QuoridorController {
 		List<Wall> allWalls = new ArrayList<Wall>();
 		allWalls.addAll(blackWalls);
 		allWalls.addAll(whiteWalls);
-
+		
+		if (allWalls.size() == 0) return true;
+		
 		for (int i = 0; i <= allWalls.size(); i++) {
 			int currRow = allWalls.get(i).getMove().getTargetTile().getRow();
 			int currCol = allWalls.get(i).getMove().getTargetTile().getColumn();
