@@ -2768,12 +2768,14 @@ public class QuoridorController {
 		
 		int posID = move.getNextMove().getMoveNumber();
 		//Set current move to next move
-			if (currentMove == posID) {
+			//if (currentMove == posID) 
 				currentGame.setCurrentPosition(pos);
 				Move newNext = move.getNextMove();
 				int newNextNumber = newNext.getMoveNumber();
+				int nextRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newNextNumber).getRoundNumber();
+			
 				nextMoveInReplayMode = (newNextNumber + 1 );
-			}
+			
 	
 		}
 	}
@@ -2789,7 +2791,7 @@ public class QuoridorController {
 
 	//	int nextMoveInReplayMode = QuoridorApplication.getQuoridor().getCurrentGame().getMove(nextMoveInReplayMode).getMoveNumber();
 		
-		currentGame.getPositions();
+		//currentGame.getPositions();
 		GamePosition pos = currentGame.getCurrentPosition();
 		int currentMove = pos.getId();
 		//int posID = (nextRoundInReplayMode - 1);
@@ -2799,12 +2801,13 @@ public class QuoridorController {
 		int posID = move.getPrevMove().getMoveNumber();
 		
 		//Set current move to previous move
-		if (currentMove == posID) {
-			currentGame.setCurrentPosition(pos);
-			Move newPrevious = move.getPrevMove();
-			int newPreviousNumber = newPrevious.getMoveNumber();
-			nextMoveInReplayMode = (newPreviousNumber - 1 );
-		}
+		//if (currentMove == posID) 
+		currentGame.setCurrentPosition(pos);
+		Move newPrevious = move.getPrevMove();
+		int newPreviousNumber = newPrevious.getMoveNumber();
+		int previousRoundNumber = QuoridorApplication.getQuoridor().getCurrentGame().getMove(newPreviousNumber).getRoundNumber();
+		nextMoveInReplayMode = (newPreviousNumber - 1 );
+		
 		}
 	}
 	
