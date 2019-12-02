@@ -856,10 +856,10 @@ public class QuoridorBoardVisualizer extends JPanel {
 		doDrawingForBoardAndTiles(g);
 		//doDrawingForWallsOnLoad(g);
 
-		 drawDrop(g);
+		// drawDrop(g);
 		if (grabIsClicked == true) {
 			drawGrab(g);
-			grabIsClicked = false;
+			grabIsClicked=false;
 		}
 		if (rotateIsClicked == true) {
 			drawRotate(g);
