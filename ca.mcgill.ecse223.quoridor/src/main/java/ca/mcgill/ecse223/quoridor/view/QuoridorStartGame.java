@@ -108,7 +108,7 @@ public class QuoridorStartGame extends JFrame {
 		createNewGameButton.setBackground(BUTTON_COLOUR_GREEN);
 		loadPositionButton = new JButton("Load Position");
 		loadPositionButton.setFont(NORMAL_FONT);
-		loadPositionButton.setBackground(BUTTON_COLOUR_GREEN);
+		loadPositionButton.setBackground(BUTTON_COLOUR_DEFAULT);
 		loadGameButton = new JButton("Load Game");
 		loadGameButton.setFont(NORMAL_FONT);
 		loadGameButton.setBackground(BUTTON_COLOUR_DEFAULT);
