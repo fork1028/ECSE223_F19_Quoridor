@@ -114,15 +114,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private static JLabel errorMsg;
 
 	// WALLs
-	private HashMap<TOWall,Rectangle2D> blackWalls;
-	private HashMap<TOWall,Rectangle2D> whiteWalls;
-	private List<Rectangle2D> rectanglesForWhiteWalls;
-	private List<Rectangle2D> rectanglesForBlackWalls;
 	private boolean droppedIsClicked=false;
 	private static String direction;
 	private static boolean directionIsClicked=false;
 	private boolean grabClicked=false;
-	private boolean moveClicked=false;
 	private static int timesTyped=0;
 	private static boolean dropIsClicked=false;
 	private static boolean dropFail=false;
@@ -180,6 +175,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	 * This method is called from within the constructor to initialize the form.
 	 */
 	private void initComponents() {
+		this.getContentPane().setBackground(Color.WHITE);
 		// elements for error message
 		errorMsg = new JLabel();
 		errorMsg.setText("error");
