@@ -265,27 +265,31 @@ public class QuoridorController {
 				if (!quoridor.getCurrentGame().getWhitePlayer().hasWalls()
 						|| !quoridor.getCurrentGame().getBlackPlayer().hasWalls()) {
 					Player player = QuoridorApplication.getQuoridor().getCurrentGame().getWhitePlayer();
-					for (int i = 0; i < 2; i++) {
-						if (i == 1) {
-							player = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+					for (int i = 0; i < 10; i++) {
+						// if wall with id already exists (happens from some games or tests)
+						Wall wall;
+						if (Wall.hasWithId(i)) {
+							Wall.getWithId(i).setOwner(player);
+							wall = Wall.getWithId(i);
+						} else {
+							wall = new Wall(i, player);
 						}
-						for (int j = 0; j < 10; j++) {
-							// if wall with id already exists (happens from some games or tests)
-							if (Wall.hasWithId(i * 10 + j)) {
-								Wall.getWithId(i * 10 + j).setOwner(player);
-							} else {
-								new Wall(i * 10 + j, player);
-							}
-
+						quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsInStock(wall);
+					}
+					player = QuoridorApplication.getQuoridor().getCurrentGame().getBlackPlayer();
+					for (int i = 0; i < 10; i++) {
+						// if wall with id already exists (happens from some games or tests)
+						Wall wall;
+						if (Wall.hasWithId(i+10)) {
+							Wall.getWithId(i+10).setOwner(player);
+							wall = Wall.getWithId(i+10);
+						} else {
+							wall = new Wall(i+10, player);
 						}
+						quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(wall);
 					}
 				}
 
-				// add walls to stock for each player if needed
-				for (int j = 0; j < 10; j++) {
-					quoridor.getCurrentGame().getCurrentPosition().addWhiteWallsInStock(Wall.getWithId(j));
-					quoridor.getCurrentGame().getCurrentPosition().addBlackWallsInStock(Wall.getWithId(j + 10));
-				}
 			}
 
 			// set controller local var to show board was successfully
@@ -616,6 +620,70 @@ public class QuoridorController {
 		}
 		return walls;
 	}
+	
+
+	/**
+	 * This method helps link transfer objects with models for walls in stock
+	 * 
+	 * @author Helen Lin, 260715521
+	 * @return
+	 */
+	public static List<TOWall> getWallsInStock(boolean forBlackPlayer) {
+		int wallsInStock = (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfBlackWallsInStock()
+						:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfWhiteWallsInStock();
+				
+		if (wallsInStock ==0) {
+			return null;
+		}
+		
+		List<Wall> stockWalls = (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsInStock()
+					:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsInStock();
+		ArrayList<TOWall> TOWalls = new ArrayList<TOWall>();
+		for (Wall wall : stockWalls) {
+			if (wall!=null) {
+				TOWall toWall = new TOWall(wall.getId());
+				TOWalls.add(toWall);
+			}
+		}
+		return TOWalls;
+	}
+	
+	/**
+	 * This method helps link transfer objects with models for walls on board
+	 * 
+	 * @author Helen Lin, 260715521
+	 * @return
+	 */
+	public static List<TOWall> getWallsOnBoard(boolean forBlackPlayer) {
+		int wallsOnBoard= (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfBlackWallsOnBoard()
+						:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().numberOfWhiteWallsOnBoard();
+				
+		if (wallsOnBoard ==0) {
+			return null;
+		}
+		
+		List<Wall> boardWalls = (forBlackPlayer) 
+				? QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getBlackWallsOnBoard()
+					:QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().getWhiteWallsOnBoard();
+			
+		ArrayList<TOWall> walls = new ArrayList<TOWall>();
+		for (Wall wall : boardWalls) {
+			if (wall!=null) {
+				TOWall toWall = new TOWall(wall.getId());
+				boolean isHorizontal = (wall.getMove().getWallDirection().equals(Direction.Horizontal)) ? true : false;
+				int row = wall.getMove().getTargetTile().getRow();
+				int col = wall.getMove().getTargetTile().getColumn();
+				toWall.setWallMoveInfo(isHorizontal, row, col);
+				walls.add(toWall);
+			}
+			
+		}
+		return walls;
+	}
+
 
 	public static TOWall getWallCandidate() {
 		Wall wall = QuoridorApplication.getQuoridor().getCurrentGame().getWallMoveCandidate().getWallPlaced();
@@ -926,7 +994,11 @@ public class QuoridorController {
 
 			for (int i = 0; i < 2; i++) {
 				for (int j = 0; j < 10; j++) {
-					new Wall(i * 10 + j, players.get(i));
+					if (Wall.hasWithId(i * 10 + j)) {
+						Wall.getWithId(i * 10 + j).setOwner(players.get(i));
+					} else {
+						new Wall(i * 10 + j,players.get(i));
+					}
 				}
 			}
 
@@ -1911,6 +1983,7 @@ public class QuoridorController {
 	}
 
 	/**
+	 * IdentifyIfGameWon
 	 * This method initiates a check for the current game to see if a player has won or if a player was won the game or if the game is a draw
 	 * @author Xinyue Chen
 	 * @param currentPlayer
@@ -1955,10 +2028,10 @@ public class QuoridorController {
 			QuoridorGamePage.setDraw(true);
 		}
 
-		//not sure if you should check running or set running, it should be already at that state.
 	}
 
 	/**
+	 * helper method for tests to get game result
 	 * @author Xinyue Chen
 	 * @return
 	 */
@@ -2040,6 +2113,7 @@ public class QuoridorController {
 			}
 			
 			if (!result) {
+				QuoridorApplication.getQuoridor().setCurrentGame(null);
 				return false;
 			}
 			
@@ -2055,6 +2129,7 @@ public class QuoridorController {
 				}
 				
 				if (!result) {
+					QuoridorApplication.getQuoridor().setCurrentGame(null);
 					return false;
 				}
 			}
@@ -2326,6 +2401,104 @@ public class QuoridorController {
 		return result;
 	}
 	
+	/**
+	 * This method enables the user to overwrite an existing file
+	 * 
+	 * @param newFileName String representing the name to be given to the text file
+	 *                    being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static boolean overWriteSaveGame(String newFileName, boolean overWrite)
+			throws UnsupportedOperationException {
+
+		if (overWrite) {
+			return saveGame(newFileName);
+		}
+
+		return overWrite;
+	}
+	
+	
+	/**
+	 * This method attempts to save the current game as a text file.
+	 * 
+	 * @param newFileName String representing the name to be given to the text file
+	 *                    being saved.
+	 * @throws UnsupportedOperationException
+	 * @author Shayne Leitman, 260688512
+	 */
+	public static Boolean attemptToSaveGame(String newFileName) {
+		Boolean fileExists = fileAlreadyExists(newFileName);
+
+		if (fileExists) {
+			return false;
+		}
+
+		return saveGame(newFileName);
+	}
+	
+	//SAVE GAME FEATURE!
+	public static boolean saveGame(String filename) {
+		boolean result = true;
+
+			Quoridor quoridor = QuoridorApplication.getQuoridor();
+			Game curGame = quoridor.getCurrentGame();
+			GamePosition curGamePos = curGame.getCurrentPosition();
+
+			ArrayList<String> gameMoves = new ArrayList<String>();
+			String moveStr = "";
+			String tempDir = "";
+			
+			List<Move> moveList = curGame.getMoves();
+			for (Move move : moveList) {
+				
+				int col = move.getTargetTile().getColumn();
+				char curCol = (char) (col + 96);
+				moveStr = Character.toString(curCol) + move.getTargetTile().getRow();
+				
+				if (move instanceof WallMove) {
+					if (((WallMove) move).getWallDirection().equals(Direction.Horizontal)) {
+						tempDir = "h";
+					} else {
+						tempDir = "v";
+					}
+					moveStr = moveStr + tempDir;
+				}
+				gameMoves.add(moveStr);
+			}
+			
+			int roundCount = 1;
+			boolean reset = false;
+			
+			try {
+				FileWriter write = new FileWriter(filename, false);
+				PrintWriter printW = new PrintWriter(write);
+				
+				//PRINT EVERYTHING TO FILE!
+				for (String curMove : gameMoves) {
+					//First print line num
+					if (!reset) {
+						printW.print(roundCount + ". " + curMove);
+						reset = true;
+						roundCount++;
+					} else {
+						printW.println(" " + curMove);
+						reset = false;
+					}
+				}
+				write.close();
+				printW.close();
+			} catch (Exception e ) {
+				e.printStackTrace();
+				return false;
+			}
+			
+		return result;
+		
+	}
+	
+	
 	
 	//**********************REPLAY MODE CONTROLLER METHODS********************/
 	
@@ -2500,39 +2673,77 @@ public class QuoridorController {
 	 * @author Helen Lin, 260715521
 	 */
 	public static void jumpToFinal() throws InvalidInputException {
-		// find last move info and move
+		
+		//assumes we are in REPLAY mode right now
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return;
+		}
+		
+		
+		//1) now we want to jump to the final move in game
 		int lastMoveNum = 1;
 		int lastRoundNum = 1;
-		Move lastMove = null;
 		List<Move> moves = QuoridorApplication.getQuoridor().getCurrentGame().getMoves();
-		Collections.sort(moves, (move1, move2) -> {
-			return move1.getMoveNumber() - move2.getMoveNumber();
-		});
-
 		for (Move move : moves) {
 			System.out.println(move.getMoveNumber() + ", " + move.getRoundNumber());
-//					if (move.getMoveNumber() >= lastMoveNum) {
-//						lastMoveNum = move.getMoveNumber();
-//						lastRoundNum = move.getRoundNumber();
-//						lastMove = move;
-//						if (lastRoundNum == 2) {
-//							break;
-//						}
-//					}
+			if (move.getMoveNumber() > lastMoveNum) {
+				lastMoveNum = move.getMoveNumber();
+				lastRoundNum = move.getRoundNumber();
+			} else if (move.getMoveNumber() == lastMoveNum && move.getRoundNumber() > lastRoundNum) {
+				lastRoundNum = move.getRoundNumber();
+			}
 		}
+		
+		//now update this controller's private next move and round info for replay mode
+		nextMoveInReplayMode = (lastRoundNum == 1) ? lastMoveNum : lastMoveNum +1;
+		nextRoundInReplayMode = (lastRoundNum == 1) ? 2: 1;
 
-		// set as current game position
-		for (GamePosition position : QuoridorApplication.getQuoridor().getCurrentGame().getPositions()) {
-			// find the last move
-
+		//2) return current game's current Position to the desired position
+		//assuming game position ID starts at 1 on default, and increments by 1 for each move/round,
+		//then the current game position should be:
+		int posID = (nextRoundInReplayMode == 1) ? (nextMoveInReplayMode * 2 -1) : (nextMoveInReplayMode * 2);
+		
+		//set it as the current game position
+		for (GamePosition pos : currentGame.getPositions()) {
+			if (pos.getId() == posID) {
+				currentGame.setCurrentPosition(pos);
+			}
 		}
-//				currentGame.addPosition(newGamePos);
-//				currentGame.setCurrentPosition(newGamePos);
+		
+		
 	}
 
+	/**
+	 * This method rewinds the game to the initial position (default starting positions) when the game is in Replay Mode
+	 * @throws InvalidInputException
+	 */
 	public static void jumpToStart() throws InvalidInputException {
-		//TODO
-		throw new InvalidInputException("To be implemented");
+
+		//assumes we are in REPLAY mode right now
+		Game currentGame = QuoridorApplication.getQuoridor().getCurrentGame();
+		if (!currentGame.getGameStatus().equals(GameStatus.Replay)) {
+			return;
+		}
+		
+		//1) now we want to jump to the first move in game
+		
+		//update this controller's private next move and round info for replay mode
+		nextMoveInReplayMode = 1;
+		nextRoundInReplayMode = 1;
+
+		//2) return current game's current Position to the desired position
+		//assuming game position ID starts at 1 on default, and increments by 1 for each move/round,
+		//then the current game position should be:
+		int posID = 1;
+		
+		//set it as the current game position
+		for (GamePosition pos : currentGame.getPositions()) {
+			if (pos.getId() == posID) {
+				currentGame.setCurrentPosition(pos);
+			}
+		}
+		
 	}
 	
 	public static void stepForward() throws InvalidInputException {

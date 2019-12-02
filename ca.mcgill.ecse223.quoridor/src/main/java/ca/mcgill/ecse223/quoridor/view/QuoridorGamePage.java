@@ -93,8 +93,10 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	private JButton moveDownLeft;
 
 	// save game
-	private JButton saveGame;
-	private JTextField saveGameAs;
+	private JButton savePosition;
+	private JTextField savePositionAs;
+	private static JLabel saveTypeLabel;
+	private static JComboBox<String> saveTypeList;
 	private JButton overwriteYes;
 	private JButton overwriteCancel;
 
@@ -265,15 +267,23 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 
 		// save and pause game
-		saveGame = new JButton();
-		saveGame.setText("SAVE GAME");
-		saveGame.setToolTipText("Enter a filename and click SAVE GAME to save current game as a .dat file");
-		saveGameAs = new JTextField();
-		saveGameAs.setToolTipText("Enter the filename for your saved game .dat file");
+		savePosition = new JButton();
+		savePosition.setText("SAVE GAME/POSITION");
+		savePosition.setToolTipText("Enter a filename and click SAVE GAME/POSITION to save current game as a .dat file");
+		savePositionAs = new JTextField();
+		savePositionAs.setToolTipText("Enter the filename for your saved game .dat file");
+		saveTypeLabel = new JLabel();
+		saveTypeLabel.setText("Select Save Type:");
+		saveTypeList = new JComboBox<String>(new String[0]);
 		overwriteYes = new JButton();
 		overwriteYes.setText("Overwrite Existing File");
 		overwriteCancel = new JButton();
 		overwriteCancel.setText("Do NOT overwrite existing file");
+		//For save type combo box:
+		saveTypeList.removeAllItems();
+		saveTypeList.addItem("Position");
+		saveTypeList.addItem("Game");
+		saveTypeList.setSelectedIndex(-1);
 
 		// resign game
 		resignGame = new JButton();
@@ -397,7 +407,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 				}
 			}
 		});
-		saveGame.addActionListener(new ActionListener() {
+		savePosition.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
 				saveGameIsClicked(evt);
 			}
@@ -492,8 +502,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// board in middle
 		layout.setHorizontalGroup(layout.createParallelGroup()
 				// main controls (save, pause)
-				.addGroup(layout.createSequentialGroup().addComponent(saveGameAs).addComponent(saveGame).addComponent(resignGame)
-						.addComponent(overwriteYes).addComponent(overwriteCancel))
+				.addGroup(layout.createSequentialGroup().addComponent(savePositionAs).addComponent(savePosition).addComponent(resignGame)
+						.addComponent(saveTypeLabel).addComponent(saveTypeList).addComponent(overwriteYes).addComponent(overwriteCancel))
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(blackWon).addComponent(whiteWon).addComponent(draw))
 				// player1, board, player2
 				.addGroup(layout.createSequentialGroup()
@@ -527,8 +537,9 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 		layout.setVerticalGroup(layout.createSequentialGroup()
 				// main controls (save, pause)
-				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(saveGameAs)
-						.addComponent(saveGame).addComponent(resignGame)
+				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(savePositionAs)
+						.addComponent(saveTypeLabel).addComponent(saveTypeList)
+						.addComponent(savePosition).addComponent(resignGame)
 						// TODO save game name
 						)
 				.addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).addComponent(overwriteYes)
@@ -572,7 +583,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	 * This method refreshes any components on the game page.
 	 * @author Helen Lin, 260715521
 	 */
-	private static void refreshData() {
+	public static void refreshData() {
 		// TODO ???
 		// update error message
 		errorMsg.setText(error);
@@ -595,6 +606,8 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 			playerBlackClockLabel.setText("00:00");
 		}
 
+		
+
 	}
 
 	private void refreshBoardVisualizer() {
@@ -607,6 +620,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	/************ ACTION PERFORMED METHODS ***************/
 
 
+	/**
+	 * action method for grabbing a wall
+	 * @author Xinyue Chen
+	 * @param evt
+	 */
 	private void grabIsClicked(java.awt.event.ActionEvent evt) {
 		grabClickedTimes++;
 		if(grabClickedTimes>1) {
@@ -622,6 +640,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	}
 
+	/**
+	 * action method for rotating the wall
+	 * @author Xinyue Chen
+	 * @param evt
+	 */
 	private void rotateIsClicked(java.awt.event.ActionEvent evt) {
 
 		try {
@@ -698,6 +721,11 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	}
 
+	/**
+	 * method for canceling grabbing a wall
+	 * @author Xinyue Chen
+	 * @param evt
+	 */
 	private void cancelIsClicked(java.awt.event.ActionEvent evt) {
 		cancelIsClicked=true;
 		repaint();
@@ -777,15 +805,19 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	}
 
-	/*******************SAVE GAME**************************************/
+	/*******************SAVE POSITION**************************************/
 
 	private void saveGameIsClicked(java.awt.event.ActionEvent evt) {
 		error = "";
 		Boolean tmp = false;
-		if (saveGameAs.getText() == "") {
+		if (savePositionAs.getText() == "") {
 			error = "Must include the file name you wish to save";
-		} else {
-			tmp = QuoridorController.attemptToSavePosition(saveGameAs.getText());
+		} else if (saveTypeList.getSelectedIndex() <0) {
+			error = "Must specify whether saving as a position or game";
+		}else if (saveTypeList.getSelectedItem().toString().equals("Position")){
+			tmp = QuoridorController.attemptToSavePosition(savePositionAs.getText());
+		} else if (saveTypeList.getSelectedItem().toString().equals("Game")) {
+			tmp = QuoridorController.attemptToSaveGame(savePositionAs.getText());
 		}
 
 		if (error == "" && !tmp) {
@@ -795,13 +827,23 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 
 	private void overwriteYesIsClicked(java.awt.event.ActionEvent evt) {
-		QuoridorController.overWriteSavePosition(saveGameAs.getText(), true);
+		
+		if (saveTypeList.getSelectedItem().toString().equals("Position")){
+			QuoridorController.overWriteSavePosition(savePositionAs.getText(), true);
+		} else if (saveTypeList.getSelectedItem().toString().equals("Game")) {
+			QuoridorController.overWriteSaveGame(savePositionAs.getText(), true);
+		}
 		overwriteYes.setEnabled(false);
 		overwriteCancel.setEnabled(false);
 	}
 
 	private void overwriteCancelIsClicked(java.awt.event.ActionEvent evt) {
-		QuoridorController.overWriteSavePosition(saveGameAs.getText(), false);
+		
+		if (saveTypeList.getSelectedItem().toString().equals("Position")){
+			QuoridorController.overWriteSavePosition(savePositionAs.getText(), false);
+		} else if (saveTypeList.getSelectedItem().toString().equals("Game")) {
+			QuoridorController.overWriteSaveGame(savePositionAs.getText(), false);
+		}
 		overwriteYes.setEnabled(false);
 		overwriteCancel.setEnabled(false);
 	}
