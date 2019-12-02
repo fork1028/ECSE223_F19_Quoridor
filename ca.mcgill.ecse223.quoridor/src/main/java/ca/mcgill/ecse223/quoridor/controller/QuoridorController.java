@@ -524,44 +524,6 @@ public class QuoridorController {
 		
 		boolean isValid = validatePosition(row, col, dir.toString()) && validateWallOverlapPosition(row, col, dir, QuoridorApplication.getQuoridor());
 		
-//		List<Wall> whiteWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
-//				.getWhiteWallsOnBoard();
-//		List<Wall> blackWallsOnBoard = QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition()
-//				.getBlackWallsOnBoard();
-		//		System.out.println("testrow:" + row);
-		//		System.out.println("textcol:" + col);
-//		for (int i = 0; i < whiteWallsOnBoard.size(); i++) {
-//			if (row == whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
-//				if (col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
-//						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
-//						|| col == whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-//					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-//					//							+ whiteWallsOnBoard.get(i).getMove().getTargetTile().getRow());
-//					isValid = false;
-//				}
-//			}
-//			
-//
-//		}
-		//System.out.println("isvalid:" + isValid);
-
-//		for (int i = 0; i < blackWallsOnBoard.size(); i++) {
-//			if (row == blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()) {
-//				if (col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()
-//						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() + 1
-//						|| col == blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn() - 1) {
-//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn()"
-//					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getColumn());
-//					//					System.out.println("blackWallsOnBoard.get(i).getMove().getTargetTile().getRow()"
-//					//							+ blackWallsOnBoard.get(i).getMove().getTargetTile().getRow());
-//					isValid = false;
-//				}
-//			}
-//
-//		}
-		
 		if (isValid) {
 			int path = graph.wallAdded(row, col, wall.getMove().getWallDirection());
 			
@@ -584,7 +546,7 @@ public class QuoridorController {
 				QuoridorApplication.getQuoridor().getCurrentGame().getCurrentPosition().addBlackWallsOnBoard(wall);
 			}
 		} else {
-			throw new java.lang.UnsupportedOperationException("You can't drop the wall here.");
+			throw new java.lang.UnsupportedOperationException("You can't drop the wall here! Invalid position!");
 		}
 
 		//System.out.println(playerToMove);
@@ -1426,7 +1388,6 @@ public class QuoridorController {
 			Direction currDir = allWalls.get(i).getMove().getWallDirection();
 
 			if (currRow == row && currCol == col) {
-				return false;
 			}
 
 			if (direction == Direction.Vertical) {
