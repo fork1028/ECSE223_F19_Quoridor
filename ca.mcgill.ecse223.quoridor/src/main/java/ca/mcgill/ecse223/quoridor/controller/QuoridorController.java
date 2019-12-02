@@ -1305,7 +1305,7 @@ public class QuoridorController {
 		
 		if (allWalls.size() == 0) return true;
 		
-		for (int i = 0; i <= allWalls.size(); i++) {
+		for (int i = 0; i < allWalls.size(); i++) {
 			int currRow = allWalls.get(i).getMove().getTargetTile().getRow();
 			int currCol = allWalls.get(i).getMove().getTargetTile().getColumn();
 			Direction currDir = allWalls.get(i).getMove().getWallDirection();
