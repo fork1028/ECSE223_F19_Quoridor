@@ -181,19 +181,24 @@ public class Graph {
 			adj.clear();
 		}
 		
+		int count = 9;
+		
 		if (isWhitePlayer) {
 			for (int i = 73; i <= 81; i++) {
 				if (visited.get(i) == false)
-					return false;
+					count--;
 			}
 		}
 		else {
 			for (int i = 1; i <= 9; i++) {
 				if (visited.get(i) == false)
-					return false;
+					count--;
 			}
 		}
-
+		
+		if (count == 0)
+			return false;
+		
 		return true;
 	}
 	
