@@ -2620,8 +2620,9 @@ public class QuoridorController {
 			if (move.getMoveNumber() == nextMoveInReplayMode && move.getRoundNumber() == nextRoundInReplayMode) {
 				//set its previous move to have a null next move (because the game will continue from there
 				Move newPrevious = move.getPrevMove();
-				newPrevious.setNextMove(null);
-				move.setPrevMove(null);
+				if (newPrevious !=null) {
+					newPrevious.setNextMove(null);
+				}
 				//add it to a List of moves to remove
 				movesToRemove.add(move);
 			} else if (move.getMoveNumber() > nextMoveInReplayMode

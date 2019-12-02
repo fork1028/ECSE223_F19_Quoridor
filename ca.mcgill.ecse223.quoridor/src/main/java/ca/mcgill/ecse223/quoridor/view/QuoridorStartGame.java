@@ -62,8 +62,9 @@ public class QuoridorStartGame extends JFrame {
 	private static final Font BIG_FONT = new Font("Verdana", Font.BOLD, 50);
 	private static final Font NORMAL_FONT = new Font("Verdana", Font.PLAIN, 18);
 	private static final Font SMALL_FONT = new Font("Verdana", Font.PLAIN, 14);
-	private static final Color BUTTON_COLOUR = new Color(99,255,252);
-
+	private static final Color BUTTON_COLOUR_DEFAULT = new Color(99,255,252); //cyan blue colour
+	private static final Color BUTTON_COLOUR_GREEN = new Color(208,240,192); //light green
+	
 	/** Creates new QuoridorPage */
 	public QuoridorStartGame() {
 		super("Quoridor Game - Group 13");
@@ -101,19 +102,19 @@ public class QuoridorStartGame extends JFrame {
 		// JButtons
 		createUserButton = new JButton("Create Player");
 		createUserButton.setFont(NORMAL_FONT);
-		createUserButton.setBackground(BUTTON_COLOUR);
+		createUserButton.setBackground(BUTTON_COLOUR_DEFAULT);
 		createNewGameButton = new JButton("Start Game");
 		createNewGameButton.setFont(NORMAL_FONT);
-		createNewGameButton.setBackground(BUTTON_COLOUR);
+		createNewGameButton.setBackground(BUTTON_COLOUR_GREEN);
 		loadPositionButton = new JButton("Load Position");
 		loadPositionButton.setFont(NORMAL_FONT);
-		loadPositionButton.setBackground(BUTTON_COLOUR);
+		loadPositionButton.setBackground(BUTTON_COLOUR_GREEN);
 		loadGameButton = new JButton("Load Game");
 		loadGameButton.setFont(NORMAL_FONT);
-		loadGameButton.setBackground(BUTTON_COLOUR);
+		loadGameButton.setBackground(BUTTON_COLOUR_DEFAULT);
 		resumeGameButton = new JButton("Resume Game");
 		resumeGameButton.setFont(NORMAL_FONT);
-		resumeGameButton.setBackground(BUTTON_COLOUR);
+		resumeGameButton.setBackground(BUTTON_COLOUR_DEFAULT);
 
 		// JTextFields
 		createUserTextField = new JTextField();
