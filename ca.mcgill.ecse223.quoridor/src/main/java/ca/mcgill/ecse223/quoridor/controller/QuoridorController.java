@@ -2766,7 +2766,7 @@ public class QuoridorController {
 		/*for(Move move: currentGame.getMoves())
 			*/
 		
-		int posID = move.getNextMove().getMoveNumber();
+
 		//Set current move to next move
 			//if (currentMove == posID) 
 				currentGame.setCurrentPosition(pos);
@@ -2798,7 +2798,6 @@ public class QuoridorController {
 		
 		Move move = QuoridorApplication.getQuoridor().getCurrentGame().getMove(currentMove);
 
-		int posID = move.getPrevMove().getMoveNumber();
 		
 		//Set current move to previous move
 		//if (currentMove == posID) 
