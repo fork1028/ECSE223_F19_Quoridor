@@ -1,10 +1,8 @@
 package ca.mcgill.ecse223.quoridor.controller;
 
-import java.io.*;
 import java.util.*;
 
 import ca.mcgill.ecse223.quoridor.model.Direction;
-import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
 
 class Edge {
@@ -141,8 +139,8 @@ public class Graph {
 
 	private boolean dfs(int coordinate, boolean isWhitePlayer) {
 		// Initially mark all vertices as not visited 
-		Vector<Boolean> visited = new Vector<Boolean>(nodes.size()); 
-		for (int i = 0; i < nodes.size(); i++) 
+		ArrayList<Boolean> visited = new ArrayList<Boolean>(); 
+		for (int i = 0; i <= 82; i++) 
 			visited.add(false); 
 
 		// Create a stack for DFS 
@@ -167,22 +165,30 @@ public class Graph {
 			// to the stack. 
 
 			Iterator<Edge> itr = edges.iterator();
-
+			
+			Edge e = edges.get(coordinate);
+			
+			while (itr.hasNext()) {
+				Edge v = itr.next();
+				if (v.node_1 == e.node_1 && v.node_2 == e.node_2)
+					break;
+			}
+			
 			while (itr.hasNext()) { 
-				Edge v = itr.next(); 
+				Edge v = itr.next();
 				if(!visited.get(v.node_1)) 
 					stack.push(v.node_1); 
 			} 
 		}
 		
 		if (isWhitePlayer) {
-			for (int i = 72; i <= 80; i++) {
+			for (int i = 73; i <= 81; i++) {
 				if (visited.get(i) == false)
 					return false;
 			}
 		}
 		else {
-			for (int i = 1; i <= 8; i++) {
+			for (int i = 1; i <= 9; i++) {
 				if (visited.get(i) == false)
 					return false;
 			}
