@@ -3,25 +3,13 @@ package ca.mcgill.ecse223.quoridor.view;
 
 import java.awt.Color;
 
-import java.util.HashMap;
-import java.util.List;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.geom.Rectangle2D;
 import java.sql.Time;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Properties;
-
-import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -31,23 +19,12 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-import javax.swing.JScrollPane;
-import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.Timer;
-import javax.swing.WindowConstants;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
 
 import ca.mcgill.ecse223.quoridor.QuoridorApplication;
 import ca.mcgill.ecse223.quoridor.controller.InvalidInputException;
 import ca.mcgill.ecse223.quoridor.controller.QuoridorController;
-import ca.mcgill.ecse223.quoridor.controller.TOWall;
 import ca.mcgill.ecse223.quoridor.model.Player;
-import ca.mcgill.ecse223.quoridor.model.PlayerPosition;
 import ca.mcgill.ecse223.quoridor.model.Wall;
 import ca.mcgill.ecse223.quoridor.model.WallMove;
 import ca.mcgill.ecse223.quoridor.controller.PawnBehavior.MoveDirection;
@@ -105,12 +82,17 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	// board visualizer
 	private QuoridorBoardVisualizer boardVisualizer;
-	//private QuoridorWallMoveVisualizer wallVisualizer;
+	
+	//replay mode
+	private JButton replayMode;
+	private JButton jumpToFinal;
+	private JButton jumpToStart;
+	
 	private static final int WIDTH_BOARD = 850;
 	private static final int HEIGHT_BOARD = 600;
 
 	// data elements
-	private static String error = "";
+	private static String error = "Welcome to Quoridor!";
 	private static JLabel errorMsg;
 
 	// WALLs
@@ -141,8 +123,18 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 
 	// graphics
+	
+	private static final Font BIGGEST_FONT = new Font("Verdana", Font.BOLD, 50);
+	private static final Font BIG_FONT = new Font("Verdana", Font.PLAIN, 30);
+	private static final Font NORMAL_FONT = new Font("Verdana", Font.PLAIN, 18);
+	private static final Font SMALL_FONT = new Font("Verdana", Font.PLAIN, 14);
 	private static final Color CUSTOM_GREEN = new Color(0, 204, 0);
+	private static final Color BUTTON_COLOUR_DEFAULT = new Color(99,255,252); //cyan blue colour
+	private static final Color BUTTON_COLOUR_RED = new Color(255,204,203); //light red colour
+	private static final Color BUTTON_COLOUR_GRAY = Color.LIGHT_GRAY; //light red colour
 
+	private static final Color BUTTON_COLOUR_GREEN = new Color(208,240,192); //light green
+	
 	/** Constructor to create QuoridorBoardPage */
 	public QuoridorGamePage() {
 		initComponents();
@@ -169,7 +161,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 
 	}
 
-	/************ INITIALIZATION AND LAYOUT ***************/
+	/************************** INITIALIZATION AND LAYOUT ********************************/
 
 	/**
 	 * This method is called from within the constructor to initialize the form.
@@ -178,103 +170,135 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		this.getContentPane().setBackground(Color.WHITE);
 		// elements for error message
 		errorMsg = new JLabel();
-		errorMsg.setText("error");
+		errorMsg.setText(error);
+		errorMsg.setFont(SMALL_FONT);
 		errorMsg.setForeground(Color.blue);
+		errorMsg.setBackground(Color.GRAY);
 
 		// elements for white player
 		playerWhiteNameLabel = new JLabel();
 		playerWhiteNameLabel.setText("PLAYER WHITE");
-		// TODO: get username from startpage
-		playerWhiteNameLabel.setFont(new Font(null, Font.BOLD, 18));
+		playerWhiteNameLabel.setFont(BIG_FONT);
 
 		playerWhiteTurnLabel = new JLabel();
 		playerWhiteTurnLabel.setText("  YOUR TURN  ");
-		playerWhiteTurnLabel.setFont(new Font(null, Font.BOLD, 16));
+		playerWhiteTurnLabel.setFont(BIG_FONT);
 		playerWhiteTurnLabel.setBackground(CUSTOM_GREEN);
 		playerWhiteTurnLabel.setOpaque(true);
 
 		playerWhiteClockLabel = new JLabel();
 		playerWhiteClockLabel.setText("MM:SS");
-		playerWhiteClockLabel.setFont(new Font(null, Font.BOLD, 25));
+		playerWhiteClockLabel.setFont(BIGGEST_FONT);
 		playerWhiteClockLabel.setBackground(Color.LIGHT_GRAY);
 		playerWhiteClockLabel.setOpaque(true);
 
 		// elements for black player
 		playerBlackNameLabel = new JLabel();
 		playerBlackNameLabel.setText("PLAYER BLACK");
-		// TODO: get username from startpage
-		playerBlackNameLabel.setFont(new Font(null, Font.BOLD, 18));
+		playerBlackNameLabel.setFont(BIG_FONT);
 
 		playerBlackTurnLabel = new JLabel();
 		playerBlackTurnLabel.setText("       WAIT        ");
-		playerBlackTurnLabel.setFont(new Font(null, Font.BOLD, 16));
+		playerBlackTurnLabel.setFont(BIG_FONT);
 		playerBlackTurnLabel.setBackground(Color.LIGHT_GRAY);
 		playerBlackTurnLabel.setOpaque(true);
 
 		playerBlackClockLabel = new JLabel();
 		playerBlackClockLabel.setText("MM:SS");
-		playerBlackClockLabel.setFont(new Font(null, Font.BOLD, 25));
+		playerBlackClockLabel.setFont(BIGGEST_FONT);
 		playerBlackClockLabel.setBackground(Color.LIGHT_GRAY);
 		playerBlackClockLabel.setOpaque(true);
 
 		blackWon=new JLabel();
 		blackWon.setText("BLACK WON!");
-		blackWon.setFont(new Font(null, Font.BOLD, 25));
+		blackWon.setFont(BIG_FONT);
 		blackWon.setVisible(false);
 		whiteWon=new JLabel();
 		whiteWon.setText("WHITE WON!");
-		whiteWon.setFont(new Font(null, Font.BOLD, 25));
+		whiteWon.setFont(BIG_FONT);
 		whiteWon.setVisible(false);
 		draw=new JLabel();
 		draw.setText("DRAW!");
-		draw.setFont(new Font(null, Font.BOLD, 25));
+		draw.setFont(BIG_FONT);
 		draw.setVisible(false);
 
 		// elements for Wall buttons
 		moveWall = new JButton();
 		moveWall.setText("MOVE WALL");
+		moveWall.setFont(NORMAL_FONT);
+		moveWall.setBackground(BUTTON_COLOUR_DEFAULT);
 		dropWall = new JButton();
 		dropWall.setText("DROP WALL");
+		dropWall.setFont(NORMAL_FONT);
+		dropWall.setBackground(BUTTON_COLOUR_DEFAULT);
 		rotateWall = new JButton();
 		rotateWall.setText("ROTATE WALL");
+		rotateWall.setFont(NORMAL_FONT);
+		rotateWall.setBackground(BUTTON_COLOUR_DEFAULT);
 		grabWall = new JButton();
 		grabWall.setText("GRAB WALL");
+		grabWall.setFont(NORMAL_FONT);
+		grabWall.setBackground(BUTTON_COLOUR_DEFAULT);
 		cancel=new JButton();
-		cancel.setText("cancel");
+		cancel.setText("Cancel Wall Move");
+		cancel.setFont(NORMAL_FONT);
+		cancel.setBackground(BUTTON_COLOUR_RED);
 
 		// pawn
 		moveUpRight=new JButton();
 		moveUpRight.setText("PAWN NORTH-EAST");
+		moveUpRight.setFont(NORMAL_FONT);
+		moveUpRight.setBackground(BUTTON_COLOUR_GRAY);
 		moveUpLeft=new JButton();
 		moveUpLeft.setText("PAWN NORTH-WEST");
+		moveUpLeft.setFont(NORMAL_FONT);
+		moveUpLeft.setBackground(BUTTON_COLOUR_GRAY);
 		moveDownRight=new JButton();
 		moveDownRight.setText("PAWN SOUTH-EAST");
+		moveDownRight.setFont(NORMAL_FONT);
+		moveDownRight.setBackground(BUTTON_COLOUR_GRAY);
 		moveDownLeft=new JButton();
 		moveDownLeft.setText("PAWN SOUTH-WEST");
-
+		moveDownLeft.setFont(NORMAL_FONT);
+		moveDownLeft.setBackground(BUTTON_COLOUR_GRAY);
 		moveUp=new JButton();
 		moveUp.setText("PAWN UP");
+		moveUp.setFont(NORMAL_FONT);
+		moveUp.setBackground(BUTTON_COLOUR_DEFAULT);
 		moveDown=new JButton();
 		moveDown.setText("PAWN DOWN");
+		moveDown.setFont(NORMAL_FONT);
+		moveDown.setBackground(BUTTON_COLOUR_DEFAULT);
 		moveLeft=new JButton();
 		moveLeft.setText("PAWN LEFT");
+		moveLeft.setFont(NORMAL_FONT);
+		moveLeft.setBackground(BUTTON_COLOUR_DEFAULT);
 		moveRight=new JButton();
 		moveRight.setText("PAWN RIGHT");
+		moveRight.setFont(NORMAL_FONT);
+		moveRight.setBackground(BUTTON_COLOUR_DEFAULT);
 
 
 		// save and pause game
 		savePosition = new JButton();
 		savePosition.setText("SAVE GAME/POSITION");
+		savePosition.setFont(NORMAL_FONT);
+		savePosition.setBackground(BUTTON_COLOUR_GREEN);
 		savePosition.setToolTipText("Enter a filename and click SAVE GAME/POSITION to save current game as a .dat file");
 		savePositionAs = new JTextField();
 		savePositionAs.setToolTipText("Enter the filename for your saved game .dat file");
 		saveTypeLabel = new JLabel();
 		saveTypeLabel.setText("Select Save Type:");
+		saveTypeLabel.setFont(NORMAL_FONT);
 		saveTypeList = new JComboBox<String>(new String[0]);
 		overwriteYes = new JButton();
 		overwriteYes.setText("Overwrite Existing File");
+		overwriteYes.setFont(NORMAL_FONT);
+		overwriteYes.setBackground(BUTTON_COLOUR_GREEN);
 		overwriteCancel = new JButton();
 		overwriteCancel.setText("Do NOT overwrite existing file");
+		overwriteCancel.setFont(NORMAL_FONT);
+		overwriteCancel.setBackground(BUTTON_COLOUR_RED);
 		//For save type combo box:
 		saveTypeList.removeAllItems();
 		saveTypeList.addItem("Position");
@@ -284,16 +308,32 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		// resign game
 		resignGame = new JButton();
 		resignGame.setText("RESIGN GAME");
+		resignGame.setFont(NORMAL_FONT);
+		resignGame.setBackground(BUTTON_COLOUR_DEFAULT);
 
 		// visualizer for board
 		boardVisualizer = new QuoridorBoardVisualizer();
 		boardVisualizer.setMinimumSize(new Dimension(WIDTH_BOARD, HEIGHT_BOARD));
 
+//		//replay mode
+		replayMode = new JButton();
+		replayMode.setText("REPLAY MODE");
+		replayMode.setFont(NORMAL_FONT);
+		replayMode.setBackground(BUTTON_COLOUR_GREEN);
+		jumpToFinal = new JButton();
+		jumpToFinal.setText("JUMP TO FINAL");
+		jumpToFinal.setFont(NORMAL_FONT);
+		jumpToFinal.setBackground(BUTTON_COLOUR_DEFAULT);
+		jumpToStart = new JButton();
+		jumpToStart.setText("JUMP TO FINAL");
+		jumpToStart.setFont(NORMAL_FONT);
+		jumpToStart.setBackground(BUTTON_COLOUR_DEFAULT);
+		
 		// global settings
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Quoridor Board and Game - Group 13");
 
-		// action listeners
+		//***************action listeners************************
 
 		moveWall.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -429,7 +469,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		/**
 		 * Timer to decrement remaining player time for current player, and also to set counter ui.
 		 * Timer refreshes every 100ms.
-		 * @author Helen
+		 * @author Helen Lin, 260715521
 		 */
 		ActionListener al=new ActionListener() {
 			public void actionPerformed(ActionEvent evt) {
@@ -471,9 +511,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 					}
 				}
 
-				//blackStr = QuoridorController.getDisplayTimeString(testSec);
-				//whiteStr = QuoridorController.getDisplayTimeString(testSec);
-
 				playerBlackClockLabel.setText(blackStr);
 				playerWhiteClockLabel.setText(whiteStr);
 
@@ -491,9 +528,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 		layout.setAutoCreateGaps(true);
 		layout.setAutoCreateContainerGaps(true);
 		// horizontal line elements
-		JSeparator horizontalLineTop = new JSeparator();
-		JSeparator horizontalLineMiddle = new JSeparator();
-		JSeparator horizontalLineBottom = new JSeparator();
 		// add players' buttons on each left or right side
 		// board in middle
 		layout.setHorizontalGroup(layout.createParallelGroup()
@@ -580,7 +614,6 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	 * @author Helen Lin, 260715521
 	 */
 	public static void refreshData() {
-		// TODO ???
 		// update error message
 		errorMsg.setText(error);
 		if(isBlackWon==true) {
@@ -607,7 +640,7 @@ public class QuoridorGamePage extends JFrame implements KeyListener{
 	}
 
 	private void refreshBoardVisualizer() {
-		// TODO - NOTE (Helen): nov22, I don't think we need this --> board is automatically
+		// NOTE (Helen): nov22, I don't think we need this --> board is automatically
 		//refreshed whenever this class or boardVisualizer calls repaint();
 		// board visualizer already automatically detects which tile is clicked
 		// implement for walls
