@@ -2091,13 +2091,13 @@ public class QuoridorController {
 		Time blackRemainingTime=getTimeForPlayer(true);
 		Time whiteRemainingTime=getTimeForPlayer(false);
 		if(blackRemainingTime.getMinutes()+blackRemainingTime.getSeconds()==0) {
-			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
-			QuoridorGamePage.setBlackWon(true);
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
+			QuoridorGamePage.setWhiteWon(true);
 			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 		}
 		if(whiteRemainingTime.getMinutes()+whiteRemainingTime.getSeconds()==0) {
-			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.WhiteWon);
-			QuoridorGamePage.setWhiteWon(true);
+			QuoridorApplication.getQuoridor().getCurrentGame().setGameStatus(GameStatus.BlackWon);
+			QuoridorGamePage.setBlackWon(true);
 			if(QuoridorGamePage.getTimer()!=null) QuoridorGamePage.getTimer().stop();
 		}
 
