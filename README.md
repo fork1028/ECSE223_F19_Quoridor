@@ -11,4 +11,4 @@ Forked from McGill-ECSE223-Fall2019/ecse223-project--group-13
 * Umple based domain model
 * Umple based State machine
 * Java 2D
-* Trasfer Objects
+* Transfer Objects
